@@ -1,0 +1,7 @@
+{
+  "name": "uqlibrary-booking#gh-pages",
+  "private": true,
+  "dependencies": {
+    "uqlibrary-booking": "uqlibrary/uqlibrary-booking#master"
+  }
+}

@@ -1,0 +1,124 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../core-drawer-panel/core-drawer-panel.html">
+<link rel="import" href="../core-header-panel/core-header-panel.html">
+<link rel="import" href="../core-toolbar/core-toolbar.html">
+<link rel="import" href="../core-menu/core-menu.html">
+<link rel="import" href="../core-icons/core-icons.html">
+
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-item/paper-item.html">
+
+<link rel="import" href="../uqlibrary-timeline/uqlibrary-timeline.html">
+
+<polymer-element name="uqlibrary-booking">
+
+  <template>
+    <link rel="stylesheet" href="uqlibrary-booking.css">
+
+    <core-drawer-panel id="drawerPanel" drawerWidth="200px" responsiveWidth="9999px">
+
+      <core-header-panel drawer id="drawer">
+        <core-menu>
+          <paper-item label="Dashboard"></paper-item>
+          <paper-item label="Agenda"></paper-item>
+          <paper-item label="Study"></paper-item>
+          <paper-item label="Library"></paper-item>
+          <paper-item label="News"></paper-item>
+          <paper-item label="Events"></paper-item>
+          <paper-item label="Settings"></paper-item>
+          <paper-item label="Logout"></paper-item>
+        </core-menu>
+      </core-header-panel>
+
+      <core-header-panel main id="main">
+
+        <core-toolbar>
+          <paper-icon-button icon="menu" on-tap="{{togglePanel}}"></paper-icon-button>
+          <span flex>My bookings</span>
+          <paper-icon-button icon="drawer"></paper-icon-button>
+        </core-toolbar>
+
+        <div id="content">
+          <uqlibrary-timeline events="{{events}}"></uqlibrary-timeline>
+        </div>
+
+      </core-header-panel>
+
+    </core-drawer-panel>
+
+  </template>
+
+  <script>
+    (function() {
+      Polymer('uqlibrary-booking', {
+
+        created: function () {
+          var that = this;
+          this.events = [
+            {
+              date: new Date().setHours(0, 0, 0, 0),
+              title: "Item title",
+              subtitle: "Second line",
+              text: "Third line"
+            },
+            {
+              date: new Date().setHours(4, 0, 0, 0),
+              title: "Item title",
+              subtitle: "Second line",
+              text: "Third line"
+            },
+            {
+              date: new Date().setHours(24, 0, 0, 0),
+              title: "A long item title A long item title A long item title A long item title A long item title ",
+              subtitle: "Second line",
+              text: "Third line"
+            },
+            {
+              date: new Date().setHours(25, 0, 0, 0),
+              title: "Item title",
+              subtitle: "Second line",
+              text: "Third line"
+            },
+            {
+              date: new Date().setHours(26, 0, 0, 0),
+              title: "Item title",
+              subtitle: "Second line",
+              text: "Third line"
+            },
+            {
+              date: new Date().setHours(72, 0, 0, 0),
+              title: "Item title",
+              subtitle: "Second line",
+              text: "Third line"
+            }
+          ];
+
+          setTimeout(function () {
+            that.events.push({
+              date: new Date().setHours(2, 0, 0, 0),
+              title: "Item title 2",
+              subtitle: "Second line",
+              text: "Third line"
+            });
+          }, 2000);
+
+          setTimeout(function () {
+            that.events.push({
+              date: new Date().setHours(3, 0, 0, 0),
+              title: "Item title 3",
+              subtitle: "Second line",
+              text: "Third line"
+            });
+          }, 4000);
+        },
+
+        togglePanel: function () {
+          this.$.drawerPanel.togglePanel();
+        }
+
+      });
+    })();
+  </script>
+
+</polymer-element>
