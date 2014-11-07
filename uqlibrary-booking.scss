@@ -1,6 +1,7 @@
 @import "../uqlibrary-elements/resources/theme/element";
 
 :host {
+
 }
 
 #booking {
@@ -24,4 +25,20 @@ core-menu {
 
 paper-item {
   color: $text-inverse;
+}
+
+div.wrapper {
+  position: relative;
+}
+
+paper-fab {
+  &.action{
+    background-color: $green;
+
+    &#addBookingButton {
+      position: absolute;
+      right: 30pt;
+    }
+  }
+
 }
