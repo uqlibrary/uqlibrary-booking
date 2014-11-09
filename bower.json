@@ -11,6 +11,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^0.4.2",
+    "core-animated-pages": "Polymer/core-animated-pages#0.4.2",
     "core-collapse": "Polymer/core-collapse#0.4.2",
     "core-drawer-panel": "Polymer/core-drawer-panel#0.4.2",
     "core-header-panel": "Polymer/core-header-panel#0.4.2",
