@@ -32,8 +32,8 @@
   color: rgba(255, 255, 255, 0.87); }
 
 core-toolbar {
-  background-color: #49075e;
-  border-bottom: 1px solid #49075e;
+  background-color: #49075E;
+  border-bottom: 1px solid #49075E;
   color: rgba(255, 255, 255, 0.87); }
 
 core-menu {
@@ -46,7 +46,10 @@ div.wrapper {
   position: relative; }
 
 paper-fab.action {
-  background-color: #4caf50; }
+  background-color: #4CAF50; }
   paper-fab.action#addBookingButton {
     position: absolute;
-    right: 30pt; }
+    bottom: 16px;
+    right: 16px; }
+
+/*# sourceMappingURL=uqlibrary-booking.css.map */
