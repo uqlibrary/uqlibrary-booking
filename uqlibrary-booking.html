@@ -25,26 +25,32 @@
   <template>
     <link rel="stylesheet" href="uqlibrary-booking.css">
 
-    <core-drawer-panel id="drawerPanel">
+    <core-drawer-panel id="drawerPanel" responsiveWidth="9999px">
 
       <core-header-panel drawer id="drawer">
         <core-menu>
-          <paper-item label="Dashboard" icon="home"></paper-item>
-          <paper-item label="Agenda" icon="schedule"></paper-item>
-          <paper-item label="Study" icon="today"></paper-item>
-          <paper-item label="Library" icon="social:school"></paper-item>
-          <paper-item label="News" icon="av:news"></paper-item>
-          <paper-item label="Events" icon="event"></paper-item>
-          <paper-item label="Settings" icon="settings"></paper-item>
-          <paper-item label="Logout" icon="arrow-forward"></paper-item>
+          <paper-item label="Dashboard"></paper-item>
+          <paper-item label="Agenda"></paper-item>
+          <paper-item label="Study"></paper-item>
+          <paper-item label="Library"></paper-item>
+          <paper-item label="News"></paper-item>
+          <paper-item label="Events"></paper-item>
+          <paper-item label="Settings"></paper-item>
+          <paper-item label="Logout"></paper-item>
         </core-menu>
       </core-header-panel>
 
       <core-header-panel main id="main">
         <core-toolbar>
-          <paper-icon-button id="toolbar-menu-icon-button" hidden?="{{!pageToolbar.leftButton.icon}}" icon="{{pageToolbar.leftButton.icon ? pageToolbar.leftButton.icon : ''}}" on-tap="{{performLeftToolbarButtonAction}}"></paper-icon-button>
+          <paper-icon-button id="toolbar-menu-icon-button"
+                             hidden?="{{!pageToolbar.leftButton.icon}}"
+                             icon="{{pageToolbar.leftButton.icon ? pageToolbar.leftButton.icon : ''}}"
+                             on-tap="{{performLeftToolbarButtonAction}}"></paper-icon-button>
           <span flex id="toolbar-page-title">{{pageToolbar.title}}</span>
-          <paper-icon-button id="toolbar-right-icon" on-tap="{{performRightToolbarButtonAction}}" hidden?="{{!pageToolbar.rightButton.icon}}" icon="{{pageToolbar.rightButton.icon ? pageToolbar.rightButton.icon : ''}}"></paper-icon-button>
+          <paper-icon-button id="toolbar-right-icon"
+                             on-tap="{{performRightToolbarButtonAction}}"
+                             hidden?="{{!pageToolbar.rightButton.icon}}"
+                             icon="{{pageToolbar.rightButton.icon ? pageToolbar.rightButton.icon : ''}}"></paper-icon-button>
         </core-toolbar>
 
         <div id="content">
@@ -60,6 +66,7 @@
             </section>
           </core-animated-pages>
         </div>
+
       </core-header-panel>
 
     </core-drawer-panel>
