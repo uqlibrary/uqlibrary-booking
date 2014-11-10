@@ -54,17 +54,24 @@
         </core-toolbar>
 
         <div id="content">
-          <core-animated-pages id="pages" transitions="hero-transition">
+          <core-animated-pages id="pages"
+                               transitions="{{transition}}">
 
             <section id="myBookings">
                 <div class="wrapper">
                   <uqlibrary-timeline events="{{events}}"></uqlibrary-timeline>
-                  <paper-fab hero-id="filterForm" hero id="addBookingButton" icon="add" class="action" on-tap="{{showFilterPage}}"></paper-fab>
+                  <paper-fab hero-id="filterForm"
+                             hero id="addBookingButton"
+                             icon="add"
+                             class="action"
+                             on-tap="{{showFilterPage}}"></paper-fab>
                 </div>
             </section>
 
             <section id="filterForm">
-              <uqlibrary-fbs-filter-form hero-id="filterForm" hero id="fbs-filter-form" formData="{{filterFormData}}"></uqlibrary-fbs-filter-form>
+              <uqlibrary-fbs-filter-form hero-id="filterForm"
+                                         hero id="fbs-filter-form"
+                                         formData="{{filterFormData}}"></uqlibrary-fbs-filter-form>
             </section>
 
           </core-animated-pages>
@@ -80,7 +87,10 @@
     (function() {
       Polymer('uqlibrary-booking', {
 
+        transition: '',
+
         ready: function() {
+          this.transition = 'hero-transition';
           this.showMyBookingsPage();
         },
 
@@ -93,21 +103,10 @@
           this.$.drawerPanel.togglePanel();
         },
 
-        selectPage: function(e, t, sender) {
-          if(sender.hasAttribute('target-page')) {
-            var newPage = sender.attributes.getNamedItem('target-page').value;
-            switch (newPage) {
-              case 'filterForm':
-                this.showFilterPage();
-                break;
-            }
-          }
-        },
-
         showMyBookingsPage: function() {
           this.$.pages.selectedItem = this.$.myBookings;
           this.pageToolbar = {
-            leftButton: {icon:'menu', action: 'togglePanel' },
+            leftButton: {icon:'menu', action: 'togglePanel'},
             title: 'My bookings',
             rightButton: {icon:'drawer'}
           };
@@ -116,16 +115,26 @@
         showFilterPage: function() {
           this.$.pages.selectedItem = this.$.filterForm;
           this.pageToolbar = {
-            leftButton: {icon:'arrow-back', action: 'showMyBookingsPage'},
+            leftButton: {icon:'arrow-back', action: 'showMyBookingsPage', transition: 'slide-from-right'},
             title: 'Find a room'
           }
         },
 
         performLeftToolbarButtonAction: function(e, data, sender) {
-          if(this.pageToolbar.leftButton.action) {
-            this[this.pageToolbar.leftButton.action](e, data, sender);
-          }
+          this.doToolbarButtonAction(this.pageToolbar.leftButton, e, data, sender);
+        },
 
+        performRightToolbarButtonAction: function(e, data, sender) {
+          this.doToolbarButtonAction(this.pageToolbar.rightButton, e, data, sender);
+        },
+
+        doToolbarButtonAction: function(button, e, data, sender) {
+          if (button.transition) {
+            this.transition = button.transition;
+          }
+          if (button.action) {
+            this[button.action](e, data, sender);
+          }
         },
 
         loadEvents: function () {
