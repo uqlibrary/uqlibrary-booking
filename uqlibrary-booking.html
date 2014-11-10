@@ -2,6 +2,8 @@
 
 <link rel="import" href="../core-animated-pages/core-animated-pages.html">
 <link rel="import" href="../core-animated-pages/transitions/slide-from-right.html">
+<link rel="import" href="../core-animated-pages/transitions/hero-transition.html">
+<link rel="import" href="../core-animated-pages/transitions/cross-fade.html">
 
 <link rel="import" href="../core-drawer-panel/core-drawer-panel.html">
 <link rel="import" href="../core-header-panel/core-header-panel.html">
@@ -44,16 +46,17 @@
           <span flex id="toolbar-page-title">{{pageToolbar.title}}</span>
           <paper-icon-button id="toolbar-right-icon" on-tap="{{performRightToolbarButtonAction}}" hidden?="{{!pageToolbar.rightButton.icon}}" icon="{{pageToolbar.rightButton.icon ? pageToolbar.rightButton.icon : ''}}"></paper-icon-button>
         </core-toolbar>
+
         <div id="content">
-          <core-animated-pages id="pages" transitions="slide-from-right">
+          <core-animated-pages id="pages"  transitions="hero-transition">
             <section id="myBookings">
                 <div class="wrapper">
                   <uqlibrary-timeline events="{{events}}"></uqlibrary-timeline>
-                  <paper-fab id="addBookingButton" icon="add" class="action" on-tap="{{showFilterPage}}"></paper-fab>
+                  <paper-fab hero-id="filterForm" hero id="addBookingButton" icon="add" class="action" on-tap="{{showFilterPage}}"></paper-fab>
                 </div>
             </section>
             <section id="filterForm">
-              <uqlibrary-fbs-filter-form formData="{{filterFormData}}"></uqlibrary-fbs-filter-form>
+              <uqlibrary-fbs-filter-form hero-id="filterForm" hero id="fbs-filter-form" formData="{{filterFormData}}"></uqlibrary-fbs-filter-form>
             </section>
           </core-animated-pages>
         </div>
@@ -162,7 +165,6 @@
 
         showFilterPage: function() {
           this.$.pages.selectedItem = this.$.filterForm;
-
           this.pageToolbar = {
             leftButton: {icon:'arrow-back', action: 'showMyBookingsPage'},
             title: 'Find a room',

@@ -36,10 +36,16 @@ paper-fab {
     background-color: $green;
 
     &#addBookingButton {
-      position: absolute;
+      position: fixed;
       bottom: 16px;
       right: 16px;
     }
   }
 
+}
+
+#filterForm {
+  uqlibrary-fbs-filter-form {
+    position: relative;
+  }
 }
