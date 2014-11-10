@@ -54,16 +54,19 @@
         </core-toolbar>
 
         <div id="content">
-          <core-animated-pages id="pages"  transitions="hero-transition">
+          <core-animated-pages id="pages" transitions="hero-transition">
+
             <section id="myBookings">
                 <div class="wrapper">
                   <uqlibrary-timeline events="{{events}}"></uqlibrary-timeline>
                   <paper-fab hero-id="filterForm" hero id="addBookingButton" icon="add" class="action" on-tap="{{showFilterPage}}"></paper-fab>
                 </div>
             </section>
+
             <section id="filterForm">
               <uqlibrary-fbs-filter-form hero-id="filterForm" hero id="fbs-filter-form" formData="{{filterFormData}}"></uqlibrary-fbs-filter-form>
             </section>
+
           </core-animated-pages>
         </div>
 
@@ -82,23 +85,54 @@
         },
 
         created: function () {
-          var that = this;
+          this.loadEvents();
+          this.loadFilterFormData();
+        },
+
+        togglePanel: function () {
+          this.$.drawerPanel.togglePanel();
+        },
+
+        selectPage: function(e, t, sender) {
+          if(sender.hasAttribute('target-page')) {
+            var newPage = sender.attributes.getNamedItem('target-page').value;
+            switch (newPage) {
+              case 'filterForm':
+                this.showFilterPage();
+                break;
+            }
+          }
+        },
+
+        showMyBookingsPage: function() {
+          this.$.pages.selectedItem = this.$.myBookings;
+          this.pageToolbar = {
+            leftButton: {icon:'menu', action: 'togglePanel' },
+            title: 'My bookings',
+            rightButton: {icon:'drawer'}
+          };
+        },
+
+        showFilterPage: function() {
+          this.$.pages.selectedItem = this.$.filterForm;
+          this.pageToolbar = {
+            leftButton: {icon:'arrow-back', action: 'showMyBookingsPage'},
+            title: 'Find a room'
+          }
+        },
+
+        performLeftToolbarButtonAction: function(e, data, sender) {
+          if(this.pageToolbar.leftButton.action) {
+            this[this.pageToolbar.leftButton.action](e, data, sender);
+          }
+
+        },
+
+        loadEvents: function () {
           this.events = [
             {
               date: new Date().setHours(0, 0, 0, 0),
               title: "Item title",
-              subtitle: "Second line",
-              text: "Third line"
-            },
-            {
-              date: new Date().setHours(4, 0, 0, 0),
-              title: "Item title",
-              subtitle: "Second line",
-              text: "Third line"
-            },
-            {
-              date: new Date().setHours(24, 0, 0, 0),
-              title: "A long item title A long item title A long item title A long item title A long item title ",
               subtitle: "Second line",
               text: "Third line"
             },
@@ -121,68 +155,8 @@
               text: "Third line"
             }
           ];
-
-          this.loadFilterFormData();
-
-
-          setTimeout(function () {
-            that.events.push({
-              date: new Date().setHours(2, 0, 0, 0),
-              title: "Item title 2",
-              subtitle: "Second line",
-              text: "Third line"
-            });
-          }, 2000);
-
-          setTimeout(function () {
-            that.events.push({
-              date: new Date().setHours(3, 0, 0, 0),
-              title: "Item title 3",
-              subtitle: "Second line",
-              text: "Third line"
-            });
-          }, 4000);
         },
 
-        togglePanel: function () {
-          this.$.drawerPanel.togglePanel();
-        },
-
-        selectPage: function(e, t, sender) {
-
-          if(sender.hasAttribute('target-page')) {
-            var newPage = sender.attributes.getNamedItem('target-page').value;
-            switch(newPage) {
-              case 'filterForm':
-                this.showFilterPage();
-                break;
-
-            }
-          }
-        },
-
-        showMyBookingsPage: function() {
-          this.$.pages.selectedItem = this.$.myBookings;
-          this.pageToolbar = {
-            leftButton: {icon:'menu', action: 'togglePanel' },
-            title: 'My bookings',
-            rightButton: {icon:'drawer'},
-          };
-        },
-
-        showFilterPage: function() {
-          this.$.pages.selectedItem = this.$.filterForm;
-          this.pageToolbar = {
-            leftButton: {icon:'arrow-back', action: 'showMyBookingsPage'},
-            title: 'Find a room',
-          }
-        },
-        performLeftToolbarButtonAction: function(e, data, sender) {
-          if(this.pageToolbar.leftButton.action) {
-            this[this.pageToolbar.leftButton.action](e, data, sender);
-          }
-
-        },
         loadFilterFormData: function() {
           this.filterFormData = [];
           this.filterFormData.dates = [];
