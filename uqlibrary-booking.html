@@ -42,13 +42,13 @@
 
       <core-header-panel main id="main">
         <core-toolbar>
-          <paper-icon-button id="toolbar-menu-icon-button"
+          <paper-icon-button id="toolBarLeftButton"
                              hidden?="{{!pageToolbar.leftButton.icon}}"
                              icon="{{pageToolbar.leftButton.icon ? pageToolbar.leftButton.icon : ''}}"
-                             on-tap="{{performLeftToolbarButtonAction}}"></paper-icon-button>
+                             on-tap="{{doTransition}}"></paper-icon-button>
           <span flex id="toolbar-page-title">{{pageToolbar.title}}</span>
-          <paper-icon-button id="toolbar-right-icon"
-                             on-tap="{{performRightToolbarButtonAction}}"
+          <paper-icon-button id="toolBarRightButton"
+                             on-tap="{{doTransition}}"
                              hidden?="{{!pageToolbar.rightButton.icon}}"
                              icon="{{pageToolbar.rightButton.icon ? pageToolbar.rightButton.icon : ''}}"></paper-icon-button>
         </core-toolbar>
@@ -61,16 +61,18 @@
                 <div class="wrapper">
                   <uqlibrary-timeline events="{{events}}"></uqlibrary-timeline>
                   <paper-fab hero-id="filterForm"
-                             hero id="addBookingButton"
+                             hero?="{{transition === 'hero-transition'}}"
+                             id="addBookingButton"
                              icon="add"
                              class="action"
-                             on-tap="{{showFilterPage}}"></paper-fab>
+                             on-tap="{{doTransition}}"></paper-fab>
                 </div>
             </section>
 
             <section id="filterForm">
               <uqlibrary-fbs-filter-form hero-id="filterForm"
-                                         hero id="fbs-filter-form"
+                                         hero?="{{transition === 'hero-transition'}}"
+                                         id="fbs-filter-form"
                                          formData="{{filterFormData}}"></uqlibrary-fbs-filter-form>
             </section>
 
@@ -87,11 +89,17 @@
     (function() {
       Polymer('uqlibrary-booking', {
 
-        transition: '',
+        transition: 'hero-transition',
 
         ready: function() {
-          this.transition = 'hero-transition';
-          this.showMyBookingsPage();
+          this.pageTransitions = {
+            addBookingButton: {
+              transition: 'hero-transition',
+              destination: 'filterForm',
+              action: 'showFilterForm'
+            }
+          };
+          this.showMyBookings();
         },
 
         created: function () {
@@ -103,37 +111,39 @@
           this.$.drawerPanel.togglePanel();
         },
 
-        showMyBookingsPage: function() {
-          this.$.pages.selectedItem = this.$.myBookings;
+        doTransition: function (e, data, sender) {
+          var p = this.pageTransitions[sender.id];
+          if (p.transition) {
+            this.transition = p.transition;
+          }
+          if (p.destination) {
+            this.$.pages.selectedItem = this.$[p.destination];
+          }
+          if (p.action) {
+            this[p.action]();
+          }
+        },
+
+        showMyBookings: function() {
+          this.pageTransitions.toolBarLeftButton = {
+            action: 'togglePanel'
+          };
           this.pageToolbar = {
-            leftButton: {icon:'menu', action: 'togglePanel'},
+            leftButton: {icon:'menu'},
             title: 'My bookings',
             rightButton: {icon:'drawer'}
           };
         },
 
-        showFilterPage: function() {
-          this.$.pages.selectedItem = this.$.filterForm;
+        showFilterForm: function() {
+          this.pageTransitions.toolBarLeftButton ={
+            transition: 'slide-from-right',
+            destination: 'myBookings',
+            action: 'showMyBookings'
+          };
           this.pageToolbar = {
-            leftButton: {icon:'arrow-back', action: 'showMyBookingsPage', transition: 'slide-from-right'},
+            leftButton: {icon:'arrow-back'},
             title: 'Find a room'
-          }
-        },
-
-        performLeftToolbarButtonAction: function(e, data, sender) {
-          this.doToolbarButtonAction(this.pageToolbar.leftButton, e, data, sender);
-        },
-
-        performRightToolbarButtonAction: function(e, data, sender) {
-          this.doToolbarButtonAction(this.pageToolbar.rightButton, e, data, sender);
-        },
-
-        doToolbarButtonAction: function(button, e, data, sender) {
-          if (button.transition) {
-            this.transition = button.transition;
-          }
-          if (button.action) {
-            this[button.action](e, data, sender);
           }
         },
 
@@ -170,7 +180,7 @@
           this.filterFormData = [];
           this.filterFormData.dates = [];
           var today = new Date();
-          for(i = 0; i < 7; i++) {
+          for(var i = 0; i < 7; i++) {
             this.filterFormData.dates.push({
               date: new Date().setDate(today.getDate() + i)
             });
