@@ -19,6 +19,7 @@
 
 <link rel="import" href="../uqlibrary-timeline/uqlibrary-timeline.html">
 <link rel="import" href="../uqlibrary-fbs-filter-form/uqlibrary-fbs-filter-form.html">
+<link rel="import" href="uqlibrary-rooms-list.html">
 
 <polymer-element name="uqlibrary-booking">
 
@@ -70,10 +71,15 @@
             </section>
 
             <section id="filterForm">
-              <uqlibrary-fbs-filter-form hero-id="filterForm"
+              <uqlibrary-fbs-filter-form id="fbsFilterForm"
+                                         hero-id="filterForm"
+                                         on-filter-form-submitted="{{filterFormSubmitted}}"
                                          hero?="{{transition === 'hero-transition'}}"
-                                         id="fbs-filter-form"
-                                         formData="{{filterFormData}}"></uqlibrary-fbs-filter-form>
+                                         formData="{{filterFormData}}" selectedValues={{filterFormData.selectedValues}}></uqlibrary-fbs-filter-form>
+            </section>
+
+            <section id="results">
+              <uqlibrary-rooms-list id="resultsList" data="{{listData}}"></uqlibrary-rooms-list>
             </section>
 
           </core-animated-pages>
@@ -136,17 +142,53 @@
         },
 
         showFilterForm: function() {
-          this.pageTransitions.toolBarLeftButton ={
+          this.pageTransitions.toolBarLeftButton = {
             transition: 'slide-from-right',
             destination: 'myBookings',
             action: 'showMyBookings'
           };
+
+          this.pageTransitions.fbsFilterForm = {
+              transition: 'slide-from-right',
+              destination: 'results',
+              action: 'showResultsPage'
+          };
+
           this.pageToolbar = {
             leftButton: {icon:'arrow-back'},
             title: 'Find a room'
+          };
+        },
+
+        filterFormSubmitted: function(e, data, sender) {
+          var formData = e.detail.formData;
+          if(!formData.equipment.pc) { // Just for testing
+            this.$.fbsFilterForm.showInfoToast('No rooms found for selected filter');
+          } else {
+            this.doTransition(e, data, sender);
           }
         },
 
+        showResultsPage: function() {
+          this.generateListData();
+          this.pageTransitions.toolBarLeftButton ={
+            transition: 'slide-from-right',
+            destination: 'filterForm',
+            action: 'showFilterForm'
+          };
+
+          this.pageToolbar = {
+            leftButton: {icon:'arrow-back'},
+            title: 'Select a room'
+          };
+        },
+
+
+
+
+
+
+        // MOCK DATA
         loadEvents: function () {
           this.events = [
             {
@@ -175,7 +217,6 @@
             }
           ];
         },
-
         loadFilterFormData: function() {
           this.filterFormData = [];
           this.filterFormData.dates = [];
@@ -386,7 +427,31 @@
 
           ];
 
-        }
+          this.filterFormData.selectedValues = {campus: 'gatton', building: 'gatton:bsl', room: 'gatton:bsl:gr2', date: '9/11/2014', time: '14:45', capacity: 10, duration: 1.5, equipment: {pc: true} };
+
+        },
+        generateListData: function() {
+          this.listData = [];// var names = ["Gatton Library - Gatton Campus (Bldg 8102)", "Herston Health Sciences Library, Herston Bldg, Block 6", "Ipswich Library, Ipswich Campus (Bldg #8 level 2)", "Mater McAuley Library, Mater Hospital Bldg, Aubigny Place", "PACE Health Sciences Library, PACE Precinct, PA Hospital (#870)", "Princess Alexandra Hospital/UQ Library, (Bldg #1)", "St Lucia - Architecture / Music Library, Zelman Cowan Bldg (#51)", "St Lucia - Biological Sciences Library (#94)", "St Lucia - Dorothy Hill Engineering & Sciences Library, Hawken Bldg,(#50)", "St Lucia - Duhig Building (#2)", "St Lucia - Graduate Economics & Business Library, Lvl 2 Colin Clark Bldg, (", "St Lucia - Social Sciences & Humanities Library, (#12 & 12A)", "St Lucia - Walter Harrison Law Library, Forgan Smith Bldg, West Wing (#1)"], data = [];
+          var names = ["Data Projector", "Group Study Rooms - level 6", "Conference & Other - Level 3", "Group Rooms", "Group Study Rooms", "Group Study Rooms", "Data Projector", "Group  Rooms - Level 3", "Data Projectors", "Assistive Technology Rooms - Level 4", "Group Study Rooms", "Group Rooms, Levels 2, 3 & 4", "Data Projector"], data = [];
+          var strings = [
+            "8 - 9a",
+            "8.30 - 9.30a",
+            "9 - 10a"
+          ];
+          for (i=0; i < names.length; i++) {
+            this.listData.push({
+              id: i,
+              room: names[i],
+              building: 'Biological Sciences Library',
+              campus: 'St Lucia',
+              details: strings[i % 3],
+              image: 'test/images/images-resized/'+ (i % 4) + '.jpg',
+              value: 0,
+              type: 0,
+              checked: false
+            });
+          }
+        },
 
       });
     })();

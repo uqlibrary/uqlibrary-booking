@@ -1,0 +1,76 @@
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 200;
+  src: url("Roboto-Light.woff") format("woff"); }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url("Roboto-Regular.woff") format("woff"); }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: url("Roboto-Medium.woff") format("woff"); }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: url("Roboto-Bold.woff") format("woff"); }
+:host,
+:host *,
+::content * {
+  box-sizing: border-box;
+  outline: none; }
+
+core-list {
+  overflow: visible; }
+
+.item {
+  box-sizing: border-box;
+  height: 88px;
+  border-bottom: 1px solid whitesmoke;
+  padding: 4px;
+  cursor: default;
+  background-color: white;
+  overflow: hidden;
+  line-height: 1.2; }
+
+.selected {
+  background: whitesmoke; }
+
+.message {
+  margin-top: 8px;
+  padding-left: 16px;
+  line-height: 1.2;
+  background-repeat: no-repeat;
+  background-position: 10px 10px;
+  background-size: 60px; }
+
+.message-image {
+  margin-top: 10px;
+  margin-left: 16px;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  height: 40px;
+  width: 40px !important; }
+
+.primary {
+  font-size: 16px;
+  display: block;
+  font-weight: normal;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; }
+
+.secondary {
+  font-size: 14px; }
+
+.level {
+  color: rgba(0, 0, 0, 0.54); }
+
+.timestamp {
+  margin-left: 10px;
+  font-size: 12px;
+  opacity: 0.8; }
