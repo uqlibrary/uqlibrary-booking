@@ -30,15 +30,15 @@ core-list {
 .item {
   box-sizing: border-box;
   height: 88px;
-  border-bottom: 1px solid whitesmoke;
+  border-bottom: 1px solid #F5F5F5;
   padding: 4px;
   cursor: default;
-  background-color: white;
+  background-color: #ffffff;
   overflow: hidden;
   line-height: 1.2; }
 
 .selected {
-  background: whitesmoke; }
+  background: #F5F5F5; }
 
 .message {
   margin-top: 8px;
@@ -74,3 +74,5 @@ core-list {
   margin-left: 10px;
   font-size: 12px;
   opacity: 0.8; }
+
+/*# sourceMappingURL=uqlibrary-rooms-list.css.map */
