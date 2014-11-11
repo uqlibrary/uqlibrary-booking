@@ -20,6 +20,7 @@
 <link rel="import" href="../uqlibrary-timeline/uqlibrary-timeline.html">
 <link rel="import" href="../uqlibrary-fbs-filter-form/uqlibrary-fbs-filter-form.html">
 <link rel="import" href="uqlibrary-rooms-list.html">
+<link rel="import" href="../uqlibrary-fbs-booking-form/uqlibrary-fbs-booking-form.html">
 
 <polymer-element name="uqlibrary-booking">
 
@@ -60,7 +61,7 @@
 
             <section id="myBookings">
                 <div class="wrapper">
-                  <uqlibrary-timeline events="{{events}}"></uqlibrary-timeline>
+                  <uqlibrary-timeline  events="{{events}}"></uqlibrary-timeline>
                   <paper-fab hero-id="filterForm"
                              hero?="{{transition === 'hero-transition'}}"
                              id="addBookingButton"
@@ -79,8 +80,13 @@
             </section>
 
             <section id="results">
-              <uqlibrary-rooms-list id="resultsList" data="{{listData}}"></uqlibrary-rooms-list>
+              <uqlibrary-rooms-list id="resultsList" on-room-selected="{{roomSelected}}" data="{{listData}}"></uqlibrary-rooms-list>
             </section>
+
+            <section id="roomBookingForm">
+              <uqlibrary-fbs-booking-form id="bookingForm"></uqlibrary-fbs-booking-form>
+            </section>
+
 
           </core-animated-pages>
         </div>
@@ -148,6 +154,11 @@
             action: 'showMyBookings'
           };
 
+          this.pageTransitions.toolBarRightButton = {
+            transition: 'slide-from-right',
+            action: 'submitFilterForm'
+          };
+
           this.pageTransitions.fbsFilterForm = {
               transition: 'slide-from-right',
               destination: 'results',
@@ -156,8 +167,13 @@
 
           this.pageToolbar = {
             leftButton: {icon:'arrow-back'},
+            rightButton: {icon:'check'},
             title: 'Find a room'
           };
+        },
+
+        submitFilterForm: function() {
+          this.$.fbsFilterForm.fire('filter-form-submitted', {formData: this.$.fbsFilterForm.selectedValues});
         },
 
         filterFormSubmitted: function(e, data, sender) {
@@ -167,6 +183,11 @@
           } else {
             this.doTransition(e, data, sender);
           }
+        },
+
+        roomSelected: function(e, data, sender) {
+          this.showRoomBookingPage();
+          this.doTransition(e, data, sender);
         },
 
         showResultsPage: function() {
@@ -181,7 +202,49 @@
             leftButton: {icon:'arrow-back'},
             title: 'Select a room'
           };
+
         },
+
+        showRoomBookingPage: function() {
+          this.pageTransitions.toolBarLeftButton = {
+            transition: 'slide-from-right',
+            destination: 'results',
+            action: 'showResultsPage'
+          };
+          this.pageTransitions.toolBarRightButton = {
+            transition: 'slide-from-right',
+            destination: 'myBookings',
+            action: 'saveBooking'
+          };
+
+          this.pageTransitions.resultsList = {
+            transition: 'slide-from-right',
+            destination: 'roomBookingForm'
+          }
+
+          this.pageToolbar = {
+            leftButton: {icon:'arrow-back'},
+            title: 'Book a room',
+            rightButton: {icon:'check'}
+          };
+
+          this.loadRoomDetailsData();
+        },
+
+
+        saveBooking: function(e, data, sender) {
+
+          // save booking
+          this.events.push({
+            date: new Date().setHours(55, 0, 0, 0),
+            title: "New added Booking",
+            subtitle: "Second line",
+            text: "Third line"});
+          this.showMyBookings();
+
+        },
+
+
 
 
 
@@ -452,6 +515,126 @@
             });
           }
         },
+
+        loadRoomDetailsData: function() {
+          this.$.bookingForm.roomDetails = {
+            name: "Group Room 3",
+            level: "Level 3",
+            building: "Biological Sciences Library",
+            campus: "St Lucia",
+            summary: "6 chairs, 1 table, PC, Large Screen, whiteboard. The PC is temporarily out of order.",
+            image: "images/image.jpg"
+          };
+
+          var today = new Date();
+
+          this.$.bookingForm.searchDate = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
+          this.$.bookingForm.maxBookingDate = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+          this.$.bookingForm.bookingTimeslots = [
+            {
+              startTime : '8:00 am',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '8:30 am',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '9:00 am',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '9:30 am',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '10:00 am',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '10:30 am',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '11:00 am',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '11:30 am',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '12:00 pm',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '12:30 pm',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '1:00 pm',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '1:30 pm',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '2:00 pm',
+              selectable: false,
+              selected: false
+            },
+            {
+              startTime : '2:30 pm',
+              selectable: false,
+              selected: false
+            },
+            {
+              startTime : '3:00 pm',
+              selectable: false,
+              selected: false
+            },
+
+            {
+              startTime : '3:30 pm',
+              selectable: true,
+              selected: false
+            },
+            {
+              startTime : '4:00 pm',
+              selectable: true,
+              selected: true
+            },
+            {
+              startTime : '4:30 pm',
+              selectable: true,
+              selected: true
+            },
+            {
+              startTime : '5:00 pm',
+              selectable: true,
+              selected: true
+            },
+            {
+              startTime : '5:30 pm',
+              selectable: true,
+              selected: true
+            }
+          ];
+
+        }
 
       });
     })();

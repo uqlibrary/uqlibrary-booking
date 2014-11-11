@@ -16,7 +16,7 @@
       <div class="selection-display"> {{name}} from {{details}}</div>
     </template>-->
   </div>
-  <core-list id="list" data="{{data}}" selectionEnabled="{{selectionEnabled}}"
+  <core-list id="list" on-core-activate="{{selectRoom}}" data="{{data}}" selectionEnabled="{{selectionEnabled}}"
              selection="{{selection}}" multi?={{multi}}>
   <template>
     <div horizontal layout class="item {{ {selected: selected} | tokenList }}">
@@ -49,7 +49,12 @@
         data: {
           observe: true
         }
+      },
+
+      selectRoom: function() {
+        this.fire('room-selected', {item: this.selection});
       }
+
     });
   })();
 </script>
