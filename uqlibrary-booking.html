@@ -20,7 +20,7 @@
 <link rel="import" href="../uqlibrary-timeline/uqlibrary-timeline.html">
 <link rel="import" href="../uqlibrary-fbs-filter-form/uqlibrary-fbs-filter-form.html">
 <link rel="import" href="uqlibrary-rooms-list.html">
-<!--<link rel="import" href="../uqlibrary-fbs-booking-form/uqlibrary-fbs-booking-form.html">-->
+<link rel="import" href="../uqlibrary-fbs-booking-form/uqlibrary-fbs-booking-form.html">
 
 <polymer-element name="uqlibrary-booking">
 
@@ -57,30 +57,36 @@
 
         <div id="content">
           <core-animated-pages id="pages"
-                               transitions="{{transition}}">
+                               transitions="{{transition}}"
+                                on-core-animated-pages-transition-end="{{transitionEndHandler}}"
+            >
 
             <section id="myBookings">
+
                 <div class="wrapper">
                   <uqlibrary-timeline  events="{{events}}"></uqlibrary-timeline>
                   <paper-fab hero-id="filterForm"
                              hero?="{{transition === 'hero-transition'}}"
-                             id="addBookingButton"
-                             icon="add"
-                             class="action"
-                             on-tap="{{doTransition}}"></paper-fab>
+                  id="addBookingButton"
+                  icon="add"
+                  class="action"
+                  on-tap="{{doTransition}}"></paper-fab>
                 </div>
             </section>
 
             <section id="filterForm">
+              <div horizontal center-justified layout>
               <uqlibrary-fbs-filter-form id="fbsFilterForm"
                                          hero-id="filterForm"
                                          on-filter-form-submitted="{{filterFormSubmitted}}"
                                          hero?="{{transition === 'hero-transition'}}"
                                          formData="{{filterFormData}}" selectedValues={{filterFormData.selectedValues}}></uqlibrary-fbs-filter-form>
+              </div>
             </section>
 
+
             <section id="results">
-              <uqlibrary-rooms-list id="resultsList" on-room-selected="{{roomSelected}}" data="{{listData}}"></uqlibrary-rooms-list>
+              <uqlibrary-rooms-list id="resultsList" data={{listData}} on-room-selected="{{roomSelected}}"></uqlibrary-rooms-list>
             </section>
 
             <section id="roomBookingForm">
@@ -89,6 +95,7 @@
 
 
           </core-animated-pages>
+
         </div>
 
       </core-header-panel>
@@ -136,14 +143,23 @@
           }
         },
 
+        transitionEndHandler: function(e) {
+          if(e.target.selectedItem.id == 'myBookings') {
+            //window.dispatchEvent(new Event('resize'));
+            //this.$.addBookingButton.style.position = 'fixed';
+          }
+        },
+
         showMyBookings: function() {
           this.pageTransitions.toolBarLeftButton = {
             action: 'togglePanel'
           };
+
           this.pageToolbar = {
             leftButton: {icon:'menu'},
             title: 'My bookings'
           };
+
         },
 
         showFilterForm: function() {
@@ -184,11 +200,6 @@
           }
         },
 
-        roomSelected: function(e, data, sender) {
-          this.showRoomBookingPage();
-          this.doTransition(e, data, sender);
-        },
-
         showResultsPage: function() {
           this.generateListData();
           this.pageTransitions.toolBarLeftButton ={
@@ -202,6 +213,17 @@
             title: 'Select a room'
           };
 
+          // Set core-list height after loading items
+          var list = this.$.resultsList.querySelector('::shadow core-list');
+          var container = this.$.main.querySelector('::shadow #mainContainer');
+          if(container && container.offsetHeight) {
+            list.setAttribute('style', list.getAttribute('style') + "; height: " + container.offsetHeight +'px;');
+          }
+        },
+
+        roomSelected: function(e, data, sender) {
+          this.showRoomBookingPage();
+          this.doTransition(e, data, sender);
         },
 
         showRoomBookingPage: function() {
@@ -245,12 +267,8 @@
 
 
 
-
-
-
-
-
         // MOCK DATA
+
         loadEvents: function () {
           this.events = [
             {
@@ -493,14 +511,14 @@
 
         },
         generateListData: function() {
-          this.listData = [];// var names = ["Gatton Library - Gatton Campus (Bldg 8102)", "Herston Health Sciences Library, Herston Bldg, Block 6", "Ipswich Library, Ipswich Campus (Bldg #8 level 2)", "Mater McAuley Library, Mater Hospital Bldg, Aubigny Place", "PACE Health Sciences Library, PACE Precinct, PA Hospital (#870)", "Princess Alexandra Hospital/UQ Library, (Bldg #1)", "St Lucia - Architecture / Music Library, Zelman Cowan Bldg (#51)", "St Lucia - Biological Sciences Library (#94)", "St Lucia - Dorothy Hill Engineering & Sciences Library, Hawken Bldg,(#50)", "St Lucia - Duhig Building (#2)", "St Lucia - Graduate Economics & Business Library, Lvl 2 Colin Clark Bldg, (", "St Lucia - Social Sciences & Humanities Library, (#12 & 12A)", "St Lucia - Walter Harrison Law Library, Forgan Smith Bldg, West Wing (#1)"], data = [];
+          this.listData = [];
           var names = ["Data Projector", "Group Study Rooms - level 6", "Conference & Other - Level 3", "Group Rooms", "Group Study Rooms", "Group Study Rooms", "Data Projector", "Group  Rooms - Level 3", "Data Projectors", "Assistive Technology Rooms - Level 4", "Group Study Rooms", "Group Rooms, Levels 2, 3 & 4", "Data Projector"], data = [];
           var strings = [
             "8 - 9a",
             "8.30 - 9.30a",
             "9 - 10a"
           ];
-          for (i=0; i < names.length; i++) {
+          for (var i=0; i < names.length; i++) {
             this.listData.push({
               id: i,
               room: names[i],
@@ -508,9 +526,8 @@
               campus: 'St Lucia',
               details: strings[i % 3],
               image: 'test/images/images-resized/'+ (i % 4) + '.jpg',
-              value: 0,
-              type: 0,
-              checked: false
+              checked: false,
+              name: i
             });
           }
         },
@@ -522,8 +539,12 @@
             building: "Biological Sciences Library",
             campus: "St Lucia",
             summary: "6 chairs, 1 table, PC, Large Screen, whiteboard. The PC is temporarily out of order.",
-            image: "images/image.jpg"
+            image: "../uqlibrary-fbs-booking-form/images/image.jpg",
+            timeslotLength: 30,     //in minutes
+            maxBookingLength: 120,  //in minutes
+            minBookingLength: 30    //in minutes
           };
+
 
           var today = new Date();
 
@@ -532,7 +553,7 @@
           this.$.bookingForm.bookingTimeslots = [
             {
               startTime : '8:00 am',
-              selectable: true,
+              selectable: false,
               selected: false
             },
             {
@@ -634,6 +655,7 @@
           ];
 
         }
+
 
       });
     })();

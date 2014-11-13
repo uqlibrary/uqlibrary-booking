@@ -28,7 +28,7 @@ paper-item {
 }
 
 div.wrapper {
-  position: relative;
+  /*position: relative;*/
 }
 
 paper-fab {
@@ -45,8 +45,10 @@ paper-fab {
 }
 
 #filterForm {
+  /*padding-left: 50%;*/
   uqlibrary-fbs-filter-form {
     position: relative;
     display: block;
+    max-width: 750px;
   }
 }

@@ -1,57 +1,39 @@
+<link rel="import" href="../polymer/polymer.html">
+
 <link rel="import" href="../core-list/core-list.html">
-<link rel="import" href="../core-ajax/core-ajax.html">
-<link rel="import" href="../core-toolbar/core-toolbar.html">
-<link rel="import" href="../core-icon-button/core-icon-button.html">
-<link rel="import" href="../core-media-query/core-media-query.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
-<!-- <link rel="import" href="https://www.polymer-project.org/components/polymer-jsonp/polymer-jsonp.html"> -->
 
 <polymer-element name="uqlibrary-rooms-list" attributes="data">
 <template>
   <link rel="stylesheet" href="uqlibrary-rooms-list.css">
 
-  <div layout horizontal wrap class="spaced-info">
-
-    <!--<template repeat="{{multi ? selection: [selection]}}">
-      <div class="selection-display"> {{name}} from {{details}}</div>
-    </template>-->
-  </div>
-  <core-list id="list" on-core-activate="{{selectRoom}}" data="{{data}}" selectionEnabled="{{selectionEnabled}}"
-             selection="{{selection}}" multi?={{multi}}>
-  <template>
-    <div horizontal layout class="item {{ {selected: selected} | tokenList }}">
-      <div class="message-image" style="background-image: url({{model.image}});"></div>
-      <div class="message" flex>
-        <paper-ripple fit></paper-ripple>
-        <div class="primary">{{model.room}}</div>
-        <span class="secondary">{{model.building}}, {{model.campus}}</span><br>
-        <span class="secondary level">Available time: {{model.details}}</span><br>
+  <core-list id="list" on-core-activate="{{selectRoom}}" data="{{data}}" selection="{{selection}}" fit>
+    <template>
+      <div horizontal layout class="item">
+        <div class="message-image" style="background-image: url({{model.image}});"></div>
+        <div class="message" flex>
+          <paper-ripple fit></paper-ripple>
+          <div class="primary">{{model.room}}</div>
+          <span class="secondary">{{model.building}}, {{model.campus}}</span><br>
+          <span class="secondary level">Available time: {{model.details}}</span><br>
+        </div>
       </div>
-    </div>
-  </template>
+    </template>
   </core-list>
-
-  <!--<core-ajax id="ajax"
-             auto
-             url="{{url}}"
-             on-core-response="{{availabilityLoaded}}"
-             handleAs="json">
-  </core-ajax>-->
-
 </template>
+
 <script>
   (function() {
     Polymer('uqlibrary-rooms-list', {
+
       ready: function() {
-
-      },
-      publish: {
-        data: {
-          observe: true
-        }
       },
 
-      selectRoom: function() {
+      dataChanged: function(oldValue, newValue) {
+      },
+
+
+      selectRoom: function(e, data, sender) {
         this.fire('room-selected', {item: this.selection});
       }
 
