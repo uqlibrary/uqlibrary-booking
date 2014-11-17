@@ -60,9 +60,7 @@
                                transitions="{{transition}}"
                                 on-core-animated-pages-transition-end="{{transitionEndHandler}}"
             >
-
             <section id="myBookings">
-
                 <div class="wrapper">
                   <uqlibrary-timeline  events="{{events}}"></uqlibrary-timeline>
                   <paper-fab hero-id="filterForm"
@@ -86,7 +84,6 @@
 
 
             <section id="results">
-              <uqlibrary-rooms-list id="resultsList" data={{listData}} on-room-selected="{{roomSelected}}"></uqlibrary-rooms-list>
             </section>
 
             <section id="roomBookingForm">
@@ -144,9 +141,8 @@
         },
 
         transitionEndHandler: function(e) {
-          if(e.target.selectedItem.id == 'myBookings') {
-            //window.dispatchEvent(new Event('resize'));
-            //this.$.addBookingButton.style.position = 'fixed';
+          if(e.target.selectedItem.id == 'results') {
+            this.createResultsList();
           }
         },
 
@@ -213,8 +209,33 @@
             title: 'Select a room'
           };
 
+          this.pageTransitions.resultsList = {
+            transition: 'slide-from-right',
+            destination: 'roomBookingForm',
+            action: 'showRoomBookingPage'
+          }
+
+
+          // Load results
+          this.generateListData();
+          this.addEventListener('room-selected', this.roomSelected);
+
+        },
+
+        createResultsList: function() {
+
+          var roomsList = document.createElement('uqlibrary-rooms-list');
+          roomsList.setAttribute('id', 'resultsList');
+          roomsList.setData(this.listData);
+
+          var container = this.$.main.querySelector('::shadow #mainContainer');
+          if(container && container.offsetHeight) {
+            roomsList.setAttribute('style', "height: " + container.offsetHeight +'px;');
+          }
+
+          this.$.results.appendChild(roomsList);
           // Set core-list height after loading items
-          var list = this.$.resultsList.querySelector('::shadow core-list');
+          var list = document.querySelector('uqlibrary-rooms-list::shadow core-list');
           var container = this.$.main.querySelector('::shadow #mainContainer');
           if(container && container.offsetHeight) {
             list.setAttribute('style', list.getAttribute('style') + "; height: " + container.offsetHeight +'px;');
@@ -222,8 +243,7 @@
         },
 
         roomSelected: function(e, data, sender) {
-          this.showRoomBookingPage();
-          this.doTransition(e, data, sender);
+          this.doTransition(e, data, {id: 'resultsList'});
         },
 
         showRoomBookingPage: function() {
@@ -238,10 +258,6 @@
             action: 'saveBooking'
           };
 
-          this.pageTransitions.resultsList = {
-            transition: 'slide-from-right',
-            destination: 'roomBookingForm'
-          }
 
           this.pageToolbar = {
             leftButton: {icon:'arrow-back'},

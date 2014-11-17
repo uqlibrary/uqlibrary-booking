@@ -32,6 +32,10 @@
       dataChanged: function(oldValue, newValue) {
       },
 
+      setData: function(newData) {
+        this.data = newData;
+      },
+
 
       selectRoom: function(e, data, sender) {
         this.fire('room-selected', {item: this.selection});
