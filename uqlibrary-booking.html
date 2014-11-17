@@ -120,7 +120,7 @@
 
         created: function () {
           this.loadEvents();
-          this.loadFilterFormData();
+          this.filterFormData = {};
         },
 
         togglePanel: function () {
@@ -159,6 +159,7 @@
         },
 
         showFilterForm: function() {
+          this.loadFilterFormData();
           this.pageTransitions.toolBarLeftButton = {
             transition: 'slide-from-right',
             destination: 'myBookings',
@@ -223,6 +224,13 @@
         },
 
         createResultsList: function() {
+
+          // Remove existing rooms list
+          var currentList = this.$.results.querySelector('uqlibrary-rooms-list');
+          if (currentList) {
+            currentList.parentNode.removeChild(currentList);
+          }
+
 
           var roomsList = document.createElement('uqlibrary-rooms-list');
           roomsList.setAttribute('id', 'resultsList');
@@ -314,7 +322,7 @@
           ];
         },
         loadFilterFormData: function() {
-          this.filterFormData = [];
+          this.filterFormData = {};
           this.filterFormData.dates = [];
           var today = new Date();
           for(var i = 0; i < 7; i++) {
