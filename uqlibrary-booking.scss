@@ -25,7 +25,13 @@ core-menu {
 
 paper-item {
   color: $text-inverse;
+  background-color: $text;
+  &.core-selected {
+    color: $text-inverse;
+    background-color: $text;
+  }
 }
+
 
 div.wrapper {
   /*position: relative;*/
