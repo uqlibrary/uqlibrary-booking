@@ -185,7 +185,7 @@
         },
 
         submitFilterForm: function() {
-          this.$.fbsFilterForm.fire('filter-form-submitted', {formData: this.$.fbsFilterForm.selectedValues});
+          this.$.fbsFilterForm.fire('submit-form');
         },
 
         filterFormSubmitted: function(e, data, sender) {
@@ -215,7 +215,6 @@
             destination: 'roomBookingForm',
             action: 'showRoomBookingPage'
           }
-
 
           // Load results
           this.generateListData();
