@@ -84,8 +84,8 @@
             <section id="results">
             </section>
 
-            <section id="roomBookingForm">
-              <uqlibrary-fbs-booking-form id="bookingForm"></uqlibrary-fbs-booking-form>
+            <section id="bookingFormSection">
+              <uqlibrary-fbs-booking-form id="bookingForm" on-booking-created="{{updateMyBookings}}"></uqlibrary-fbs-booking-form>
             </section>
 
 
@@ -193,6 +193,7 @@
 
         filterFormSubmitted: function(e, data, sender) {
           var formData = e.detail.formData;
+
           if(!formData.equipment.pc) { // Just for testing
             this.$.fbsFilterForm.showInfoToast('No rooms found for selected filter');
           } else {
@@ -201,8 +202,7 @@
         },
 
         showResultsPage: function() {
-          this.generateListData();
-          this.pageTransitions.toolBarLeftButton ={
+          this.pageTransitions.toolBarLeftButton = {
             transition: 'slide-from-right',
             destination: 'filterForm',
             action: 'showFilterForm'
@@ -215,8 +215,8 @@
 
           this.pageTransitions.resultsList = {
             transition: 'slide-from-right',
-            destination: 'roomBookingForm',
-            action: 'showRoomBookingPage'
+            destination: 'bookingFormSection',
+            action: 'showBookingForm'
           }
 
           // Load results
@@ -252,49 +252,68 @@
           }
         },
 
-        roomSelected: function(e, data, sender) {
-          this.doTransition(e, data, {id: 'resultsList'});
+        roomSelected: function(event, data, sender) {
+
+          //set selected room details in booking form
+          this.$.bookingForm.roomDetails = event.detail.item;
+
+          this.doTransition(event, data, { id: 'resultsList' });
         },
 
-        showRoomBookingPage: function() {
+        showBookingForm: function() {
+
+          this.pageTransitions.bookingForm = {
+            transition: 'slide-from-left',
+            destination: 'myBookings',
+            action: 'showMyBookings'
+          }
+
           this.pageTransitions.toolBarLeftButton = {
             transition: 'slide-from-right',
             destination: 'results',
             action: 'showResultsPage'
           };
-          this.pageTransitions.toolBarRightButton = {
-            transition: 'slide-from-right',
-            destination: 'myBookings',
-            action: 'saveBooking'
-          };
 
+          this.pageTransitions.toolBarRightButton = {
+            transition: 'slide-from-left',
+            action: 'submitBookingForm'
+          };
 
           this.pageToolbar = {
-            leftButton: {icon:'arrow-back'},
-            title: 'Book a room',
-            rightButton: {icon:'check'}
+            leftButton: { icon:'arrow-back' },
+            rightButton: { icon:'check' },
+            title: 'Book a room'
           };
 
-          this.loadRoomDetailsData();
+          //set search filter data - date, duration
+          var searchDate = this.$.fbsFilterForm.selectedValues.searchDate ?
+                  this.$.fbsFilterForm.selectedValues.searchDate : new Date();
+          this.$.bookingForm.searchDate = searchDate;
+          this.$.bookingForm.searchDuration = 60 * this.$.fbsFilterForm.selectedDuration; //in minutes
+          //TODO: maybe this should be a global setting?
+          this.$.bookingForm.maxBookingDate = new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000);
+
         },
 
+        submitBookingForm: function() {
+          this.$.bookingForm.fire('submit-form');
+        },
 
-        saveBooking: function(e, data, sender) {
+        updateMyBookings: function(e, data, sender) {
 
-          // save booking
+          // add new booking details to events on timeline
           this.events.push({
-            date: new Date().setHours(55, 0, 0, 0),
-            title: "New added Booking",
-            subtitle: "Second line",
-            text: "Third line"});
-          this.showMyBookings();
+            date: data.bookingStart,
+            title: data.bookingTitle,
+            subtitle: data.bookingLocation,
+            text: data.bookingStart.toTimeString() + " - " + data.bookingEnd.toTimeString()
+          });
 
+          // transition to timeline
+          this.doTransition(e, data, {id: 'bookingForm'});
         },
-
-
 
         // MOCK DATA
-
         loadEvents: function () {
           this.events = [
             {
@@ -544,145 +563,28 @@
             "8.30 - 9.30a",
             "9 - 10a"
           ];
+
           for (var i=0; i < names.length; i++) {
             this.listData.push({
               id: i,
+              name:  names[i],
               room: names[i],
-              building: 'Biological Sciences Library',
-              campus: 'St Lucia',
-              details: strings[i % 3],
+              level: "Level 3",
+              building: "Biological Sciences Library",
+              campus: "St Lucia",
+              summary: "6 chairs, 1 table, PC, Large Screen, whiteboard. The PC is temporarily out of order.",
               image: 'test/images/images-resized/'+ (i % 4) + '.jpg',
+              imageLarge: 'test/images/images-resized/'+ (i % 4) + '.jpg',
+
+              timeslotLength: 30,     //in minutes
+              maxBookingLength: 120,  //in minutes
+              minBookingLength: 30,    //in minutes
+
               checked: false,
-              name: i
+              details: strings[i % 3]
             });
           }
-        },
-
-        loadRoomDetailsData: function() {
-          this.$.bookingForm.roomDetails = {
-            name: "Group Room 3",
-            level: "Level 3",
-            building: "Biological Sciences Library",
-            campus: "St Lucia",
-            summary: "6 chairs, 1 table, PC, Large Screen, whiteboard. The PC is temporarily out of order.",
-            image: "../uqlibrary-fbs-booking-form/images/image.jpg",
-            timeslotLength: 30,     //in minutes
-            maxBookingLength: 120,  //in minutes
-            minBookingLength: 30    //in minutes
-          };
-
-
-          var today = new Date();
-
-          this.$.bookingForm.searchDate = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
-          this.$.bookingForm.maxBookingDate = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-          this.$.bookingForm.bookingTimeslots = [
-            {
-              startTime : '8:00 am',
-              selectable: false,
-              selected: false
-            },
-            {
-              startTime : '8:30 am',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '9:00 am',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '9:30 am',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '10:00 am',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '10:30 am',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '11:00 am',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '11:30 am',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '12:00 pm',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '12:30 pm',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '1:00 pm',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '1:30 pm',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '2:00 pm',
-              selectable: false,
-              selected: false
-            },
-            {
-              startTime : '2:30 pm',
-              selectable: false,
-              selected: false
-            },
-            {
-              startTime : '3:00 pm',
-              selectable: false,
-              selected: false
-            },
-
-            {
-              startTime : '3:30 pm',
-              selectable: true,
-              selected: false
-            },
-            {
-              startTime : '4:00 pm',
-              selectable: true,
-              selected: true
-            },
-            {
-              startTime : '4:30 pm',
-              selectable: true,
-              selected: true
-            },
-            {
-              startTime : '5:00 pm',
-              selectable: true,
-              selected: true
-            },
-            {
-              startTime : '5:30 pm',
-              selectable: true,
-              selected: true
-            }
-          ];
-
         }
-
-
       });
     })();
   </script>
