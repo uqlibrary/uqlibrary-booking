@@ -49,6 +49,9 @@
                              icon="{{pageToolbar.leftButton.icon ? pageToolbar.leftButton.icon : ''}}"
                              on-tap="{{doTransition}}"></paper-icon-button>
           <span flex id="toolbar-page-title">{{pageToolbar.title}}</span>
+          <paper-icon-button on-click="{{launchIntoFullscreen}}"
+                             icon="fullscreen"
+                             hidden?="{{currentPage!=='myBookings'}}"></paper-icon-button>
           <paper-icon-button id="toolBarRightButton"
                              on-tap="{{doTransition}}"
                              hidden?="{{!pageToolbar.rightButton.icon}}"
@@ -127,6 +130,19 @@
 
         togglePanel: function () {
           this.$.drawerPanel.togglePanel();
+        },
+
+        launchIntoFullscreen: function () {
+          var element = document.querySelector('uqlibrary-booking');
+          if (element.requestFullscreen) {
+            element.requestFullscreen();
+          } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+          } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+          } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+          }
         },
 
         doTransition: function (e, data, sender) {
