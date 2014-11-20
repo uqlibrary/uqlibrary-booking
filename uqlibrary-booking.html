@@ -58,18 +58,9 @@
         <div id="content">
           <core-animated-pages id="pages"
                                transitions="{{transition}}"
-                                on-core-animated-pages-transition-end="{{transitionEndHandler}}"
-            >
+                                on-core-animated-pages-transition-end="{{transitionEndHandler}}">
             <section id="myBookings">
-                <div class="wrapper">
-                  <uqlibrary-timeline  events="{{events}}"></uqlibrary-timeline>
-                  <paper-fab hero-id="filterForm"
-                             hero?="{{transition === 'hero-transition'}}"
-                  id="addBookingButton"
-                  icon="add"
-                  class="action"
-                  on-tap="{{doTransition}}"></paper-fab>
-                </div>
+                <uqlibrary-timeline  events="{{events}}"></uqlibrary-timeline>
             </section>
 
             <section id="filterForm">
@@ -93,6 +84,14 @@
 
           </core-animated-pages>
 
+          <paper-fab hero-id="filterForm"
+                     hero?="{{transition === 'hero-transition'}}"
+                     id="addBookingButton"
+                     icon="add"
+                     class="action"
+                     hidden?="{{currentPage !== 'myBookings'}}"
+                     on-tap="{{doTransition}}"></paper-fab>
+
         </div>
 
       </core-header-panel>
@@ -106,6 +105,7 @@
       Polymer('uqlibrary-booking', {
 
         transition: 'hero-transition',
+        currentPage: 'myBookings',
 
         ready: function() {
           this.pageTransitions = {
@@ -134,6 +134,7 @@
           }
           if (p.destination) {
             this.$.pages.selectedItem = this.$[p.destination];
+            this.currentPage = p.destination;
           }
           if (p.action) {
             this[p.action]();
