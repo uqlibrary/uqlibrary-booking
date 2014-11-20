@@ -58,7 +58,9 @@
         <div id="content">
           <core-animated-pages id="pages"
                                transitions="{{transition}}"
-                                on-core-animated-pages-transition-end="{{transitionEndHandler}}">
+                                on-core-animated-pages-transition-prepare="{{transitionPrepareHandler}}"
+                                on-core-animated-pages-transition-end="{{transitionEndHandler}}"
+            >
             <section id="myBookings">
               <uqlibrary-timeline  events="{{events}}"></uqlibrary-timeline>
               <paper-fab hero-id="filterForm"
@@ -76,7 +78,7 @@
                                          hero-id="filterForm"
                                          on-filter-form-submitted="{{filterFormSubmitted}}"
                                          hero?="{{transition === 'hero-transition'}}"
-                                         formData="{{filterFormData}}" selectedValues={{filterFormData.selectedValues}}></uqlibrary-fbs-filter-form>
+                                         formData="{{filterFormData}}" selectedValues={{filterFormSelectedValues}}></uqlibrary-fbs-filter-form>
               </div>
             </section>
 
@@ -120,7 +122,7 @@
 
         created: function () {
           this.loadEvents();
-          this.filterFormData = {};
+          this.filterFormSelectedValues = {};
         },
 
         togglePanel: function () {
@@ -131,7 +133,6 @@
           var p = this.pageTransitions[sender.id];
           if (p.transition) {
             this.transition = p.transition;
-            this.transitioning = true;
           }
           if (p.destination) {
             this.$.pages.selectedItem = this.$[p.destination];
@@ -140,6 +141,10 @@
           if (p.action) {
             this[p.action]();
           }
+        },
+
+        transitionPrepareHandler: function() {
+          this.transitioning = true;
         },
 
         transitionEndHandler: function(e) {
@@ -532,8 +537,7 @@
             },
 
           ];
-
-          this.filterFormData.selectedValues = {campus: 'gatton', building: 'gatton:bsl', room: 'gatton:bsl:gr2', date: '9/11/2014', time: '14:45', capacity: 10, duration: 1.5, equipment: {pc: true} };
+          //this.filterFormData.selectedValues = {campus: 'gatton', building: 'gatton:bsl', room: 'gatton:bsl:gr2', date: '9/11/2014', time: '14:45', capacity: 10, duration: 1.5, equipment: {pc: true} };
 
         },
         generateListData: function() {
