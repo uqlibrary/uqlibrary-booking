@@ -60,7 +60,14 @@
                                transitions="{{transition}}"
                                 on-core-animated-pages-transition-end="{{transitionEndHandler}}">
             <section id="myBookings">
-                <uqlibrary-timeline  events="{{events}}"></uqlibrary-timeline>
+              <uqlibrary-timeline  events="{{events}}"></uqlibrary-timeline>
+              <paper-fab hero-id="filterForm"
+                         hero?="{{transition === 'hero-transition'}}"
+                         id="addBookingButton"
+                         icon="add"
+                         class="action"
+                         hidden?="{{transitioning}}"
+                         on-tap="{{doTransition}}"></paper-fab>
             </section>
 
             <section id="filterForm">
@@ -84,14 +91,6 @@
 
           </core-animated-pages>
 
-          <paper-fab hero-id="filterForm"
-                     hero?="{{transition === 'hero-transition'}}"
-                     id="addBookingButton"
-                     icon="add"
-                     class="action"
-                     hidden?="{{currentPage !== 'myBookings'}}"
-                     on-tap="{{doTransition}}"></paper-fab>
-
         </div>
 
       </core-header-panel>
@@ -106,6 +105,7 @@
 
         transition: 'hero-transition',
         currentPage: 'myBookings',
+        transitioning: false,
 
         ready: function() {
           this.pageTransitions = {
@@ -131,6 +131,7 @@
           var p = this.pageTransitions[sender.id];
           if (p.transition) {
             this.transition = p.transition;
+            this.transitioning = true;
           }
           if (p.destination) {
             this.$.pages.selectedItem = this.$[p.destination];
@@ -142,6 +143,7 @@
         },
 
         transitionEndHandler: function(e) {
+          this.transitioning = false;
           if(e.target.selectedItem.id == 'results') {
             this.createResultsList();
           }
