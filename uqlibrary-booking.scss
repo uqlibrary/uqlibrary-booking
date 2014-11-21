@@ -23,14 +23,21 @@ core-menu {
   margin: 0;
 }
 
-paper-item {
-  color: $text-inverse;
-  background-color: $text;
-  &.core-selected {
-    color: $text-inverse;
-    background-color: $text;
-  }
+core-header-panel {
+ &#drawer {
+   core-menu {
+     paper-item {
+       color: $text-inverse;
+       background-color: $text;
+       &.core-selected {
+         color: $text-inverse;
+         background-color: $text;
+       }
+     }
+   }
+ }
 }
+
 
 paper-fab {
   &.action{

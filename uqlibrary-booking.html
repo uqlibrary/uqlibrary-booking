@@ -125,7 +125,7 @@
 
         created: function () {
           this.loadEvents();
-          this.filterFormSelectedValues = {};
+          this.loadFilterFormData();
         },
 
         togglePanel: function () {
@@ -183,7 +183,6 @@
         },
 
         showFilterForm: function() {
-          this.loadFilterFormData();
           this.pageTransitions.toolBarLeftButton = {
             transition: 'slide-from-right',
             destination: 'myBookings',
@@ -259,15 +258,14 @@
           roomsList.setAttribute('id', 'resultsList');
           roomsList.setData(this.listData);
 
-          var container = this.$.main.querySelector('::shadow #mainContainer');
+          var container = document.querySelector("#main /deep/ #mainContainer");
           if(container && container.offsetHeight) {
             roomsList.setAttribute('style', "height: " + container.offsetHeight +'px;');
           }
-
           this.$.results.appendChild(roomsList);
+
           // Set core-list height after loading items
-          var list = document.querySelector('uqlibrary-rooms-list::shadow core-list');
-          var container = this.$.main.querySelector('::shadow #mainContainer');
+          var list = document.querySelector('uqlibrary-rooms-list /deep/ core-list');
           if(container && container.offsetHeight) {
             list.setAttribute('style', list.getAttribute('style') + "; height: " + container.offsetHeight +'px;');
           }
@@ -572,7 +570,7 @@
             },
 
           ];
-          //this.filterFormData.selectedValues = {campus: 'gatton', building: 'gatton:bsl', room: 'gatton:bsl:gr2', date: '9/11/2014', time: '14:45', capacity: 10, duration: 1.5, equipment: {pc: true} };
+            this.filterFormSelectedValues = {campus: 'gatton', building: 'gatton:bsl', room: 'gatton:bsl:gr2', date: '9/11/2014', time: '14:45', capacity: 10, duration: 1.5, equipment: {pc: true} };
 
         },
         generateListData: function() {
