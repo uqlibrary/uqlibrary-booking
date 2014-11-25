@@ -10,9 +10,7 @@
     "/tests/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.1",
-    "core-elements": "Polymer/core-elements#0.5.1",
-    "paper-elements": "Polymer/paper-elements#0.5.1"
+    "uqlibrary-elements": "uqlibrary/uqlibrary-elements#master"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#1.6.1"
