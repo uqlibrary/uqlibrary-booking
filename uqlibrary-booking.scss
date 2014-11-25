@@ -30,8 +30,6 @@ core-header-panel {
  &#drawer {
    core-menu {
      paper-item {
-       color: $text-inverse;
-       background-color: $text;
        &.core-selected {
          color: $text-inverse;
          background-color: $text;
