@@ -1,0 +1,172 @@
+<link rel="import" href="../uqlibrary-elements/0.5.1/lib/vulcanized.html">
+
+<!--
+Element providing a simple booking display.
+
+##### Example
+
+    <uqlibrary-fbs-booking-display></uqlibrary-fbs-booking-display>
+
+    <script>
+      (function () {
+
+        window.addEventListener('polymer-ready', function() {
+
+          var element = document.querySelector('uqlibrary-fbs-booking-display');
+
+          element.roomDetails = {
+            id:       1
+            room:     "Group Room 3",
+            level:    "Level 3",
+            building: "Biological Sciences Library",
+            campus:   "St Lucia",
+            summary:  "6 chairs, 1 table, PC, Large Screen, whiteboard.",
+            image:    "image-thumb.jpg",
+            imageLarge:    "image-large.jpg",
+
+            timeslotLength: 30,     //in minutes
+            maxBookingLength: 120,  //in minutes
+            minBookingLength: 30    //in minutes
+          };
+
+          element.bookingDetails = {
+            id:         1,
+            startDate:  '',
+            endDate:    '',
+
+          };
+        });
+
+      }());
+    </script>
+
+@element uqlibrary-fbs-booking-display
+@blurb Element providing a FBS booking display
+@status alpha
+@homepage https://github.com/uqlibrary/uqlibrary-fbs-booking-display
+-->
+
+<polymer-element name="uqlibrary-fbs-booking-display" attributes="roomDetails bookingDetails">
+
+  <template>
+    <link rel="stylesheet" href="uqlibrary-fbs-booking-display.css">
+
+    <div class="booking-room-header" style="background-image: url('{{ roomDetails.imageLarge }}')">
+      <h2>
+        {{ roomDetails.room }} <br>
+        <small>{{roomDetails | formatLocation }}</small>
+      </h2>
+    </div>
+
+    <div class="booking-details-item" horizontal layout>
+      <div>
+        <core-icon icon="today" class="big"></core-icon>
+      </div>
+      <div flex>
+        <h3>Date</h3>
+        <p>{{bookingDetails | formatBookingDate }}</p>
+      </div>
+    </div>
+
+    <div class="booking-details-item" horizontal layout>
+      <div>
+        <core-icon icon="schedule" class="big"></core-icon>
+      </div>
+      <div flex>
+        <h3>Time</h3>
+        <p>{{bookingDetails | formatBookingTime}}</p>
+      </div>
+    </div>
+
+    <div class="booking-details-item" horizontal layout>
+      <div>
+        <core-icon icon="description" class="big"></core-icon>
+      </div>
+      <div flex>
+        <h3>Room Details</h3>
+        <p>{{roomDetails.summary}}</p>
+      </div>
+    </div>
+
+    <paper-toast id="infoToast" flex></paper-toast>
+
+    <div horizontal center-justified layout>
+      <paper-button on-tap="{{cancelBooking}}">Cancel Booking</paper-button>
+    </div>
+
+
+  </template>
+
+  <script>
+    (function() {
+      Polymer('uqlibrary-fbs-booking-display', {
+        /**
+         * The `roomDetails` attribute object contains properties of the room
+         *
+         * @property roomDetails
+         * @type object
+         */
+
+        /** The `bookingDetails` attribute object represents booking details, eg start date, end date, etc
+         *
+         * @property bookingDetails
+         * @type object
+         *
+         */
+
+        created: function () {
+          this.roomDetails = {};
+          this.bookingDetails = {};
+        },
+
+        ready: function () {
+        },
+
+        formatLocation : function (roomDetails) {
+          var location = [];
+
+          if (roomDetails.level !== undefined)
+            location.push(roomDetails.level);
+
+          if (roomDetails.building !== undefined)
+            location.push(roomDetails.building);
+
+          if (roomDetails !== undefined)
+            location.push(roomDetails.campus);
+
+          return location.join(", ");
+        },
+
+        formatBookingTime : function(bookingDetails) {
+          var startFormat = moment(bookingDetails.startDate).format('a') == moment(bookingDetails.endDate).format('a') ? 'h:mm' : 'h:mm a';
+          return moment(bookingDetails.startDate).format(startFormat) + " - " + moment(bookingDetails.endDate).format('h:mm a');
+        },
+
+        formatBookingDate : function(bookingDetails) {
+          return moment(bookingDetails.startDate).format('MMMM D, YYYY');
+        },
+
+        showInfoToast: function(text) {
+          this.$.infoToast.text = text;
+          this.$.infoToast.show();
+        },
+
+        cancelBooking : function () {
+          //TODO: delete booking via API
+          this.showInfoToast("Your booking has been canceled.");
+
+          //if booking is successful, fire event to indicate booking is done and move on to other page
+          this.fire('booking-deleted',
+                  {
+                    bookingStart: this.bookingDetails.startTime,
+                    bookingEnd: this.bookingDetails.endTime,
+                    bookingRoomId: this.roomDetails.id,
+                    bookingTitle: this.roomDetails.name,
+                    bookingLocation: this.formatLocation(this.roomDetails)
+                  });
+        }
+      });
+    })();
+  </script>
+
+</polymer-element>

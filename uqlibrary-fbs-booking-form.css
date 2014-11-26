@@ -1,0 +1,62 @@
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 200;
+  src: url("Roboto-Light.woff") format("woff"); }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url("Roboto-Regular.woff") format("woff"); }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: url("Roboto-Medium.woff") format("woff"); }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: url("Roboto-Bold.woff") format("woff"); }
+:host,
+:host *,
+::content * {
+  box-sizing: border-box;
+  outline: none; }
+
+.booking-room-header {
+  background-color: #ffffff;
+  background-size: cover;
+  background-position: 50% 50%;
+  padding-top: 150px; }
+  .booking-room-header h2 {
+    color: #ffffff;
+    font-weight: normal;
+    line-height: 1;
+    background-color: rgba(73, 7, 94, 0.6);
+    padding: 5px 0 5px 40px; }
+
+.booking-room-summary {
+  padding: 10px 40px; }
+
+.booking-room-hint {
+  padding: 0px 40px;
+  font-size: 13px;
+  line-height: 20px; }
+  .booking-room-hint .hint-box {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    border: 1px solid #EEEEEE;
+    vertical-align: middle; }
+    .booking-room-hint .hint-box.selected {
+      background-color: #009688; }
+    .booking-room-hint .hint-box.available {
+      background-color: #EEEEEE; }
+    .booking-room-hint .hint-box.unavailable {
+      background-color: #BDBDBD; }
+
+paper-fab.action {
+  background-color: #4CAF50; }
+
+/*# sourceMappingURL=uqlibrary-fbs-booking-form.css.map */

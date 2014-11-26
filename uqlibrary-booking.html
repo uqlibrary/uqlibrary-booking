@@ -1,6 +1,8 @@
 <link rel="import" href="../uqlibrary-elements/0.5.1/lib/vulcanized.html">
 <link rel="import" href="uqlibrary-rooms-list.html">
 <link rel="import" href="uqlibrary-fbs-filter-form.html">
+<link rel="import" href="uqlibrary-fbs-booking-form.html">
+<link rel="import" href="uqlibrary-fbs-booking-display.html">
 
 <polymer-element name="uqlibrary-booking">
 
@@ -45,7 +47,7 @@
                                 on-core-animated-pages-transition-end="{{transitionEndHandler}}"
             >
             <section id="myBookings">
-              <uqlibrary-timeline  events="{{events}}"></uqlibrary-timeline>
+              <uqlibrary-timeline  events="{{events}}" on-event-selected="{{eventSelected}}"></uqlibrary-timeline>
               <paper-fab hero-id="filterForm"
                          hero?="{{transition === 'hero-transition'}}"
                          id="addBookingButton"
@@ -73,6 +75,10 @@
               <uqlibrary-fbs-booking-form id="bookingForm" on-booking-created="{{updateMyBookings}}"></uqlibrary-fbs-booking-form>
             </section>
 
+
+            <section id="bookingDetailsSection">
+              <uqlibrary-fbs-booking-display id="bookingDetails"></uqlibrary-fbs-booking-display>
+            </section>
 
           </core-animated-pages>
 
@@ -135,7 +141,7 @@
             this.currentPage = p.destination;
           }
           if (p.action) {
-            this[p.action]();
+            this[p.action](data);
           }
         },
 
@@ -159,6 +165,12 @@
             leftButton: {icon:'menu'},
             title: 'My bookings'
           };
+
+          this.pageTransitions.bookingDetails = {
+            transition: 'slide-from-right',
+            destination: 'bookingDetailsSection',
+            action: 'showBookingDetails'
+          }
 
         },
 
@@ -233,7 +245,6 @@
             currentList.parentNode.removeChild(currentList);
           }
 
-
           var roomsList = document.createElement('uqlibrary-rooms-list');
           roomsList.setAttribute('id', 'resultsList');
           roomsList.setData(this.listData);
@@ -257,6 +268,41 @@
           this.$.bookingForm.roomDetails = event.detail.item;
 
           this.doTransition(event, data, { id: 'resultsList' });
+        },
+
+        showBookingDetails : function (data) {
+
+          this.$.bookingDetails.bookingDetails = {
+            id : 1,
+            startDate: data.date,
+            endDate: data.date
+          };
+
+          this.$.bookingDetails.roomDetails = {
+            id:       1,
+            room:     data.title,
+            level:    data.subtitle,
+            building: "Biological Sciences Library",
+            campus:   "St Lucia",
+            summary:  "6 chairs, 1 table, PC, Large Screen, whiteboard.",
+            image:    "test/images/images-resized/0.jpg",
+            imageLarge:    "test/images/images-resized/0.jpg",
+
+            timeslotLength: 30,     //in minutes
+            maxBookingLength: 120,  //in minutes
+            minBookingLength: 30    //in minutes
+          };
+
+          this.pageToolbar = {
+            leftButton: { icon:'arrow-back' },
+            title: 'Booking details'
+          };
+
+          this.pageTransitions.toolBarLeftButton = {
+            transition: 'slide-from-left',
+            destination: 'myBookings',
+            action: 'showMyBookings'
+          };
         },
 
         showBookingForm: function() {
@@ -296,6 +342,11 @@
 
         submitBookingForm: function() {
           this.$.bookingForm.fire('submit-form');
+        },
+
+        eventSelected: function(e, data, sender){
+          //transition to booking details
+          this.doTransition(e, data, {id: 'bookingDetails'});
         },
 
         updateMyBookings: function(e, data, sender) {
