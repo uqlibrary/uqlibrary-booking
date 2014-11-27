@@ -177,18 +177,19 @@ Element providing a form for booking a room.
             console.log("Creating booking on " + this.searchDate.toDateString() + " for time slots from " + selectedTimeslots[0].startTime + " to " + selectedTimeslots[selectedTimeslots.length-1].endTime);
 
             //TODO: validate data via API
-            //TODO: save booking via API
+            //TODO: save booking via API, get new booking id from API
+            var newBookingId = selectedTimeslots[0].startTime.getTime();
 
             this.showInfoToast(validation.message);
 
             //if booking is successful, fire event to indicate booking is done and move on to other page
             this.fire('booking-created',
                     {
-                      bookingStart: selectedTimeslots[0].startTime,
-                      bookingEnd: selectedTimeslots[selectedTimeslots.length - 1].endTime,
-                      bookingRoomId: this.roomDetails.id,
-                      bookingTitle: this.roomDetails.name,
-                      bookingLocation: this.formatLocation(this.roomDetails)
+                      id:       newBookingId,
+                      startDate:selectedTimeslots[0].startTime,
+                      endDate:  selectedTimeslots[selectedTimeslots.length - 1].endTime,
+                      title:    this.roomDetails.name,
+                      subtitle: this.formatLocation(this.roomDetails)
                     });
           }
         },

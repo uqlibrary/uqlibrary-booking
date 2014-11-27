@@ -24,7 +24,7 @@
   box-sizing: border-box;
   outline: none; }
 
-.big {
+.big-icon {
   height: 32px;
   width: 32px; }
 
@@ -52,25 +52,5 @@
 
 .booking-room-summary {
   padding: 10px 40px; }
-
-.booking-room-hint {
-  padding: 0px 40px;
-  font-size: 13px;
-  line-height: 20px; }
-  .booking-room-hint .hint-box {
-    display: inline-block;
-    height: 20px;
-    width: 20px;
-    border: 1px solid #EEEEEE;
-    vertical-align: middle; }
-    .booking-room-hint .hint-box.selected {
-      background-color: #009688; }
-    .booking-room-hint .hint-box.available {
-      background-color: #EEEEEE; }
-    .booking-room-hint .hint-box.unavailable {
-      background-color: #BDBDBD; }
-
-paper-fab.action {
-  background-color: #4CAF50; }
 
 /*# sourceMappingURL=uqlibrary-fbs-booking-display.css.map */

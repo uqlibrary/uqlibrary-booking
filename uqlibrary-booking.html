@@ -48,6 +48,7 @@
             >
             <section id="myBookings">
               <uqlibrary-timeline  events="{{events}}" on-event-selected="{{eventSelected}}"></uqlibrary-timeline>
+              <paper-toast id="myBookingsInfoToast" flex></paper-toast>
               <paper-fab hero-id="filterForm"
                          hero?="{{transition === 'hero-transition'}}"
                          id="addBookingButton"
@@ -72,13 +73,14 @@
             </section>
 
             <section id="bookingFormSection">
-              <uqlibrary-fbs-booking-form id="bookingForm" on-booking-created="{{updateMyBookings}}"></uqlibrary-fbs-booking-form>
+              <uqlibrary-fbs-booking-form id="bookingForm" on-booking-created="{{eventAdded}}"></uqlibrary-fbs-booking-form>
             </section>
 
 
             <section id="bookingDetailsSection">
-              <uqlibrary-fbs-booking-display id="bookingDetails"></uqlibrary-fbs-booking-display>
+              <uqlibrary-fbs-booking-display id="bookingDetails" on-booking-deleted="{{eventDeleted}}"></uqlibrary-fbs-booking-display>
             </section>
+
 
           </core-animated-pages>
 
@@ -116,6 +118,11 @@
 
         togglePanel: function () {
           this.$.drawerPanel.togglePanel();
+        },
+
+        showInfoToast: function(toast, text) {
+          toast.text = text;
+          toast.show();
         },
 
         launchIntoFullscreen: function () {
@@ -263,34 +270,21 @@
         },
 
         roomSelected: function(event, data, sender) {
-
-          //set selected room details in booking form
-          this.$.bookingForm.roomDetails = event.detail.item;
-
-          this.doTransition(event, data, { id: 'resultsList' });
+          this.doTransition(event, event.detail.item, { id: 'resultsList' });
         },
 
         showBookingDetails : function (data) {
 
-          this.$.bookingDetails.bookingDetails = {
-            id : 1,
-            startDate: data.date,
-            endDate: data.date
-          };
+          this.$.bookingDetails.bookingDetails = data;
 
+          //TODO: load room details for this booking
           this.$.bookingDetails.roomDetails = {
             id:       1,
             room:     data.title,
-            level:    data.subtitle,
-            building: "Biological Sciences Library",
-            campus:   "St Lucia",
+            campus:   data.subtitle,
             summary:  "6 chairs, 1 table, PC, Large Screen, whiteboard.",
             image:    "test/images/images-resized/0.jpg",
-            imageLarge:    "test/images/images-resized/0.jpg",
-
-            timeslotLength: 30,     //in minutes
-            maxBookingLength: 120,  //in minutes
-            minBookingLength: 30    //in minutes
+            imageLarge:    "test/images/images-resized/0.jpg"
           };
 
           this.pageToolbar = {
@@ -305,8 +299,8 @@
           };
         },
 
-        showBookingForm: function() {
-
+        showBookingForm: function(data) {
+          //setup booking form page
           this.pageTransitions.bookingForm = {
             transition: 'slide-from-left',
             destination: 'myBookings',
@@ -330,7 +324,8 @@
             title: 'Book a room'
           };
 
-          //set search filter data - date, duration
+          //setup booking form properties
+          this.$.bookingForm.roomDetails = data;
           var searchDate = this.$.fbsFilterForm.selectedValues.searchDate ?
                   this.$.fbsFilterForm.selectedValues.searchDate : new Date();
           this.$.bookingForm.searchDate = searchDate;
@@ -349,15 +344,27 @@
           this.doTransition(e, data, {id: 'bookingDetails'});
         },
 
-        updateMyBookings: function(e, data, sender) {
+        eventDeleted: function(e, data, sender){
+          //Remove event from this.events
+          var deletedEvent = e.detail;
+          var eventIndex = -1;
+          for(var i=0; i<this.events.length; i++) {
+            if(this.events[i].id == deletedEvent.id){
+              eventIndex = i;
+            }
+          }
+          this.events.splice(eventIndex, 1);
 
+          //Transition to timeline page
+          this.doTransition(e, data, {id: 'toolBarLeftButton'});
+
+          //Show toast that event was deleted
+          this.showInfoToast(this.$.myBookingsInfoToast, "Your booking was deleted.");
+        },
+
+        eventAdded: function(e, data, sender) {
           // add new booking details to events on timeline
-          this.events.push({
-            date: data.bookingStart,
-            title: data.bookingTitle,
-            subtitle: data.bookingLocation,
-            text: data.bookingStart.toTimeString() + " - " + data.bookingEnd.toTimeString()
-          });
+          this.events.push(data);
 
           // transition to timeline
           this.doTransition(e, data, {id: 'bookingForm'});
@@ -365,33 +372,20 @@
 
         // MOCK DATA
         loadEvents: function () {
-          this.events = [
-            {
-              date: new Date().setHours(0, 0, 0, 0),
-              title: "Item title",
-              subtitle: "Second line",
-              text: "Third line"
-            },
-            {
-              date: new Date().setHours(25, 0, 0, 0),
-              title: "Item title",
-              subtitle: "Second line",
-              text: "Third line"
-            },
-            {
-              date: new Date().setHours(26, 0, 0, 0),
-              title: "Item title",
-              subtitle: "Second line",
-              text: "Third line"
-            },
-            {
-              date: new Date().setHours(72, 0, 0, 0),
-              title: "Item title",
-              subtitle: "Second line",
-              text: "Third line"
-            }
-          ];
+          var events = [];
+          for(var i = 0; i < 5; i++){
+            events.push({
+              id:       i+1,
+              startDate:new Date(new Date().setHours(15 * i, 0, 0, 0)),
+              endDate:  new Date(new Date().setHours(15 * i + 1, 30, 0, 0)),
+              title:    "Group Room " + (i+1),
+              subtitle: "Level 3, Biological Sciences Library, St Lucia"
+            });
+          }
+
+          this.events = events;
         },
+
         loadFilterFormData: function() {
           this.filterFormData = {};
           this.filterFormData.dates = [];

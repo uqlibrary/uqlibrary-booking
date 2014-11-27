@@ -30,10 +30,12 @@ Element providing a simple booking display.
           };
 
           element.bookingDetails = {
-            id:         1,
-            startDate:  '',
-            endDate:    '',
-
+            eventId: 1,
+            date: new Date().setHours(0, 0, 0, 0),
+            dateEnd: new Date().setHours(1, 30, 0, 0),
+            title: "Group Room 3",
+            subtitle: "Level 3, Biological Sciences Library, St Lucia",
+            text: "Third line"
           };
         });
 
@@ -60,7 +62,7 @@ Element providing a simple booking display.
 
     <div class="booking-details-item" horizontal layout>
       <div>
-        <core-icon icon="today" class="big"></core-icon>
+        <core-icon icon="today" class="big-icon"></core-icon>
       </div>
       <div flex>
         <h3>Date</h3>
@@ -70,7 +72,7 @@ Element providing a simple booking display.
 
     <div class="booking-details-item" horizontal layout>
       <div>
-        <core-icon icon="schedule" class="big"></core-icon>
+        <core-icon icon="schedule" class="big-icon"></core-icon>
       </div>
       <div flex>
         <h3>Time</h3>
@@ -80,7 +82,7 @@ Element providing a simple booking display.
 
     <div class="booking-details-item" horizontal layout>
       <div>
-        <core-icon icon="description" class="big"></core-icon>
+        <core-icon icon="description" class="big-icon"></core-icon>
       </div>
       <div flex>
         <h3>Room Details</h3>
@@ -90,8 +92,14 @@ Element providing a simple booking display.
 
     <paper-toast id="infoToast" flex></paper-toast>
 
+    <paper-dialog backdrop autoCloseDisabled id="infoDialog" role="dialog">
+      <p>Delete this booking?</p>
+      <paper-button affirmative on-tap="{{toggleDeleteDialog}}">Cancel</paper-button>
+      <paper-button affirmative autofocus on-tap="{{deleteBooking}}">Delete</paper-button>
+    </paper-dialog>
+
     <div horizontal center-justified layout>
-      <paper-button on-tap="{{cancelBooking}}">Cancel Booking</paper-button>
+      <paper-button on-tap="{{toggleDeleteDialog}}">Delete Booking</paper-button>
     </div>
 
 
@@ -146,24 +154,24 @@ Element providing a simple booking display.
           return moment(bookingDetails.startDate).format('MMMM D, YYYY');
         },
 
+        toggleDeleteDialog: function () {
+          this.$.infoDialog.toggle();
+        },
+
         showInfoToast: function(text) {
           this.$.infoToast.text = text;
           this.$.infoToast.show();
         },
 
-        cancelBooking : function () {
-          //TODO: delete booking via API
-          this.showInfoToast("Your booking has been canceled.");
+        deleteBooking : function () {
+          this.toggleDeleteDialog();
 
-          //if booking is successful, fire event to indicate booking is done and move on to other page
-          this.fire('booking-deleted',
-                  {
-                    bookingStart: this.bookingDetails.startTime,
-                    bookingEnd: this.bookingDetails.endTime,
-                    bookingRoomId: this.roomDetails.id,
-                    bookingTitle: this.roomDetails.name,
-                    bookingLocation: this.formatLocation(this.roomDetails)
-                  });
+          //TODO: delete booking via API
+          //if delete failed, show toast with failed message from API
+          //this.showInfoToast("Failed to delete this booking. " + failedMessage);
+
+          //fire event to indicate booking is done and move on to other page
+          this.fire('booking-deleted', this.bookingDetails);
         }
       });
     })();
