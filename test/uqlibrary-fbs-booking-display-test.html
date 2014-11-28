@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>uqlibrary-fbs-booking-display</title>
+
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../uqlibrary-fbs-booking-display.html">
+</head>
+<body>
+
+<uqlibrary-fbs-booking-display></uqlibrary-fbs-booking-display>
+
+<script>
+  window.addEventListener('polymer-ready', function() {
+    var element = document.querySelector('uqlibrary-fbs-booking-display');
+    var roomDetails = {
+      id:       1,
+      room:     "Group Room 3",
+      level:    "Level 3",
+      building: "Biological Sciences Library",
+      campus:   "St Lucia",
+      summary:  "6 chairs, 1 table, PC, Large Screen, whiteboard.",
+      image:    "image-thumb.jpg",
+      imageLarge:    "image-large.jpg",
+
+      timeslotLength: 30,     //in minutes
+      maxBookingLength: 120,  //in minutes
+      minBookingLength: 30    //in minutes
+    };
+
+    var bookingDetails = {
+      id: 1,
+      startdate: new Date().setHours(0, 0, 0, 0),
+      endDate: new Date().setHours(1, 30, 0, 0),
+      title: "Group Room 3",
+      subtitle: "Level 3, Biological Sciences Library, St Lucia"
+    };
+
+    suite('uqlibrary-fbs-booking-display', function() {
+
+      before(function () {
+        element = document.querySelector('uqlibrary-fbs-booking-display');
+
+        element.roomDetails = roomDetails;
+        element.bookingDetails = bookingDetails;
+      });
+
+      //properties unit tests
+      test('defines roomDetails property', function () {
+        assert.equal(roomDetails.id, element.roomDetails.id);
+      });
+
+      test('defines bookingDetails property', function () {
+        assert.equal(bookingDetails.id, element.bookingDetails.id);
+      });
+
+      //methods unit tests
+      test('deleteBooking - deletes current booking', function(){
+        var setRandomAvailability = false;
+
+
+        element.addEventListener('booking-deleted', function(event) {
+          assert.equal(event.detail.title, bookingDetails.title);
+        });
+
+        element.deleteBooking();
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
