@@ -154,6 +154,7 @@
 
         transitionPrepareHandler: function() {
           this.transitioning = true;
+          this.fire('core-signal', {name: "transition-prepare"});
         },
 
         transitionEndHandler: function(e) {
@@ -161,6 +162,7 @@
           if(e.target.selectedItem.id == 'results') {
             this.createResultsList();
           }
+          this.fire('core-signal', {name: "transition-end"});
         },
 
         showMyBookings: function() {

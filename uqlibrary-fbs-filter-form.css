@@ -60,23 +60,23 @@ md-timepicker::shadow #card {
   border: 1px solid whitesmoke;
   margin-top: 0pt;
   margin-bottom: 0pt;
-  height: 360px;
-  width: 225px; }
+  height: 320px;
+  width: 200px; }
   md-timepicker::shadow #card #display {
     background-color: #009688 !important;
-    height: 108px;
-    padding: 21.6px;
+    height: 96px;
+    padding: 19.2px;
     color: white;
-    font-size: 41.4px; }
+    font-size: 36.8px; }
     md-timepicker::shadow #card #display .digit {
       opacity: 0.7; }
       md-timepicker::shadow #card #display .digit[active] {
         opacity: 1; }
   md-timepicker::shadow #card #keypad {
-    font-size: 37.8px; }
+    font-size: 33.6px; }
     md-timepicker::shadow #card #keypad .digit {
-      flex-basis: 56.7px;
-      -webkit-flex-basis: 56.7px; }
+      flex-basis: 50.4px;
+      -webkit-flex-basis: 50.4px; }
 
 paper-slider {
   width: 100%; }

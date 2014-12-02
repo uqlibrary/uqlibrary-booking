@@ -16,6 +16,8 @@ Element providing solution to no problem in particular.
 <polymer-element name="uqlibrary-fbs-filter-form" attributes="formData selectedValues">
 
   <template>
+    <core-signals on-core-signal-transition-prepare="{{transitionPrepareHandler}}"></core-signals>
+    <core-signals on-core-signal-transition-end="{{transitionEndHandler}}"></core-signals>
 
     <link rel="stylesheet" href="uqlibrary-fbs-filter-form.css" shim-shadowdom />
         <div id="filterWrapper" class="filterWrapper">
@@ -95,7 +97,10 @@ Element providing solution to no problem in particular.
                 </paper-dropdown>
               </paper-dropdown-menu>
 
-              <paper-input floatingLabel id="time" readonly on-down="{{showTimepicker}}" label="From" value="{{selectedTime}}"></paper-input>
+              <paper-input-decorator id="decorator" on-down="{{showTimepicker}}" label="From" floatingLabel>
+                <input id="time" readonly  value="{{selectedTime}}" label="From" floatingLabel>
+              </paper-input-decorator>
+
               <core-overlay id="timepickerDialog" transition="core-transition-center" autoCloseDisabled>
                   <md-timepicker id="timepicker" on-time-selected="{{timeSelectedHandler}}"></md-timepicker>
               </core-overlay>
@@ -110,7 +115,7 @@ Element providing solution to no problem in particular.
 
 
           </div>
-        <div class="buttonWrapper" horizontal layout>
+        <div class="buttonWrapper" horizontal layout hidden?={{transitioning}}>
           <div flex><paper-toast id="infoToast"></paper-toast></div>
           <paper-button id="applyButton" end-justified  icon="done" on-click="{{submitForm}}">Search<core-icon icon="arrow-forward"></core-icon></paper-button>
         </div>
@@ -143,6 +148,7 @@ Element providing solution to no problem in particular.
       rooms:[],
       dates:[],
       formData: {},
+      transitioning: false,
 
       selectedCampus: '',
       selectedBuilding: '',
@@ -302,6 +308,10 @@ Element providing solution to no problem in particular.
         }
       },
 
+      selectedTimeChanged: function(oldValue, newValue) {
+        this.$.decorator.updateLabelVisibility(newValue);
+      },
+
       selectedValuesChanged: function(oldValue, newValue) {
         if(this.selectedValues) {
           this.selectedCampus = this.selectedValues.campus;
@@ -366,6 +376,14 @@ Element providing solution to no problem in particular.
         var _id = sender.getAttribute('id').replace('equipment_','');
         this.selectedEquipment[_id] = sender.checked;
 
+      },
+
+      transitionPrepareHandler: function() {
+        this.transitioning = true;
+      },
+
+      transitionEndHandler: function(e) {
+        this.transitioning = false;
       }
 
     });
