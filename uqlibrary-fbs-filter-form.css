@@ -29,7 +29,8 @@
   width: 100%; }
 
 .filterWrapper {
-  background-color: #ffffff; }
+  background-color: white;
+  margin-bottom: 30px; }
 
 uqlibrary-filter-group {
   padding-right: 20pt; }
@@ -38,12 +39,14 @@ uqlibrary-filter-group {
     margin-right: 20px; }
     uqlibrary-filter-group div.groupContentWrapper[horizontal] paper-dropdown-menu:last-child {
       margin-right: 0px; }
+  uqlibrary-filter-group:last-child {
+    border-bottom: none; }
 
 paper-dropdown-menu {
   display: block;
   width: 100%; }
   paper-dropdown-menu paper-dropdown paper-item:hover {
-    background-color: #F5F5F5; }
+    background-color: whitesmoke; }
 
 paper-input {
   display: block; }
@@ -54,7 +57,7 @@ paper-input {
     width: 100%; }
 
 md-timepicker::shadow #card {
-  border: 1px solid #F5F5F5;
+  border: 1px solid whitesmoke;
   margin-top: 0pt;
   margin-bottom: 0pt;
   height: 360px;
@@ -63,7 +66,7 @@ md-timepicker::shadow #card {
     background-color: #009688 !important;
     height: 108px;
     padding: 21.6px;
-    color: #ffffff;
+    color: white;
     font-size: 41.4px; }
     md-timepicker::shadow #card #display .digit {
       opacity: 0.7; }
@@ -103,23 +106,28 @@ paper-checkbox::shadow #checkbox.checked {
     margin-right: 10pt; }
 
 .buttonWrapper {
-  padding: 10pt 20pt 40pt 20pt;
-  position: relative; }
-  .buttonWrapper paper-fab#applyButton {
-    background-color: #4CAF50;
-    color: #ffffff; }
+  padding: 0px 20px 0px 00px;
+  position: fixed;
+  bottom: 0px;
+  height: 48px;
+  width: 100%;
+  border-top: 1px solid #eeeeee;
+  background: white; }
+  .buttonWrapper paper-button#applyButton {
+    color: #009688;
+    height: 36px; }
+    .buttonWrapper paper-button#applyButton core-icon {
+      width: 16px; }
 
 paper-toast#infoToast {
   position: fixed; }
 
 .error {
-  border-bottom: 1px solid #F44336; }
+  border-bottom: 1px solid #f44336; }
   .error::shadow #label {
-    color: #F44336; }
+    color: #f44336; }
 
 core-overlay#timepickerDialog::shadow #actions {
   display: none; }
 core-overlay#timepickerDialog::shadow #main {
   padding: 0px; }
-
-/*# sourceMappingURL=uqlibrary-fbs-filter-form.css.map */

@@ -18,100 +18,104 @@ Element providing solution to no problem in particular.
   <template>
 
     <link rel="stylesheet" href="uqlibrary-fbs-filter-form.css" shim-shadowdom />
-      <paper-shadow>
         <div id="filterWrapper" class="filterWrapper">
-        <uqlibrary-filter-group label="Campus" icon="communication:location-on">
-            <paper-dropdown-menu id="campusSelect" label="{{errors.campus ? errors.campus : 'Campus'}}" class="{{errors.campus ? 'error' : ''}}">
-              <paper-dropdown class="dropdown">
-                <core-menu class="menu" selected="{{selectedCampus}}">
-                  <template repeat="{{campuses as item}}">
-                    <paper-item name="{{item.id}}" label="{{item.title}}">{{item.title}}</paper-item>
-                  </template>
-                </core-menu>
-              </paper-dropdown>
-            </paper-dropdown-menu>
+          <div class="filterForm">
 
-            <paper-dropdown-menu id="buildingSelect" label="Building" hidden?="{{!buildings.length}}">
-              <paper-dropdown class="dropdown">
-                <core-menu class="menu" selected="{{selectedBuilding}}">
-                  <template repeat="{{building in buildings}}">
-                    <paper-item name="{{building.id}}" label="{{building.title}}">{{building.title}}</paper-item>
-                  </template>
-                </core-menu>
-              </paper-dropdown>
-            </paper-dropdown-menu>
 
-            <paper-dropdown-menu id="roomSelect" label="Room" hidden?="{{!rooms.length}}">
-              <paper-dropdown class="dropdown">
-                <core-menu class="menu" selected="{{selectedRoom}}">
-                  <template repeat="{{rooms as room}}">
-                    <paper-item name="{{room.id}}" label="{{room.title}}">{{room.title}}</paper-item>
-                  </template>
-                </core-menu>
-              </paper-dropdown>
-            </paper-dropdown-menu>
-        </uqlibrary-filter-group>
+            <!-- hidden groups -->
+            <uqlibrary-filter-group label="Capacity" icon="social:people" hidden>
+              <div class="sliderWrapper" layout horizontal justified center>
+                <div>Number of people</div>
+                <paper-slider flex editable pin step="1" min="1" max="25" value="{{selectedCapacity}}"></paper-slider>
+              </div>
+            </uqlibrary-filter-group>
 
-        <uqlibrary-filter-group label="Time" icon="device:access-time">
-          <paper-dropdown-menu id="dateSelect" label="Date">
-            <paper-dropdown class="dropdown">
-              <core-menu class="menu" valueattr="value" selected="{{selectedDate}}">
-                <template repeat="{{dates as date}}">
-                  <paper-item value="{{date.value}}" label="{{date.text}}">{{date.text}}</paper-item>
-                </template>
-              </core-menu>
-            </paper-dropdown>
-          </paper-dropdown-menu>
+            <uqlibrary-filter-group label="Equipment" icon="settings" hidden>
+              <div class="equipment-item" layout horizontal>
+                <core-label flex for="#equipment_pc">
+                  <core-icon icon="hardware:desktop-windows"></core-icon>
+                  PC
+                </core-label>
+                <paper-checkbox id="equipment_pc" on-core-change="{{checkboxToggle}}" checked?="{{selectedEquipment.pc}}"></paper-checkbox>
+              </div>
 
-          <paper-input-decorator id="decorator" on-down="{{showTimepicker}}" label="Now" floatingLabel>
-            <input id="time" readonly  value="{{selectedTime}}">
-          </paper-input-decorator>
-          <core-overlay id="timepickerDialog"  transition="core-transition-center" autoCloseDisabled>
-            <md-timepicker id="timepicker" on-time-selected="{{timeSelectedHandler}}"></md-timepicker>
-          </core-overlay>
-          <div class="sliderWrapper" layout horizontal justified center>
-            <div>Duration</div>
-            <paper-slider flex id="timePeriod" pin step="0.5" min="0.5" max="4" immediateValue="{{durationImmidiate}}" value="{{selectedDuration}}"></paper-slider>
-            <div end-justified style="width: 65px;">{{durationImmidiate}} hour(s)</div>
+              <div class="equipment-item" layout horizontal>
+                <core-label flex for="#equipment_projector">
+                  <core-icon icon="av:videocam"></core-icon>
+                  Projector
+                </core-label>
+                <paper-checkbox id="equipment_projector" on-core-change="{{checkboxToggle}}" checked?="{{selectedEquipment.projector}}"></paper-checkbox>
+
+              </div>
+            </uqlibrary-filter-group>
+            <!-- end hidden groups -->
+
+
+
+            <uqlibrary-filter-group label="Campus" icon="communication:location-on">
+                <paper-dropdown-menu id="campusSelect" label="{{errors.campus ? errors.campus : 'Campus'}}" class="{{errors.campus ? 'error' : ''}}">
+                  <paper-dropdown class="dropdown">
+                    <core-menu class="menu" selected="{{selectedCampus}}">
+                      <template repeat="{{campuses as item}}">
+                        <paper-item name="{{item.id}}" label="{{item.title}}">{{item.title}}</paper-item>
+                      </template>
+                    </core-menu>
+                  </paper-dropdown>
+                </paper-dropdown-menu>
+
+                <paper-dropdown-menu id="buildingSelect" label="Building" hidden?="{{!buildings.length}}">
+                  <paper-dropdown class="dropdown">
+                    <core-menu class="menu" selected="{{selectedBuilding}}">
+                      <template repeat="{{building in buildings}}">
+                        <paper-item name="{{building.id}}" label="{{building.title}}">{{building.title}}</paper-item>
+                      </template>
+                    </core-menu>
+                  </paper-dropdown>
+                </paper-dropdown-menu>
+
+                <paper-dropdown-menu id="roomSelect" label="Room" hidden?="{{!rooms.length}}">
+                  <paper-dropdown class="dropdown">
+                    <core-menu class="menu" selected="{{selectedRoom}}">
+                      <template repeat="{{rooms as room}}">
+                        <paper-item name="{{room.id}}" label="{{room.title}}">{{room.title}}</paper-item>
+                      </template>
+                    </core-menu>
+                  </paper-dropdown>
+                </paper-dropdown-menu>
+            </uqlibrary-filter-group>
+
+            <uqlibrary-filter-group label="Time" icon="device:access-time">
+              <paper-dropdown-menu id="dateSelect" label="Today">
+                <paper-dropdown class="dropdown">
+                  <core-menu class="menu" valueattr="value" selected="{{selectedDate}}">
+                    <template repeat="{{dates as date}}">
+                      <paper-item value="{{date.value}}" label="{{date.text}}">{{date.text}}</paper-item>
+                    </template>
+                  </core-menu>
+                </paper-dropdown>
+              </paper-dropdown-menu>
+
+              <paper-input floatingLabel id="time" readonly on-down="{{showTimepicker}}" label="From" value="{{selectedTime}}"></paper-input>
+              <core-overlay id="timepickerDialog" transition="core-transition-center" autoCloseDisabled>
+                  <md-timepicker id="timepicker" on-time-selected="{{timeSelectedHandler}}"></md-timepicker>
+              </core-overlay>
+              <div class="sliderWrapper" layout horizontal justified center>
+                <div>Duration</div>
+                <paper-slider flex id="timePeriod" pin step="0.5" min="0.5" max="4" immediateValue="{{durationImmidiate}}" value="{{selectedDuration}}"></paper-slider>
+                <div end-justified style="width: 65px;">{{durationImmidiate}} hour(s)</div>
+              </div>
+
+            </uqlibrary-filter-group>
+
+
+
           </div>
-
-        </uqlibrary-filter-group>
-
-
-        <uqlibrary-filter-group label="Capacity" icon="social:people">
-          <div class="sliderWrapper" layout horizontal justified center>
-            <div>Number of people</div>
-            <paper-slider flex editable pin step="1" min="1" max="25" value="{{selectedCapacity}}"></paper-slider>
-          </div>
-        </uqlibrary-filter-group>
-
-        <uqlibrary-filter-group label="Equipment" icon="settings">
-          <div class="equipment-item" layout horizontal>
-            <core-label flex for="#equipment_pc">
-              <core-icon icon="hardware:desktop-windows"></core-icon>
-              PC
-            </core-label>
-            <paper-checkbox id="equipment_pc" on-core-change="{{checkboxToggle}}" checked?="{{selectedEquipment.pc}}"></paper-checkbox>
-          </div>
-
-          <div class="equipment-item" layout horizontal>
-            <core-label flex for="#equipment_projector">
-              <core-icon icon="av:videocam"></core-icon>
-              Projector
-            </core-label>
-            <paper-checkbox id="equipment_projector" on-core-change="{{checkboxToggle}}" checked?="{{selectedEquipment.projector}}"></paper-checkbox>
-
-          </div>
-        </uqlibrary-filter-group>
-
         <div class="buttonWrapper" horizontal layout>
           <div flex><paper-toast id="infoToast"></paper-toast></div>
-          <paper-fab id="applyButton" end-justified  icon="done" on-click="{{submitForm}}" label="Apply" ></paper-fab>
+          <paper-button id="applyButton" end-justified  icon="done" on-click="{{submitForm}}">Search<core-icon icon="arrow-forward"></core-icon></paper-button>
         </div>
 
       </div>
-      </paper-shadow>
-
     <content></content>
 
   </template>
@@ -304,7 +308,7 @@ Element providing solution to no problem in particular.
           this.selectedBuilding = this.selectedValues.building;
           this.selectedRoom = this.selectedValues.room;
           this.selectedDate = this.selectedValues.date;
-          this.selectedTime = this.selectedValues.time;
+          this.selectedTime = this.selectedValues.time ? this.selectedValues.time : moment().format('hh:mm');
           this.selectedDuration = this.selectedValues.duration;
           this.selectedCapacity = this.selectedValues.capacity;
           this.selectedEquipment = (this.selectedValues.equipment ? this.selectedValues.equipment : {});
@@ -312,6 +316,7 @@ Element providing solution to no problem in particular.
         else {
           this.selectedValues = {};
         }
+
       },
 
       getSelectedValues: function() {
@@ -345,8 +350,6 @@ Element providing solution to no problem in particular.
 
       timeSelectedHandler: function(e, value) {
         this.selectedTime = value.time;
-        this.$.decorator.label = 'From';
-        this.$.decorator.updateLabelVisibility(this.selectedTime);
         this.$.timepickerDialog.toggle();
       },
 

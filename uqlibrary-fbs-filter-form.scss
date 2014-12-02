@@ -12,8 +12,11 @@ $textColor: $secondary-text;
 
 .filterWrapper {
   background-color: $white;
+  margin-bottom: 30px;
+
 
 }
+
 
 uqlibrary-filter-group {
   padding-right: 20pt;
@@ -28,7 +31,9 @@ uqlibrary-filter-group {
       }
     }
   }
-
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 paper-dropdown-menu {
@@ -160,11 +165,19 @@ paper-checkbox {
 }
 
 .buttonWrapper {
-  padding: 10pt 20pt 40pt 20pt;
-  position: relative;
-  paper-fab#applyButton {
-    background-color: $green;
-    color: $white;
+  padding: 0px 20px 0px 00px;
+  position: fixed;
+  bottom: 0px;
+  height: 48px;
+  width: 100%;
+  border-top: 1px solid $grey-A200;
+  background: $white;
+  paper-button#applyButton {
+    color: $mainColor;
+    height: 36px;
+    core-icon {
+      width: 16px;
+    }
   }
 }
 
