@@ -39,7 +39,13 @@ uqlibrary-filter-group {
 paper-dropdown-menu {
   display: block;
   width: 100%;
-
+  &[disabled] {
+    &::shadow {
+      #label, #arrow, #ripple {
+        color: $grey-A400;
+      }
+    }
+  }
   paper-dropdown {
     paper-item {
       &:hover {

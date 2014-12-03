@@ -25,12 +25,6 @@ Element providing solution to no problem in particular.
 
 
             <!-- hidden groups -->
-            <uqlibrary-filter-group label="Capacity" icon="social:people" hidden>
-              <div class="sliderWrapper" layout horizontal justified center>
-                <div>Number of people</div>
-                <paper-slider flex editable pin step="1" min="1" max="25" value="{{selectedCapacity}}"></paper-slider>
-              </div>
-            </uqlibrary-filter-group>
 
             <uqlibrary-filter-group label="Equipment" icon="settings" hidden>
               <div class="equipment-item" layout horizontal>
@@ -52,12 +46,10 @@ Element providing solution to no problem in particular.
             </uqlibrary-filter-group>
             <!-- end hidden groups -->
 
-
-
             <uqlibrary-filter-group label="Campus" icon="communication:location-on">
-                <paper-dropdown-menu id="campusSelect" label="{{errors.campus ? errors.campus : 'Campus'}}" class="{{errors.campus ? 'error' : ''}}">
+                <paper-dropdown-menu id="campusSelect" label="{{errors.campus ? errors.campus : 'Campus'}}" class="{{errors.campus ? 'error' : ''}}" disabled?="{{!campuses.length}}"  >
                   <paper-dropdown class="dropdown">
-                    <core-menu class="menu" selected="{{selectedCampus}}">
+                    <core-menu class="menu" id="campusSelectMenu" selected="{{selectedCampus}}">
                       <template repeat="{{campuses as item}}">
                         <paper-item name="{{item.id}}" label="{{item.title}}">{{item.title}}</paper-item>
                       </template>
@@ -67,7 +59,7 @@ Element providing solution to no problem in particular.
 
                 <paper-dropdown-menu id="buildingSelect" label="Building" hidden?="{{!buildings.length}}">
                   <paper-dropdown class="dropdown">
-                    <core-menu class="menu" selected="{{selectedBuilding}}">
+                    <core-menu class="menu" id="buildingSelectMenu" selected="{{selectedBuilding}}">
                       <template repeat="{{building in buildings}}">
                         <paper-item name="{{building.id}}" label="{{building.title}}">{{building.title}}</paper-item>
                       </template>
@@ -77,7 +69,7 @@ Element providing solution to no problem in particular.
 
                 <paper-dropdown-menu id="roomSelect" label="Room" hidden?="{{!rooms.length}}">
                   <paper-dropdown class="dropdown">
-                    <core-menu class="menu" selected="{{selectedRoom}}">
+                    <core-menu class="menu"  id="roomSelectMenu" selected="{{selectedRoom}}">
                       <template repeat="{{rooms as room}}">
                         <paper-item name="{{room.id}}" label="{{room.title}}">{{room.title}}</paper-item>
                       </template>
@@ -111,8 +103,12 @@ Element providing solution to no problem in particular.
               </div>
 
             </uqlibrary-filter-group>
-
-
+            <uqlibrary-filter-group label="Capacity" icon="social:people">
+              <div class="sliderWrapper" layout horizontal justified center>
+                <div>Number of people</div>
+                <paper-slider flex editable pin step="1" min="1" max="25" value="{{selectedCapacity}}"></paper-slider>
+              </div>
+            </uqlibrary-filter-group>
 
           </div>
         <div class="buttonWrapper" horizontal layout hidden?={{transitioning}}>
@@ -133,28 +129,32 @@ Element providing solution to no problem in particular.
 
       publish: {
         selectedValues: {
-          observe: 'selectedValuesChanged',
           value: {}
         }
       },
 
       observe: {
         'formData.facilities': 'facilitiesChanged',
-        'formData.dates': 'initialDatesChanged'
+        'formData.dates': 'initialDatesChanged',
+        'formData.rooms': 'roomsDataChanged',
+        selectedValues: 'selectedValuesChanged'
       },
 
       campuses: [],
       buildings:[],
       rooms:[],
       dates:[],
-      formData: {},
+      formData: {
+        facilities: [],
+        dates: []
+      },
       transitioning: false,
 
       selectedCampus: '',
       selectedBuilding: '',
       selectedRoom: '',
       selectedDate: '',
-      selectedTime: '',
+      selectedTime: moment().format('HH:mm'),
       selectedEquipment: {},
 
       errors: {},
@@ -245,7 +245,7 @@ Element providing solution to no problem in particular.
             for(var j = 0; j < _campus.buildings.length; j++) {
               var _building = _campus.buildings[j];
               this.buildings.push(
-                { "id": _campus.id + ":" + _building.id,
+                { "id": _building.id,
                   "title": _building.title
                 }
               );
@@ -257,6 +257,12 @@ Element providing solution to no problem in particular.
           el.style.width = null;
           el.style.height = null;
         }
+       if(this.buildings.length == 1) {
+          this.selectedBuilding = this.buildings[0].id;
+        } else {
+          this.selectedBuilding = '';
+          this.rooms = [];
+        }
 
       },
 
@@ -267,11 +273,11 @@ Element providing solution to no problem in particular.
           if(this.selectedCampus && this.selectedCampus == _campus.id ){
             for(var j = 0; j < _campus.buildings.length; j++) {
               var _building = _campus.buildings[j];
-              if(this.selectedBuilding && this.selectedBuilding == (_campus.id + ":" + _building.id) ) {
+              if(this.selectedBuilding && this.selectedBuilding == _building.id ) {
                 for(var k = 0; k < _building.rooms.length; k++) {
                   var _room = _building.rooms[k];
                   this.rooms.push(
-                    { "id": _campus.id + ":" + _building.id + ":" + _room.id,
+                    { "id": _room.id,
                       "title": _room.title
                     }
                   );
@@ -285,6 +291,10 @@ Element providing solution to no problem in particular.
         if (el) {
           el.style.width = null;
           el.style.height = null;
+        }
+
+        if(this.rooms.length == 1) {
+          this.selectedRoom = this.rooms[0].id;
         }
       },
 
@@ -301,10 +311,36 @@ Element providing solution to no problem in particular.
       selectedBuildingChanged: function(oldValue, newValue) {
         // If user selects a value. Not acceptable to initial form state
         if (oldValue != '') {
-          this.selectedRoom = null;
+          this.selectedRoom = '';
         }
         if (newValue) {
           this.loadRooms();
+        }
+      },
+
+      selectedRoomChanged: function(oldValue, newValue) {
+        // If user selects a value. Not acceptable to initial form state
+        if (newValue) {
+          // As selected index for roomSelect isn't set yet we have to loop through rooms to find selected one and set capacity and min/max booking time
+          for(var i = 0; i < this.formData.facilities[this.$.campusSelectMenu.selectedIndex].buildings[this.$.buildingSelectMenu.selectedIndex].rooms.length; i++) {
+            var _room = this.formData.facilities[this.$.campusSelectMenu.selectedIndex].buildings[this.$.buildingSelectMenu.selectedIndex].rooms[i];
+            if(_room.id == newValue) {
+              if (_room.capacity) {
+                this.selectedCapacity = _room.capacity;
+              }
+              else {
+                this.selectedCapacity = 1;
+              }
+              if (_room.mintime) {
+                this.$.timePeriod.min = (_room.mintime / 60);
+              }
+              if (_room.maxtime) {
+                this.$.timePeriod.max = (_room.maxtime / 60);
+              }
+
+              break;
+            }
+          }
         }
       },
 

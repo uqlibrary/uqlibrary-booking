@@ -45,6 +45,8 @@ uqlibrary-filter-group {
 paper-dropdown-menu {
   display: block;
   width: 100%; }
+  paper-dropdown-menu[disabled]::shadow #label, paper-dropdown-menu[disabled]::shadow #arrow, paper-dropdown-menu[disabled]::shadow #ripple {
+    color: #bdbdbd; }
   paper-dropdown-menu paper-dropdown paper-item:hover {
     background-color: whitesmoke; }
 
