@@ -25,13 +25,44 @@ Element providing a form for booking a room.
             imageLarge:    "image-large.jpg",
 
             timeslotLength: 30,     //in minutes
-            maxBookingLength: 120,  //in minutes
-            minBookingLength: 30    //in minutes
+            maxBookingLength: 120,    //in minutes
+            minBookingLength: 30,    //in minutes
+
+            //TODO: sync uqlibrary-booking and form data
+            //raw data from FBS API, time in UNIX timestamp
+            scheduleid : 'abcd12313123123',
+            available_from : 1419429600,
+            available_to: 1419516000,
+            time_span : "30",       //is timeslotLength
+
+            bookings: [
+                      {
+                          "id": "sc1547b9f971ca95",
+                          "from": 1417647600,
+                          "to": 1417654800
+                      },
+                      {
+                          "id": "sc1547b9fbcb4e45",
+                          "from": 1417654800,
+                          "to": 1417662000
+                      },
+                      {
+                          "id": "sc1547b9fd13d5ef",
+                          "from": 1417662000,
+                          "to": 1417669200
+                      },
+                      {
+                          "id": "sc1547522d054d86",
+                          "from": 1417669200,
+                          "to": 1417672800
+                      }]
           };
 
           bookingForm.searchDate = new Date();        //search date and time
           bookingForm.searchDuration = 60;            //in minutes
           bookingForm.maxBookingDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
+
+          bookingForm.authTokenValue = 'abcd1234';
         });
 
       }());
@@ -43,215 +74,268 @@ Element providing a form for booking a room.
 @homepage https://github.com/uqlibrary/uqlibrary-fbs-booking-form
 -->
 
-<polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails searchDate">
+<polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails searchDate searchDuration maxBookingDate authTokenValue">
 
-  <template>
-    <link rel="stylesheet" href="uqlibrary-fbs-booking-form.css">
+<template>
+  <link rel="stylesheet" href="uqlibrary-fbs-booking-form.css">
 
-    <div class="booking-room-header" style="background-image: url('{{ roomDetails.imageLarge }}')">
-      <h2>
-          {{ roomDetails.room }} <br>
-          <small>{{roomDetails | formatLocation }}</small>
-      </h2>
-    </div>
+  <core-ajax id="createBookingRequest" url="https://app.library.uq.edu.au/api/booking"
+             auto="false" method="POST" contentType="application/json"
+             on-core-response="{{ createBookingResponse }}" on-core-error="{{ createBookingError }}" on-core-complete="{{ createBookingComplete }}"></core-ajax>
 
-    <p class="booking-room-summary">{{ roomDetails.summary }}</p>
+  <div class="booking-room-header" style="background-image: url('{{ roomDetails.imageLarge }}')">
+    <h2>
+      {{ roomDetails.room }} <br>
+      <small>{{roomDetails | formatLocation }}</small>
+    </h2>
+  </div>
 
-    <uqlibrary-date-selector searchDate="{{ searchDate }}"
-                             searchDuration="{{ searchDuration }}"
-                             maxBookingDate="{{ maxBookingDate }}"
-                             bookingTimeslots = "{{ bookingTimeslots }}"
-                             maxBookingLength="{{ roomDetails.maxBookingLength / roomDetails.timeslotLength }}"
-                             on-time-selector-changed="{{ bookingSelectionChanged }}">
-                             </uqlibrary-date-selector>
+  <p class="booking-room-summary">{{ roomDetails.summary }}</p>
 
-    <p class="booking-room-hint">Maximum booking duration is {{ roomDetails.maxBookingLength }} min, minimum booking duration is {{ roomDetails.minBookingLength }} min</p>
-    <p class="booking-room-hint">
-      <span class="hint-box selected"></span> - your current selection
-      <span class="hint-box available"></span> - available time slot
-      <span class="hint-box unavailable"></span> - unavailable time slot
-    </p>
+  <uqlibrary-date-selector searchDate="{{ searchDate }}"
+                           searchDuration="{{ searchDuration }}"
+                           maxBookingDate="{{ maxBookingDate }}"
+                           bookingTimeslots = "{{ bookingTimeslots }}"
+                           maxBookingLength="{{ roomDetails.maxBookingLength / roomDetails.timeslotLength }}"
+                           on-time-selector-changed="{{ bookingSelectionChanged }}">
+  </uqlibrary-date-selector>
 
-    <paper-toast id="infoToast" flex></paper-toast>
+  <p class="booking-room-hint">Maximum booking duration is {{ roomDetails.maxBookingLength }} min, minimum booking duration is {{ roomDetails.minBookingLength }} min</p>
+  <p class="booking-room-hint">
+    <span class="hint-box selected"></span> - your current selection
+    <span class="hint-box available"></span> - available time slot
+    <span class="hint-box unavailable"></span> - unavailable time slot
+  </p>
 
-    <paper-fab
-            id="createRoomBooking"
-            icon="check"
-            class="action"
-            on-tap="{{ createRoomBooking }}"></paper-fab>
+  <paper-toast id="infoToast" flex></paper-toast>
 
-  </template>
+  <paper-fab
+          id="createRoomBooking"
+          icon="check"
+          class="action"
+          on-tap="{{ createRoomBooking }}"></paper-fab>
 
-  <script>
-    (function() {
-      Polymer('uqlibrary-fbs-booking-form', {
-        /**
-         * The `roomDetails` attribute object contains properties of the room
-         *
-         * @property roomDetails
-         * @type object
-         */
+</template>
 
-        /** The `searchDate` attribute represents search date/time value
-         *
-         * @property searchDate
-         * @type Date
-         *
-         */
+<script>
+(function() {
+  Polymer('uqlibrary-fbs-booking-form', {
+    /**
+     * The `roomDetails` attribute object contains properties of the room
+     *
+     * @property roomDetails
+     * @type object
+     */
 
-        /** The `maxBookingDate` attribute represents maximum valid booking day (eg can book up to a week in advance)
-         *
-         * @property maxBookingDate
-         * @type Date
-         *
-         */
+    /** The `searchDate` attribute represents search date/time value
+     *
+     * @property searchDate
+     * @type Date
+     *
+     */
 
-        /** The `searchDuration` attribute represents booking duration value in minutes
-         *
-         * @property searchDuration
-         * @type Int
-         *
-         */
+    /** The `maxBookingDate` attribute represents maximum valid booking day (eg can book up to a week in advance)
+     *
+     * @property maxBookingDate
+     * @type Date
+     *
+     */
 
-        searchDateChanged : function (oldValue, newValue) {
+    /** The `searchDuration` attribute represents booking duration value in minutes
+     *
+     * @property searchDuration
+     * @type Int
+     *
+     */
 
-          console.log("FBS Booking Form: this.searchDate updated to: ");
-          console.log(this.searchDate);
+    /** The `authTokenValue` value of authentication token
+     *
+     * @property authTokenValue
+     * @type String
+     *
+     */
 
-          //TODO: get timeslots for new search date from api for this room/date
 
-          //generate mock time slots if mock data is used
-          this.bookingTimeslots = this.createTimeslots(false);
-          this.selectTimeslots();
-        },
+    /** Fired when booking was successfully created
+     *
+     * @event booking-created
+     *
+     */
 
-        created: function () {
-          this.roomDetails = {};
-          this.searchDate = new Date();
-          this.searchDuration = 90;
-          this.maxBookingDate = new Date();
-          this.bookingTimeslots = [];
-        },
+    /** Fired when search date was changed on the booking form
+     *
+     * @event booking-date-changed
+     *
+     */
 
-        ready: function () {
-          this.addEventListener('submit-form', this.createRoomBooking);
-        },
+    searchDateChanged : function (oldValue, newValue) {
+      this.fire('booking-date-changed', { searchDate: this.searchDate });
 
-        showInfoToast: function(text) {
-          this.$.infoToast.text = text;
-          this.$.infoToast.show();
-        },
+      //TODO: when data is received for new date, update timeslots
+      this.bookingTimeslots = this.createTimeslots();
+      this.selectTimeslots();
+    },
 
-        validateSelection : function(selectedTimeslots) {
-          var validation = {
-            valid : true,
-            message: 'Your booking was successfully created.'
-          };
+    created: function () {
+      this.roomDetails = {};
+      this.searchDate = new Date();
+      this.searchDuration = 90;
+      this.maxBookingDate = new Date();
+      this.bookingTimeslots = [];
 
-          if (selectedTimeslots.length == 0) {
-            validation.valid = false;
-            validation.message = "Please, make a valid selection.";
-          } else if (selectedTimeslots.length > this.maxBookingLength / this.roomDetails.timeslotLength) {
-            validation.valid = false;
-            validation.message = "Current selection exceeds maximum booking duration. Please, make a valid selection.";
-          }
-          else if (!selectedTimeslots.every(function(element, index) {
-                    return !(index < selectedTimeslots.length - 1 && element.endTime.valueOf() !== selectedTimeslots[index+1].startTime.valueOf());
-                  })) {
-            validation.valid = false;
-            validation.message = "Current selection is not available. Please, make another selection.";
-          }
+      //TODO: session management, if token is not set - disable interactions
+      this.authTokenValue = '';
+    },
 
-          return validation;
-          },
+    ready: function () {
+      this.addEventListener('submit-form', this.createRoomBooking);
+    },
 
-        createRoomBooking : function () {
-          // get currently selected elements
-          var selectedTimeslots = this.bookingTimeslots.filter(function(item) { return item.selected; });
-          var validation = this.validateSelection(selectedTimeslots);
+    showInfoToast: function(text) {
+      this.$.infoToast.text = text;
+      this.$.infoToast.show();
+    },
 
-          if (!validation.valid){
-            this.showInfoToast(validation.message);
-          } else {
+    validateSelection : function(selectedTimeslots) {
+      var validation = {
+        valid : true,
+        message: ''
+      };
 
-            console.log("Creating booking on " + this.searchDate.toDateString() + " for time slots from " + selectedTimeslots[0].startTime + " to " + selectedTimeslots[selectedTimeslots.length-1].endTime);
+      if (selectedTimeslots.length == 0) {
+        validation.valid = false;
+        validation.message = "Please, make a valid selection.";
+      } else if (selectedTimeslots.length > this.maxBookingLength / this.roomDetails.timeslotLength) {
+        validation.valid = false;
+        validation.message = "Current selection exceeds maximum booking duration. Please, make a valid selection.";
+      }
+      else if (!selectedTimeslots.every(function(element, index) {
+                return !(index < selectedTimeslots.length - 1 && element.endTime.valueOf() !== selectedTimeslots[index+1].startTime.valueOf());
+              })) {
+        validation.valid = false;
+        validation.message = "Current selection is not available. Please, make another selection.";
+      }
 
-            //TODO: validate data via API
-            //TODO: save booking via API, get new booking id from API
-            var newBookingId = selectedTimeslots[0].startTime.getTime();
+      return validation;
+    },
 
-            this.showInfoToast(validation.message);
+    createBookingComplete : function(event, object, sender){
+      if (object.response != 200) {
+        //display error returned by the server
+        this.showInfoToast("Error creating a booking: " + object.xhr.responseText);
 
-            //if booking is successful, fire event to indicate booking is done and move on to other page
-            this.fire('booking-created',
-                    {
-                      id:       newBookingId,
-                      startDate:selectedTimeslots[0].startTime,
-                      endDate:  selectedTimeslots[selectedTimeslots.length - 1].endTime,
-                      title:    this.roomDetails.name,
-                      subtitle: this.formatLocation(this.roomDetails)
-                    });
-          }
-        },
+      } else {
+        //if booking is successful, fire event to indicate booking is done and move on to other page
+        this.fire('booking-created');
+      }
+    },
 
-        formatLocation : function (roomDetails) {
-          var location = [];
+    createRoomBooking : function () {
+      // get currently selected elements
+      var selectedTimeslots = this.bookingTimeslots.filter(function(item) { return item.selected; });
+      var validation = this.validateSelection(selectedTimeslots);
 
-          if (roomDetails.level !== undefined)
-            location.push(roomDetails.level);
+      if (!validation.valid){
+        this.showInfoToast(validation.message);
+      } else {
 
-          if (roomDetails.building !== undefined)
-            location.push(roomDetails.building);
+        var midnight = new Date(selectedTimeslots[0].startTime.getFullYear(), selectedTimeslots[0].startTime.getMonth(), selectedTimeslots[0].startTime.getDate(), 0, 0, 0);
+        var startTime = (selectedTimeslots[0].startTime - midnight) / (1000 * 60);
+        var endTime = (selectedTimeslots[selectedTimeslots.length-1].endTime - midnight) / (1000 * 60);
 
-          if (roomDetails !== undefined)
-            location.push(roomDetails.campus);
+        var newBooking = {
+          machid	: this.roomDetails.id,
+          scheduleid : this.roomDetails.scheduleid,
+          date : moment(selectedTimeslots[0].startTime).format("MM/DD/YYYY"),
+          starttime : startTime,
+          endtime : endTime
+        };
 
-          return location.join(", ");
-        },
+        this.$.createBookingRequest.headers = { 'X-Uql-Token' : this.authTokenValue };
+        this.$.createBookingRequest.body = JSON.stringify(newBooking);
 
-        selectTimeslots : function() {
-          var duration = parseInt(Math.min(this.roomDetails.maxBookingLength, this.searchDuration)/this.roomDetails.timeslotLength);
-          var remainingDuration = duration;
-          var searchDate = this.searchDate;
+        this.$.createBookingRequest.go();
+      }
+    },
 
-          this.bookingTimeslots.every(function(element, index) {
+    formatLocation : function (roomDetails) {
+      var location = [];
 
-            if (element.selectable
-                    && ((searchDate >= element.startTime && searchDate < element.endTime) || remainingDuration < duration)) {
-              element.selected = true;
-              remainingDuration--;
-            }
+      if (roomDetails.level !== undefined)
+        location.push(roomDetails.level);
 
-            //cannot break selection if there's an unavailable time slot
-            return remainingDuration === duration
-              || (remainingDuration > 0 && remainingDuration < duration && element.selectable);
-          });
-        },
+      if (roomDetails.building !== undefined)
+        location.push(roomDetails.building);
 
-        createTimeslots : function(setRandomAvailability) {
-          var currentDate = new Date(this.searchDate.valueOf());
-          currentDate.setHours(0, 0, 0, 0);
+      if (roomDetails !== undefined)
+        location.push(roomDetails.campus);
 
-          var timeslots = [];
+      return location.join(", ");
+    },
 
-          for (var index = 0; index < parseInt(24 * 60 / this.roomDetails.timeslotLength); index++){
-            var offset = index * this.roomDetails.timeslotLength;
-            currentDate.setHours(0, offset, 0, 0);
+    selectTimeslots : function() {
+      var duration = parseInt(Math.min(this.roomDetails.maxBookingLength, this.searchDuration)/this.roomDetails.timeslotLength);
+      var remainingDuration = duration;
+      var searchDate = this.searchDate;
 
-            timeslots.push(
-                    {
-                      startTime: new Date(currentDate.valueOf()),
-                      endTime: new Date(currentDate.setMinutes(currentDate.getMinutes() + this.roomDetails.timeslotLength)),
-                      selected: false,
-                      selectable: setRandomAvailability ? (index % this.searchDate.getDate()) % 5 != 0 : true
-                    });
-          }
+      this.bookingTimeslots.every(function(element, index) {
 
-          return timeslots;
+        if (element.selectable
+                && ((searchDate >= element.startTime && searchDate < element.endTime) || remainingDuration < duration)) {
+          element.selected = true;
+          remainingDuration--;
         }
 
+        //cannot break selection if there's an unavailable time slot
+        return remainingDuration === duration
+        || (remainingDuration > 0 && remainingDuration < duration && element.selectable);
       });
-    })();
-  </script>
+    },
+
+    createTimeslots : function() {
+
+      var openingHours = moment(this.roomDetails.available_from, "X");
+      var closingHours = moment(this.roomDetails.available_to, "X");
+      var workingTimeslots = (closingHours - openingHours) / this.roomDetails.timeslotLength / 60 / 1000;
+
+      var currentDate = moment(new Date(openingHours.toDate()));
+      var timeslots = [];
+
+      for (var index = 0; index < workingTimeslots; index++){
+        var timeslotStartTime = new Date(currentDate.toDate());
+        var timeslotEndTime = new Date(currentDate.add(this.roomDetails.timeslotLength, "m").toDate());
+
+        var selectable = this.roomDetails.bookings.every(function(element, index, array){
+          var bookingStartTime = moment(element.from, "X");
+          var bookingEndTime = moment(element.to, "X");
+
+          //timeslot does not overlap with existing booking
+          if (bookingStartTime >= timeslotEndTime || bookingEndTime <= timeslotStartTime)
+            return true;
+
+          //timeslot overlaps with existing booking
+          if ((timeslotStartTime >= bookingStartTime && timeslotEndTime <= bookingEndTime)
+                  || (timeslotStartTime <= bookingStartTime && timeslotEndTime > bookingStartTime && timeslotEndTime < bookingEndTime)
+                  || (timeslotStartTime > bookingStartTime && timeslotStartTime < bookingEndTime && timeslotEndTime >= bookingEndTime))
+          {
+            return false;
+          }
+        });
+
+        timeslots.push(
+                {
+                  startTime: timeslotStartTime,
+                  endTime: timeslotEndTime,
+                  selected: false,
+                  selectable: selectable
+                });
+      }
+
+      return timeslots;
+    }
+
+  });
+})();
+</script>
 
 </polymer-element>
