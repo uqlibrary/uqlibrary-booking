@@ -97,6 +97,8 @@ paper-slider {
 .sliderWrapper {
   color: rgba(0, 0, 0, 0.87);
   margin-top: 20pt; }
+  .sliderWrapper .durationText {
+    width: 75px; }
 
 paper-checkbox::shadow #checkbox.checked {
   border-color: #009688; }
@@ -108,7 +110,7 @@ paper-checkbox::shadow #checkbox.checked {
     margin-right: 10pt; }
 
 .buttonWrapper {
-  padding: 0px 20px 0px 00px;
+  padding: 0px 20px 0px 20px;
   position: fixed;
   bottom: 0px;
   height: 48px;
@@ -120,9 +122,14 @@ paper-checkbox::shadow #checkbox.checked {
     height: 36px; }
     .buttonWrapper paper-button#applyButton core-icon {
       width: 16px; }
+  .buttonWrapper .resultsText {
+    height: 36px;
+    padding-top: 12px; }
 
 paper-toast#infoToast {
-  position: fixed; }
+  position: fixed;
+  max-width: 280px;
+  max-height: 48px; }
 
 .error {
   border-bottom: 1px solid #f44336; }

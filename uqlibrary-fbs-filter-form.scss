@@ -148,6 +148,11 @@ paper-slider {
 .sliderWrapper {
   color: $text;
   margin-top: 20pt;
+
+  .durationText {
+    width: 75px;
+  }
+
 }
 
 paper-checkbox {
@@ -171,7 +176,7 @@ paper-checkbox {
 }
 
 .buttonWrapper {
-  padding: 0px 20px 0px 00px;
+  padding: 0px 20px 0px 20px;
   position: fixed;
   bottom: 0px;
   height: 48px;
@@ -185,11 +190,17 @@ paper-checkbox {
       width: 16px;
     }
   }
+  .resultsText {
+    height: 36px;
+    padding-top: 12px;
+  }
 }
 
 paper-toast {
   &#infoToast {
     position: fixed;
+    max-width: 280px;
+    max-height: 48px;
   }
 }
 
