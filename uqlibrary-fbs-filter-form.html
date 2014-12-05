@@ -49,7 +49,7 @@ Element providing solution to no problem in particular.
             <uqlibrary-filter-group label="Campus" icon="communication:location-on">
                 <paper-dropdown-menu id="campusSelect" label="{{errors.campus ? errors.campus : 'Campus'}}" class="{{errors.campus ? 'error' : ''}}" disabled?="{{!campuses.length}}"  >
                   <paper-dropdown class="dropdown">
-                    <core-menu class="menu" id="campusSelectMenu" selected="{{selectedCampus}}">
+                    <core-menu class="menu" id="campusSelectMenu" selectedAttribute="" selected="{{selectedCampus}}">
                       <template repeat="{{campuses as item}}">
                         <paper-item name="{{item.id}}" label="{{item.title}}">{{item.title}}</paper-item>
                       </template>
@@ -59,7 +59,7 @@ Element providing solution to no problem in particular.
 
                 <paper-dropdown-menu id="buildingSelect" label="Building" hidden?="{{!buildings.length}}">
                   <paper-dropdown class="dropdown">
-                    <core-menu class="menu" id="buildingSelectMenu" selected="{{selectedBuilding}}">
+                    <core-menu class="menu" id="buildingSelectMenu" selectedAttribute="" selected="{{selectedBuilding}}">
                       <template repeat="{{building in buildings}}">
                         <paper-item name="{{building.id}}" label="{{building.title}}">{{building.title}}</paper-item>
                       </template>
@@ -69,7 +69,7 @@ Element providing solution to no problem in particular.
 
                 <paper-dropdown-menu id="roomSelect" label="Room" hidden?="{{!rooms.length}}">
                   <paper-dropdown class="dropdown">
-                    <core-menu class="menu"  id="roomSelectMenu" selected="{{selectedRoom}}">
+                    <core-menu class="menu"  id="roomSelectMenu" selectedAttribute="" selected="{{selectedRoom}}">
                       <template repeat="{{rooms as room}}">
                         <paper-item name="{{room.id}}" label="{{room.title}}">{{room.title}}</paper-item>
                       </template>
@@ -81,7 +81,7 @@ Element providing solution to no problem in particular.
             <uqlibrary-filter-group label="Time" icon="device:access-time">
               <paper-dropdown-menu id="dateSelect" label="Today">
                 <paper-dropdown class="dropdown">
-                  <core-menu class="menu" valueattr="value" selected="{{selectedDate}}">
+                  <core-menu class="menu" valueattr="value" selectedAttribute="" selected="{{selectedDate}}">
                     <template repeat="{{dates as date}}">
                       <paper-item value="{{date.value}}" label="{{date.text}}">{{date.text}}</paper-item>
                     </template>

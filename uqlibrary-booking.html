@@ -243,7 +243,7 @@
           this.addEventListener('selected-values-changed', function(e) {
             this.formData = e.detail.formData;
             this.getFilteredRooms();
-            this.$.fbsFilterForm.setResultsText(this.searchResults.length + ' room(s) found for selected filter.')
+            this.$.fbsFilterForm.setResultsText(this.searchResults.length + ' room(s) found')
           });
 
         },
@@ -460,8 +460,8 @@
                     id: _facility.id,
                     title: _facility.title,
                     capacity: _facility.capacity,
-                    maxtime: _facility.maxtime, // till the bug is fixed
-                    mintime: _facility.mintime // till the bug is fixed
+                    maxtime: _facility.maxtime,
+                    mintime: _facility.mintime
                   });
 
                 this.rooms[_facility.id] = {
@@ -470,8 +470,8 @@
                     campus: _facility.campus,
                     building: _facility.building,
                     capacity: _facility.capacity,
-                    maxtime: _facility.maxtime, // till the bug is fixed
-                    mintime: _facility.mintime, // till the bug is fixed
+                    maxtime: _facility.maxtime,
+                    mintime: _facility.mintime, 
                     bookings: _facility.bookings,
                     available_from: this.facilities[i].resources[j].schedule.available_from,
                     available_to: this.facilities[i].resources[j].schedule.available_to,
@@ -551,7 +551,7 @@
                   _room.next_available_time = this.getRoomFirstAvailableTime(_room, _startTimestamp, this.formData.duration);
                   if(_room.next_available_time) {
                     var _time = moment.unix(_room.next_available_time);
-                    _room.next_available_time_text =  _time.format("HH:mm a") + ' - ' + _time.add(this.formData.duration, 'minutes').format("HH:mm a") + ', ' + _time.format("DD/MM/YYYY");
+                    _room.next_available_time_text =  _time.format("h:mm a") + ' - ' + _time.add(this.formData.duration, 'minutes').format("h:mm a") + ', ' + _time.format("DD/MM/YYYY");
                   }
                 }
                 if(!_room.next_available_time) {
