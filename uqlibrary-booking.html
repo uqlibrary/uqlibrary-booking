@@ -540,8 +540,13 @@
 
                 _room.next_available_time = null;
                 _room.next_available_time_text = '';
-
-                var _startTimestamp = this.roundTimestamp(moment(this.formData.searchDate).unix(), _room.time_span);
+                var _startTimestamp = 0;
+                if(this.formData.searchDate > new Date()){
+                  _startTimestamp = this.roundTimestamp('up', moment(this.formData.searchDate).unix(), _room.time_span);
+                }
+                else {
+                  _startTimestamp = this.roundTimestamp('down', moment().unix(), _room.time_span);
+                }
                 if(this.formData.searchDate >= _startTimestamp) {
                   _room.next_available_time = this.getRoomFirstAvailableTime(_room, _startTimestamp, this.formData.duration);
                   if(_room.next_available_time) {
@@ -620,8 +625,16 @@
 
         },
 
-        roundTimestamp: function(timestamp, timeSpan) {
-          return (timestamp - (timestamp % (timeSpan * 60)));
+        roundTimestamp: function(direction, timestamp, timeSpan) {
+          if(timestamp % (timeSpan * 60) == 0) {
+            return timestamp;
+          }
+          if(direction == 'up') {
+            return (timestamp - (timestamp % (timeSpan * 60))  + (timeSpan * 60) );
+          }
+          else {
+            return (timestamp - (timestamp % (timeSpan * 60)));
+          }
         },
 
         // MOCK DATA
@@ -649,11 +662,6 @@
               date: new Date().setDate(today.getDate() + i)
             });
           }
-
-
-
-            //this.filterFormSelectedValues = {campus: 'gatton', building: 'gatton:bsl', room: 'gatton:bsl:gr2', date: '', time: '', capacity: 10, duration: 1.5, equipment: {pc: true} };
-
         },
         generateListData: function(results) {
           this.listData = [];
@@ -675,34 +683,6 @@
               details: _result.next_available_time_text
             });
           }
-
-          /*var names = ["Data Projector", "Group Study Rooms - level 6", "Conference & Other - Level 3", "Group Rooms", "Group Study Rooms", "Group Study Rooms", "Data Projector", "Group  Rooms - Level 3", "Data Projectors", "Assistive Technology Rooms - Level 4", "Group Study Rooms", "Group Rooms, Levels 2, 3 & 4", "Data Projector"], data = [];
-          var strings = [
-            "8 - 9a",
-            "8.30 - 9.30a",
-            "9 - 10a"
-          ];
-
-          for (var i=0; i < names.length; i++) {
-            this.listData.push({
-              id: i,
-              name:  names[i],
-              room: names[i],
-              level: "Level 3",
-              building: "Biological Sciences Library",
-              campus: "St Lucia",
-              summary: "6 chairs, 1 table, PC, Large Screen, whiteboard. The PC is temporarily out of order.",
-              image: 'test/images/images-resized/'+ (i % 4) + '.jpg',
-              imageLarge: 'test/images/images-resized/'+ (i % 4) + '.jpg',
-
-              timeslotLength: 30,     //in minutes
-              maxBookingLength: 120,  //in minutes
-              minBookingLength: 30,    //in minutes
-
-              checked: false,
-              details: strings[i % 3]
-            });
-          }*/
         }
       });
     })();
