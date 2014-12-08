@@ -12,7 +12,7 @@
           <paper-ripple fit></paper-ripple>
           <div class="primary">{{model.room}}</div>
           <span class="secondary">{{model.building}}, {{model.campus}}</span><br>
-          <span class="secondary level">Available time: {{model.details}}</span><br>
+          <span class="secondary level" hidden?={{!model.details}}>Available time: {{model.details}}</span><br>
         </div>
       </div>
     </template>

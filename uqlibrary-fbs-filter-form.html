@@ -49,7 +49,7 @@ Element providing solution to no problem in particular.
             <uqlibrary-filter-group label="Campus" icon="communication:location-on">
                 <paper-dropdown-menu id="campusSelect" label="{{errors.campus ? errors.campus : 'Campus'}}" class="{{errors.campus ? 'error' : ''}}" disabled?="{{!campuses.length}}"  >
                   <paper-dropdown class="dropdown">
-                    <core-menu class="menu" id="campusSelectMenu" selected="{{selectedCampus}}">
+                    <core-menu class="menu" id="campusSelectMenu" selectedAttribute="" selected="{{selectedCampus}}">
                       <template repeat="{{campuses as item}}">
                         <paper-item name="{{item.id}}" label="{{item.title}}">{{item.title}}</paper-item>
                       </template>
@@ -59,7 +59,7 @@ Element providing solution to no problem in particular.
 
                 <paper-dropdown-menu id="buildingSelect" label="Building" hidden?="{{!buildings.length}}">
                   <paper-dropdown class="dropdown">
-                    <core-menu class="menu" id="buildingSelectMenu" selected="{{selectedBuilding}}">
+                    <core-menu class="menu" id="buildingSelectMenu" selectedAttribute="" selected="{{selectedBuilding}}">
                       <template repeat="{{building in buildings}}">
                         <paper-item name="{{building.id}}" label="{{building.title}}">{{building.title}}</paper-item>
                       </template>
@@ -69,7 +69,7 @@ Element providing solution to no problem in particular.
 
                 <paper-dropdown-menu id="roomSelect" label="Room" hidden?="{{!rooms.length}}">
                   <paper-dropdown class="dropdown">
-                    <core-menu class="menu"  id="roomSelectMenu" selected="{{selectedRoom}}">
+                    <core-menu class="menu"  id="roomSelectMenu" selectedAttribute="" selected="{{selectedRoom}}">
                       <template repeat="{{rooms as room}}">
                         <paper-item name="{{room.id}}" label="{{room.title}}">{{room.title}}</paper-item>
                       </template>
@@ -81,7 +81,7 @@ Element providing solution to no problem in particular.
             <uqlibrary-filter-group label="Time" icon="device:access-time">
               <paper-dropdown-menu id="dateSelect" label="Today">
                 <paper-dropdown class="dropdown">
-                  <core-menu class="menu" valueattr="value" selected="{{selectedDate}}">
+                  <core-menu class="menu" valueattr="value" selectedAttribute="" selected="{{selectedDate}}">
                     <template repeat="{{dates as date}}">
                       <paper-item value="{{date.value}}" label="{{date.text}}">{{date.text}}</paper-item>
                     </template>
@@ -98,8 +98,8 @@ Element providing solution to no problem in particular.
               </core-overlay>
               <div class="sliderWrapper" layout horizontal justified center>
                 <div>Duration</div>
-                <paper-slider flex id="timePeriod" pin step="0.5" min="0.5" max="4" immediateValue="{{durationImmidiate}}" value="{{selectedDuration}}"></paper-slider>
-                <div end-justified style="width: 65px;">{{durationImmidiate}} hour(s)</div>
+                <paper-slider flex id="timePeriod" pin step="30" min="30" max="120" immediateValue="{{durationImmidiate}}" value="{{selectedDuration}}"></paper-slider>
+                <div end-justified class="durationText">{{durationImmidiate}} minutes</div>
               </div>
 
             </uqlibrary-filter-group>
@@ -112,7 +112,8 @@ Element providing solution to no problem in particular.
 
           </div>
         <div class="buttonWrapper" horizontal layout hidden?={{transitioning}}>
-          <div flex><paper-toast id="infoToast"></paper-toast></div>
+         <paper-toast id="infoToast"></paper-toast>
+          <div class="resultsText" flex>{{resultsText}}</div>
           <paper-button id="applyButton" end-justified  icon="done" on-click="{{submitForm}}">Search<core-icon icon="arrow-forward"></core-icon></paper-button>
         </div>
 
@@ -137,7 +138,9 @@ Element providing solution to no problem in particular.
         'formData.facilities': 'facilitiesChanged',
         'formData.dates': 'initialDatesChanged',
         'formData.rooms': 'roomsDataChanged',
-        selectedValues: 'selectedValuesChanged'
+        selectedValues: 'selectedValuesChanged',
+        selectedCapacity: 'triggerSelectedValuesChange',
+        selectedDuration: 'triggerSelectedValuesChange'
       },
 
       campuses: [],
@@ -158,6 +161,7 @@ Element providing solution to no problem in particular.
       selectedEquipment: {},
 
       errors: {},
+      resultsText: '',
 
       refreshList: '',
       months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -169,6 +173,12 @@ Element providing solution to no problem in particular.
 
       ready: function() {
         this.addEventListener('submit-form', this.submitForm);
+        this.addEventListener('results-changed', this.resultsChanged);
+      },
+
+      triggerSelectedValuesChange: function() {
+        this.getSelectedValues();
+        this.fire('selected-values-changed', {formData: this.selectedValues});
       },
 
       submitForm: function() {
@@ -193,7 +203,6 @@ Element providing solution to no problem in particular.
           this.loadBuildings();
           this.loadRooms();
         }
-
       },
 
       validateForm: function() {
@@ -260,7 +269,6 @@ Element providing solution to no problem in particular.
        if(this.buildings.length == 1) {
           this.selectedBuilding = this.buildings[0].id;
         } else {
-          this.selectedBuilding = '';
           this.rooms = [];
         }
 
@@ -306,6 +314,7 @@ Element providing solution to no problem in particular.
         if (newValue) {
           this.loadBuildings();
         }
+        this.triggerSelectedValuesChange();
       },
 
       selectedBuildingChanged: function(oldValue, newValue) {
@@ -316,6 +325,7 @@ Element providing solution to no problem in particular.
         if (newValue) {
           this.loadRooms();
         }
+        this.triggerSelectedValuesChange();
       },
 
       selectedRoomChanged: function(oldValue, newValue) {
@@ -332,23 +342,31 @@ Element providing solution to no problem in particular.
                 this.selectedCapacity = 1;
               }
               if (_room.mintime) {
-                this.$.timePeriod.min = (_room.mintime / 60);
+                this.$.timePeriod.min = parseInt(_room.mintime);
               }
               if (_room.maxtime) {
-                this.$.timePeriod.max = (_room.maxtime / 60);
+                this.$.timePeriod.max = parseInt(_room.maxtime);
               }
-
+              if (_room.time_span) {
+                this.$.timePeriod.step = parseInt(_room.time_span);
+              }
+              if(this.selectedDuration > this.$.timePeriod.max) {
+                this.selectedDuration = this.$.timePeriod.max;
+              }
+              this.$.timePeriod.update();
               break;
             }
           }
         }
+        this.triggerSelectedValuesChange();
       },
 
       selectedTimeChanged: function(oldValue, newValue) {
         this.$.decorator.updateLabelVisibility(newValue);
+        this.triggerSelectedValuesChange();
       },
 
-      selectedValuesChanged: function(oldValue, newValue) {
+      selectedValuesChanged: function() {
         if(this.selectedValues) {
           this.selectedCampus = this.selectedValues.campus;
           this.selectedBuilding = this.selectedValues.building;
@@ -393,6 +411,12 @@ Element providing solution to no problem in particular.
 
       },
 
+      selectedDateChanged: function(oldValue, newValue) {
+        if(oldValue != ''){
+          this.getSelectedValues();
+          this.fire('selected-date-changed', {date: newValue, formData: this.selectedValues});
+        }
+      },
 
       timeSelectedHandler: function(e, value) {
         this.selectedTime = value.time;
@@ -420,6 +444,10 @@ Element providing solution to no problem in particular.
 
       transitionEndHandler: function(e) {
         this.transitioning = false;
+      },
+
+      setResultsText: function(text) {
+          this.resultsText = text;
       }
 
     });

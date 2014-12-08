@@ -16,7 +16,6 @@
     <uqlibrary-api-facilities-availability id="facilities"></uqlibrary-api-facilities-availability>
 
     <core-drawer-panel id="drawerPanel" responsiveWidth="9999px">
-
       <core-header-panel drawer id="drawer">
         <core-menu selectedAttribute="">
           <paper-item>Dashboard</paper-item>
@@ -108,7 +107,6 @@
           this.facilities = [];
           this.rooms = [];
           this.user = {};
-          this.loadFilterFormData();
         },
 
         ready: function() {
@@ -123,6 +121,7 @@
           };
 
           this.$.ga.addPageView(this.currentPage);
+          this.loadFilterFormData();
 
           this.$.account.addEventListener('uqlibrary-api-account-loaded', function(e) {
             if (e.detail.hasSession) {
@@ -138,6 +137,7 @@
             that.facilities = e.detail;
             if (that.facilities.length > 0) {
               that.buildFilterFormDataFacilitiesArray();
+              //that.getFilteredRooms();
               that.showMyBookings();
             }
           });
@@ -146,7 +146,6 @@
 
         togglePanel: function () {
           this.$.drawerPanel.togglePanel();
-          this.$.ga.addEvent('launchIntoFullscreen');
         },
 
         showInfoToast: function(toast, text) {
@@ -172,7 +171,6 @@
             }
             this[p.action](data);
           }
-
         },
 
         transitionPrepareHandler: function(e) {
@@ -219,7 +217,7 @@
                 });
               });
               that.events = events;
-            }
+          }
           });
           this.$.bookings.get();
 
@@ -248,6 +246,21 @@
             rightButton: {icon:'check'},
             title: 'Find a room'
           };
+
+          this.addEventListener('selected-date-changed', function(e) {
+            //this.$.fbsFilterForm.getSelectedValues();
+            //this.filterFormSelectedValues = this.$.fbsFilterForm.selectedValues;
+            var _newDate = new Date(e.detail.date);
+            this.$.jsonp.url = this.apiUrlBase   + '?date=' + moment(_newDate).format('DD-MM-YYYY') + '&callback=';
+            this.formData = e.detail.formData;
+          });
+
+          this.addEventListener('selected-values-changed', function(e) {
+            this.formData = e.detail.formData;
+            this.getFilteredRooms();
+            this.$.fbsFilterForm.setResultsText(this.searchResults.length + ' room(s) found')
+          });
+
         },
 
         submitFilterForm: function() {
@@ -255,8 +268,16 @@
         },
 
         filterFormSubmitted: function(e, data, sender) {
-          var formData = e.detail.formData;
-          this.doTransition(e, data, sender);
+          this.formData = e.detail.formData;
+          this.getFilteredRooms();
+          if(this.searchResults.length == 0) {
+            return false;
+            //this.$.fbsFilterForm.showInfoToast('No rooms found for selected filter');
+          }
+          else {
+            this.generateListData();
+            this.doTransition(e, data, sender);
+          }
 
           // this.$.fbsFilterForm.showInfoToast('No rooms found for selected filter');
 
@@ -280,8 +301,6 @@
             action: 'showBookingForm'
           }
 
-          // Load results
-          this.generateListData();
           this.addEventListener('room-selected', this.roomSelected);
 
         },
@@ -368,10 +387,10 @@
 
           //setup booking form properties
           this.$.bookingForm.roomDetails = data;
-          var searchDate = this.$.fbsFilterForm.selectedValues.searchDate ?
-                  this.$.fbsFilterForm.selectedValues.searchDate : new Date();
+          var searchDate = this.formData.searchDate ?
+                  this.formData.searchDate : new Date();
           this.$.bookingForm.searchDate = searchDate;
-          this.$.bookingForm.searchDuration = 60 * this.$.fbsFilterForm.selectedDuration; //in minutes
+          this.$.bookingForm.searchDuration = 60 * this.formData.selectedDuration; //in minutes
           //TODO: maybe this should be a global setting?
           this.$.bookingForm.maxBookingDate = new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000);
 
@@ -417,7 +436,6 @@
         },
 
         buildFilterFormDataFacilitiesArray: function() {
-          this.filterFormData.facilities = [];
           var _facilities = {};
 
           for(var i = 0; i < this.facilities.length; i++) {
@@ -455,16 +473,24 @@
                 this.rooms[_facility.id] = {
                     id: _facility.id,
                     title: _facility.title,
+                    campus: _facility.campus,
+                    building: _facility.building,
                     capacity: _facility.capacity,
                     maxtime: _facility.maxtime,
                     mintime: _facility.mintime,
                     bookings: _facility.bookings,
-                    url: _facility.url
+                    available_from: this.facilities[i].resources[j].schedule.available_from,
+                    available_to: this.facilities[i].resources[j].schedule.available_to,
+                    url: _facility.url,
+                    notes: _facility.notes,
+                    next_available_time: null,
+                    next_available_time_text: '',
+                    time_span: this.facilities[i].resources[j].schedule['time_span']
                   };
               }
             }
           }
-
+          this.filterFormData.facilities = [];
           var _campusKeys = Object.keys(_facilities);
           for(var i = 0; i < _campusKeys.length; i++) {
 
@@ -482,7 +508,138 @@
 
         },
 
+        getFilteredRooms: function() {
 
+          this.searchResults = [];
+          /*if (this.formData.room && this.rooms[this.formData.room]) {
+            this.searchResults.push(this.rooms[this.formData.room]);
+            return;
+          }*/
+
+          var _keys = Object.keys(this.rooms);
+
+          if (_keys.length > 0) {
+            for(var i = 0; i < _keys.length; i++) {
+              var _room = this.rooms[_keys[i]];
+
+              var _add = true;
+              if(_add && this.formData.campus) {
+                if(_room.campus != this.formData.campus) {
+                  _add = false;
+                }
+              }
+              if(_add && this.formData.building) {
+                if(_room.building != this.formData.building) {
+                  _add = false;
+                }
+              }
+              if(_add && this.formData.room) {
+                if(_room.id != this.formData.room) {
+                  _add = false;
+                }
+
+              }
+
+              if(_add && this.formData.searchDate) {
+
+                _room.next_available_time = null;
+                _room.next_available_time_text = '';
+                var _startTimestamp = 0;
+                if(this.formData.searchDate > new Date()){
+                  _startTimestamp = this.roundTimestamp('up', moment(this.formData.searchDate).unix(), _room.time_span);
+                }
+                else {
+                  _startTimestamp = this.roundTimestamp('down', moment().unix(), _room.time_span);
+                }
+                if(this.formData.searchDate >= _startTimestamp) {
+                  _room.next_available_time = this.getRoomFirstAvailableTime(_room, _startTimestamp, this.formData.duration);
+                  if(_room.next_available_time) {
+                    var _time = moment.unix(_room.next_available_time);
+                    _room.next_available_time_text =  _time.format("h:mm a") + ' - ' + _time.add(this.formData.duration, 'minutes').format("h:mm a") + ', ' + _time.format("DD/MM/YYYY");
+                  }
+                }
+                if(!_room.next_available_time) {
+                  _add = false;
+                }
+              }
+
+              if(this.formData.capacity && _room.capacity) {
+                if(_room.capacity < this.formData.capacity) {
+                  _add = false;
+                }
+              }
+
+              if (_add) {
+                this.searchResults.push(_room);
+              }
+
+            }
+
+          }
+          if(this.searchResults.length > 0) {
+            this.searchResults.sort(function(a, b){return a.next_available_time - b.next_available_time });
+          }
+        },
+
+        getRoomFirstAvailableTime: function(room, startTimestamp, duration) {
+
+          // first build available time slots
+          var _slots = [];
+          var firstAvailableTime = 0;
+          if(room.bookings.length > 0) {
+            var _begin = room.available_from;
+
+            for(var i = 0; i < room.bookings.length; i++) {
+              var _booking = room.bookings[i];
+              if(_begin != _booking.from){
+                _slots.push({from: _begin, to: _booking.from});
+              }
+                _begin = _booking.to;
+            }
+            if(_begin != room.available_to) {
+              _slots.push({from: _begin, to: room.available_to});
+            }
+          }
+          else {
+            _slots.push({from: room.available_from, to: room.available_to});
+          }
+
+          if(_slots.length > 0) {
+            for(var i = 0; i < _slots.length; i++) {
+              var _slot = _slots[i];
+              var _endTimestamp = startTimestamp + duration * 60;
+              if(_slot.to < startTimestamp) {
+                continue;
+              }
+              if(startTimestamp >= _slot.from && _endTimestamp <= _slot.to) {
+                firstAvailableTime = startTimestamp;
+
+                break;
+                // available time
+              }
+              if(_endTimestamp <= _slot.to && _slot.to >= (_slot.from + duration * 60)){
+                firstAvailableTime = _slot.from;
+                break;
+              }
+
+            }
+          }
+          return (firstAvailableTime > 0 ? firstAvailableTime : false);
+
+
+        },
+
+        roundTimestamp: function(direction, timestamp, timeSpan) {
+          if(timestamp % (timeSpan * 60) == 0) {
+            return timestamp;
+          }
+          if(direction == 'up') {
+            return (timestamp - (timestamp % (timeSpan * 60))  + (timeSpan * 60) );
+          }
+          else {
+            return (timestamp - (timestamp % (timeSpan * 60)));
+          }
+        },
 
         // MOCK DATA
         loadFilterFormData: function() {
@@ -496,33 +653,24 @@
           }
         },
 
-        generateListData: function() {
+        generateListData: function(results) {
           this.listData = [];
-          var names = ["Data Projector", "Group Study Rooms - level 6", "Conference & Other - Level 3", "Group Rooms", "Group Study Rooms", "Group Study Rooms", "Data Projector", "Group  Rooms - Level 3", "Data Projectors", "Assistive Technology Rooms - Level 4", "Group Study Rooms", "Group Rooms, Levels 2, 3 & 4", "Data Projector"], data = [];
-          var strings = [
-            "8 - 9a",
-            "8.30 - 9.30a",
-            "9 - 10a"
-          ];
-
-          for (var i=0; i < names.length; i++) {
+          for(var i = 0; i < this.searchResults.length; i++ ) {
+            var _result = this.searchResults[i];
             this.listData.push({
-              id: i,
-              name:  names[i],
-              room: names[i],
-              level: "Level 3",
-              building: "Biological Sciences Library",
-              campus: "St Lucia",
-              summary: "6 chairs, 1 table, PC, Large Screen, whiteboard. The PC is temporarily out of order.",
+              id: _result.id,
+              name:  _result.title,
+              room: _result.title,
+              building: _result.building,
+              campus: _result.campus,
+              summary: _result.notes,
               image: 'test/images/images-resized/'+ (i % 4) + '.jpg',
               imageLarge: 'test/images/images-resized/'+ (i % 4) + '.jpg',
 
-              timeslotLength: 30,     //in minutes
-              maxBookingLength: 120,  //in minutes
-              minBookingLength: 30,    //in minutes
-
-              checked: false,
-              details: strings[i % 3]
+              timeslotLength: _result.time_span,     //in minutes
+              maxBookingLength: _result.maxtime,  //in minutes
+              minBookingLength: _result.mintime,    //in minutes
+              details: _result.next_available_time_text
             });
           }
         }
