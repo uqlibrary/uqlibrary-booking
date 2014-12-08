@@ -7,10 +7,14 @@
 <polymer-element name="uqlibrary-booking">
 
   <template>
+    <link rel="stylesheet" href="uqlibrary-booking.css">
+
     <uqlibrary-ga id="ga" appName="FBS"></uqlibrary-ga>
 
-    <link rel="stylesheet" href="uqlibrary-booking.css">
-    <polymer-jsonp url="https://app.library.uq.edu.au/api/facilities_availability?callback=" auto response="{{facilities}}"></polymer-jsonp>
+    <uqlibrary-api-account id="account"></uqlibrary-api-account>
+    <uqlibrary-api-account-bookings id="bookings"></uqlibrary-api-account-bookings>
+    <uqlibrary-api-facilities-availability id="facilities"></uqlibrary-api-facilities-availability>
+
     <core-drawer-panel id="drawerPanel" responsiveWidth="9999px">
 
       <core-header-panel drawer id="drawer">
@@ -33,9 +37,6 @@
                              icon="{{pageToolbar.leftButton.icon ? pageToolbar.leftButton.icon : ''}}"
                              on-tap="{{doTransition}}"></paper-icon-button>
           <span flex id="toolbar-page-title">{{pageToolbar.title}}</span>
-          <paper-icon-button on-click="{{launchIntoFullscreen}}"
-                             icon="fullscreen"
-                             hidden?="{{currentPage!=='myBookings'}}"></paper-icon-button>
           <paper-icon-button id="toolBarRightButton"
                              on-tap="{{doTransition}}"
                              hidden?="{{!pageToolbar.rightButton.icon}}"
@@ -50,7 +51,9 @@
                                 on-core-animated-pages-transition-end="{{transitionEndHandler}}"
             >
             <section id="myBookings">
-              <uqlibrary-timeline  events="{{events}}" on-event-selected="{{eventSelected}}"></uqlibrary-timeline>
+              <template if="{{events.length}}">
+                <uqlibrary-timeline events="{{events}}" on-event-selected="{{eventSelected}}"></uqlibrary-timeline>
+              </template>
               <paper-toast id="myBookingsInfoToast" flex></paper-toast>
               <paper-fab hero-id="filterForm"
                          hero?="{{transition === 'hero-transition'}}"
@@ -100,10 +103,17 @@
         transition: 'hero-transition',
         currentPage: 'myBookings',
         transitioning: false,
-        facilities: [],
-        rooms: [],
+
+        created: function () {
+          this.facilities = [];
+          this.rooms = [];
+          this.user = {};
+          this.loadFilterFormData();
+        },
 
         ready: function() {
+          var that = this;
+
           this.pageTransitions = {
             addBookingButton: {
               transition: 'hero-transition',
@@ -111,15 +121,27 @@
               action: 'showFilterForm'
             }
           };
-          this.showMyBookings();
 
           this.$.ga.addPageView(this.currentPage);
 
-        },
+          this.$.account.addEventListener('uqlibrary-api-account-loaded', function(e) {
+            if (e.detail.hasSession) {
+              that.user = e.detail;
+            } else {
+              // Not logged in
+              // TODO: Redirect to login
+            }
+          });
+          this.$.account.get();
 
-        created: function () {
-          this.loadEvents();
-          this.loadFilterFormData();
+          this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function(e) {
+            that.facilities = e.detail;
+            if (that.facilities.length > 0) {
+              that.buildFilterFormDataFacilitiesArray();
+              that.showMyBookings();
+            }
+          });
+          this.$.facilities.get();
         },
 
         togglePanel: function () {
@@ -130,21 +152,6 @@
         showInfoToast: function(toast, text) {
           toast.text = text;
           toast.show();
-        },
-
-        launchIntoFullscreen: function () {
-          this.$.ga.addEvent('launchIntoFullscreen');
-
-          var element = document.querySelector('uqlibrary-booking');
-          if (element.requestFullscreen) {
-            element.requestFullscreen();
-          } else if (element.mozRequestFullScreen) {
-            element.mozRequestFullScreen();
-          } else if (element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-          } else if (element.msRequestFullscreen) {
-            element.msRequestFullscreen();
-          }
         },
 
         doTransition: function (e, data, sender) {
@@ -182,6 +189,8 @@
         },
 
         showMyBookings: function() {
+          var that = this;
+
           this.pageTransitions.toolBarLeftButton = {
             action: 'togglePanel'
           };
@@ -195,7 +204,24 @@
             transition: 'slide-from-right',
             destination: 'bookingDetailsSection',
             action: 'showBookingDetails'
-          }
+          };
+
+          this.$.bookings.addEventListener('uqlibrary-api-account-bookings-loaded', function(e) {
+            var bookings = e.detail;
+            if (bookings.length > 0) {
+              var events = [];
+              bookings.forEach(function (b) {
+                events.push({
+                  id: b.id,
+                  startDate: new Date(b.from * 1000),
+                  endDate: new Date(b.to * 1000),
+                  title: b.resource.title
+                });
+              });
+              that.events = events;
+            }
+          });
+          this.$.bookings.get();
 
         },
 
@@ -390,16 +416,6 @@
           this.doTransition(e, data, {id: 'bookingForm'});
         },
 
-        //Facilities functions:
-
-        facilitiesChanged: function() {
-          if(this.facilities.length > 0) {
-            this.buildFilterFormDataFacilitiesArray();
-          }
-
-
-        },
-
         buildFilterFormDataFacilitiesArray: function() {
           this.filterFormData.facilities = [];
           var _facilities = {};
@@ -432,16 +448,16 @@
                     id: _facility.id,
                     title: _facility.title,
                     capacity: _facility.capacity,
-                    maxtime: _facility.mintime, // till the bug is fixed
-                    mintime: _facility.maxtime // till the bug is fixed
+                    maxtime: _facility.maxtime,
+                    mintime: _facility.mintime
                   });
 
                 this.rooms[_facility.id] = {
                     id: _facility.id,
                     title: _facility.title,
                     capacity: _facility.capacity,
-                    maxtime: _facility.mintime, // till the bug is fixed
-                    mintime: _facility.maxtime, // till the bug is fixed
+                    maxtime: _facility.maxtime,
+                    mintime: _facility.mintime,
                     bookings: _facility.bookings,
                     url: _facility.url
                   };
@@ -469,21 +485,6 @@
 
 
         // MOCK DATA
-        loadEvents: function () {
-          var events = [];
-          for(var i = 0; i < 5; i++){
-            events.push({
-              id:       i+1,
-              startDate:new Date(new Date().setHours(15 * i, 0, 0, 0)),
-              endDate:  new Date(new Date().setHours(15 * i + 1, 30, 0, 0)),
-              title:    "Group Room " + (i+1),
-              subtitle: "Level 3, Biological Sciences Library, St Lucia"
-            });
-          }
-
-          this.events = events;
-        },
-
         loadFilterFormData: function() {
           this.filterFormData = {};
           this.filterFormData.dates = [];
@@ -493,209 +494,8 @@
               date: new Date().setDate(today.getDate() + i)
             });
           }
-
-
-          /*this.filterFormData.facilities = [
-            {
-              title: 'St Lucia',
-              id: 'stlucia',
-              buildings: [
-                {
-                  title: 'Biological Sciences Library',
-                  id: 'bsl',
-                  rooms: [
-                    {
-                      title: 'Biological Sciences Library Group Room 1',
-                      id: 'gr1'
-
-                    },
-                    {
-                      title: 'Group Room 2',
-                      id: 'gr2'
-
-                    },
-                    {
-                      title: 'Individual Room',
-                      id: 'ir'
-
-                    }
-
-                  ]
-
-                },
-                {
-                  title: 'Duhig Building',
-                  id: 'dh',
-                  rooms: [
-                    {
-                      title: 'Group Room 1',
-                      id: 'gr1'
-
-                    },
-                    {
-                      title: 'Projector',
-                      id: 'projector'
-
-                    },
-                    {
-                      title: 'Individual Room',
-                      id: 'ir'
-
-                    }
-
-                  ]
-
-                },
-                {
-                  title: 'Duhig Building 1',
-                  id: 'dh1',
-                  rooms: [
-                    {
-                      title: 'Group Room 1',
-                      id: 'gr1'
-
-                    },
-                    {
-                      title: 'Projector',
-                      id: 'projector'
-
-                    },
-                    {
-                      title: 'Individual Room',
-                      id: 'ir'
-
-                    }
-
-                  ]
-
-                },
-                {
-                  title: 'Duhig Building',
-                  rooms: [
-                    {
-                      title: 'Group Room 1',
-                      id: 'gr1'
-
-                    },
-                    {
-                      title: 'Projector',
-                      id: 'projector'
-
-                    },
-                    {
-                      title: 'Individual Room',
-                      id: 'ir'
-
-                    }
-
-                  ]
-
-                },
-                {
-                  title: 'Duhig Building 2',
-                  id: 'dh2',
-                  rooms: [
-                    {
-                      title: 'Group Room 1',
-                      id: 'gr1'
-                    },
-                    {
-                      title: 'Projector',
-                      id: 'projector'
-
-                    },
-                    {
-                      title: 'Individual Room',
-                      id: 'ir'
-
-                    }
-
-                  ]
-
-                },
-              ]
-            },
-            {
-              title: 'Gatton',
-              id: 'gatton',
-              buildings: [
-                {
-                  title: 'Gatton Biological Sciences Library',
-                  id: 'bsl',
-                  rooms: [
-                    {
-                      title: 'Group Room 1',
-                      id: 'gr1'
-
-                    },
-                    {
-                      title: 'Group Room 2',
-                      id: 'gr2'
-
-                    },
-                    {
-                      title: 'Individual Room',
-                      id: 'ir'
-
-                    }
-
-                  ]
-
-                },
-                {
-                  title: 'Gatton Duhig Building',
-                  id: 'dh',
-                  rooms: [
-                    {
-                      title: 'Group Room 1',
-                      id: 'gr1'
-
-                    },
-                    {
-                      title: 'Projector',
-                      id: 'projector'
-
-                    },
-                    {
-                      title: 'Individual Room',
-                      id: 'ir'
-
-                    }
-
-                  ]
-
-                },
-                {
-                  title: 'Gatton Duhig Building 1',
-                  id: 'dh1',
-                  rooms: [
-                    {
-                      title: 'Group Room 1',
-                      id: 'gr1'
-
-                    },
-                    {
-                      title: 'Projector',
-                      id: 'projector'
-
-                    },
-                    {
-                      title: 'Individual Room',
-                      id: 'ir'
-
-                    }
-
-                  ]
-
-                },
-
-              ]
-            },
-
-          ];*/
-            //this.filterFormSelectedValues = {campus: 'gatton', building: 'gatton:bsl', room: 'gatton:bsl:gr2', date: '', time: '', capacity: 10, duration: 1.5, equipment: {pc: true} };
-
         },
+
         generateListData: function() {
           this.listData = [];
           var names = ["Data Projector", "Group Study Rooms - level 6", "Conference & Other - Level 3", "Group Rooms", "Group Study Rooms", "Group Study Rooms", "Data Projector", "Group  Rooms - Level 3", "Data Projectors", "Assistive Technology Rooms - Level 4", "Group Study Rooms", "Group Rooms, Levels 2, 3 & 4", "Data Projector"], data = [];
