@@ -390,7 +390,7 @@
           var searchDate = this.formData.searchDate ?
                   this.formData.searchDate : new Date();
           this.$.bookingForm.searchDate = searchDate;
-          this.$.bookingForm.searchDuration = 60 * this.formData.selectedDuration; //in minutes
+          this.$.bookingForm.searchDuration = this.formData.duration;
           //TODO: maybe this should be a global setting?
           this.$.bookingForm.maxBookingDate = new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000);
 
@@ -472,9 +472,11 @@
 
                 this.rooms[_facility.id] = {
                     id: _facility.id,
+                    scheduleid: _facility.scheduleid,
                     title: _facility.title,
                     campus: _facility.campus,
                     building: _facility.building,
+                    location: _facility.location,
                     capacity: _facility.capacity,
                     maxtime: _facility.maxtime,
                     mintime: _facility.mintime,
@@ -657,21 +659,28 @@
           this.listData = [];
           for(var i = 0; i < this.searchResults.length; i++ ) {
             var _result = this.searchResults[i];
-            this.listData.push({
-              id: _result.id,
-              name:  _result.title,
-              room: _result.title,
-              building: _result.building,
-              campus: _result.campus,
-              summary: _result.notes,
-              image: 'test/images/images-resized/'+ (i % 4) + '.jpg',
-              imageLarge: 'test/images/images-resized/'+ (i % 4) + '.jpg',
 
-              timeslotLength: _result.time_span,     //in minutes
-              maxBookingLength: _result.maxtime,  //in minutes
-              minBookingLength: _result.mintime,    //in minutes
-              details: _result.next_available_time_text
-            });
+            _result.image = 'test/images/images-resized/'+ (i % 4) + '.jpg';
+            _result.imageLarge = 'test/images/images-resized/'+ (i % 4) + '.jpg';
+//            _result.details = _result.next_available_time_text;
+
+            this.listData.push(_result);
+
+//            this.listData.push({
+//              id: _result.id,
+//              name:  _result.title,
+//              room: _result.title,
+//              building: _result.building,
+//              campus: _result.campus,
+//              summary: _result.notes,
+//              image: 'test/images/images-resized/'+ (i % 4) + '.jpg',
+//              imageLarge: 'test/images/images-resized/'+ (i % 4) + '.jpg',
+//
+//              timeslotLength: _result.time_span,     //in minutes
+//              maxBookingLength: _result.maxtime,  //in minutes
+//              minBookingLength: _result.mintime,    //in minutes
+//              details: _result.next_available_time_text
+//            });
           }
         }
       });

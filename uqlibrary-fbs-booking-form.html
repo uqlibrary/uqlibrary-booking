@@ -17,23 +17,23 @@ Element providing a form for booking a room.
           bookingForm.roomDetails = {
             id:       1
             room:     "Group Room 3",
-            level:    "Level 3",
+            location:    "Level 3",
             building: "Biological Sciences Library",
             campus:   "St Lucia",
-            summary:  "6 chairs, 1 table, PC, Large Screen, whiteboard.",
+            notes:  "6 chairs, 1 table, PC, Large Screen, whiteboard.",
             image:    "image-thumb.jpg",
             imageLarge:    "image-large.jpg",
 
-            timeslotLength: 30,     //in minutes
-            maxBookingLength: 120,    //in minutes
-            minBookingLength: 30,    //in minutes
+            time_span: 30,     //in minutes
+            maxtime: 120,    //in minutes
+            mintime: 30,    //in minutes
 
             //TODO: sync uqlibrary-booking and form data
             //raw data from FBS API, time in UNIX timestamp
             scheduleid : 'abcd12313123123',
             available_from : 1419429600,
             available_to: 1419516000,
-            time_span : "30",       //is timeslotLength
+            time_span : "30",       //is time_span
 
             bookings: [
                       {
@@ -85,22 +85,22 @@ Element providing a form for booking a room.
 
   <div class="booking-room-header" style="background-image: url('{{ roomDetails.imageLarge }}')">
     <h2>
-      {{ roomDetails.room }} <br>
+      {{ roomDetails.title }} <br>
       <small>{{roomDetails | formatLocation }}</small>
     </h2>
   </div>
 
-  <p class="booking-room-summary">{{ roomDetails.summary }}</p>
+  <p class="booking-room-summary">{{ roomDetails.notes }}</p>
 
   <uqlibrary-date-selector searchDate="{{ searchDate }}"
                            searchDuration="{{ searchDuration }}"
                            maxBookingDate="{{ maxBookingDate }}"
                            bookingTimeslots = "{{ bookingTimeslots }}"
-                           maxBookingLength="{{ roomDetails.maxBookingLength / roomDetails.timeslotLength }}"
+                           maxtime="{{ roomDetails.maxtime / roomDetails.time_span }}"
                            on-time-selector-changed="{{ bookingSelectionChanged }}">
   </uqlibrary-date-selector>
 
-  <p class="booking-room-hint">Maximum booking duration is {{ roomDetails.maxBookingLength }} min, minimum booking duration is {{ roomDetails.minBookingLength }} min</p>
+  <p class="booking-room-hint">Maximum booking duration is {{ roomDetails.maxtime }} min, minimum booking duration is {{ roomDetails.mintime }} min</p>
   <p class="booking-room-hint">
     <span class="hint-box selected"></span> - your current selection
     <span class="hint-box available"></span> - available time slot
@@ -167,6 +167,10 @@ Element providing a form for booking a room.
      * @event booking-date-changed
      *
      */
+    roomDetailsChanged : function (oldValue, newValue) {
+      this.bookingTimeslots = this.createTimeslots();
+      this.selectTimeslots();
+    },
 
     searchDateChanged : function (oldValue, newValue) {
       this.fire('booking-date-changed', { searchDate: this.searchDate });
@@ -205,7 +209,7 @@ Element providing a form for booking a room.
       if (selectedTimeslots.length == 0) {
         validation.valid = false;
         validation.message = "Please, make a valid selection.";
-      } else if (selectedTimeslots.length > this.maxBookingLength / this.roomDetails.timeslotLength) {
+      } else if (selectedTimeslots.length > this.maxtime / this.roomDetails.time_span) {
         validation.valid = false;
         validation.message = "Current selection exceeds maximum booking duration. Please, make a valid selection.";
       }
@@ -261,8 +265,8 @@ Element providing a form for booking a room.
     formatLocation : function (roomDetails) {
       var location = [];
 
-      if (roomDetails.level !== undefined)
-        location.push(roomDetails.level);
+      if (roomDetails.location !== undefined)
+        location.push(roomDetails.location);
 
       if (roomDetails.building !== undefined)
         location.push(roomDetails.building);
@@ -274,7 +278,7 @@ Element providing a form for booking a room.
     },
 
     selectTimeslots : function() {
-      var duration = parseInt(Math.min(this.roomDetails.maxBookingLength, this.searchDuration)/this.roomDetails.timeslotLength);
+      var duration = parseInt(Math.min(this.roomDetails.maxtime, this.searchDuration)/this.roomDetails.time_span);
       var remainingDuration = duration;
       var searchDate = this.searchDate;
 
@@ -296,14 +300,14 @@ Element providing a form for booking a room.
 
       var openingHours = moment(this.roomDetails.available_from, "X");
       var closingHours = moment(this.roomDetails.available_to, "X");
-      var workingTimeslots = (closingHours - openingHours) / this.roomDetails.timeslotLength / 60 / 1000;
+      var workingTimeslots = (closingHours - openingHours) / this.roomDetails.time_span / 60 / 1000;
 
       var currentDate = moment(new Date(openingHours.toDate()));
       var timeslots = [];
 
       for (var index = 0; index < workingTimeslots; index++){
         var timeslotStartTime = new Date(currentDate.toDate());
-        var timeslotEndTime = new Date(currentDate.add(this.roomDetails.timeslotLength, "m").toDate());
+        var timeslotEndTime = new Date(currentDate.add(this.roomDetails.time_span, "m").toDate());
 
         var selectable = this.roomDetails.bookings.every(function(element, index, array){
           var bookingStartTime = moment(element.from, "X");
