@@ -56,7 +56,22 @@
     .booking-room-hint .hint-box.unavailable {
       background-color: #BDBDBD; }
 
-paper-fab.action {
-  background-color: #4CAF50; }
+.roomDetailsWrapper {
+  background-color: #ffffff;
+  margin-bottom: 50px; }
+
+.buttonWrapper {
+  padding: 0px 20px 0px 20px;
+  position: fixed;
+  bottom: 0px;
+  height: 48px;
+  width: 100%;
+  border-top: 1px solid #EEEEEE;
+  background: #ffffff; }
+  .buttonWrapper paper-button#createRoomBooking {
+    height: 36px;
+    text-align: right; }
+    .buttonWrapper paper-button#createRoomBooking core-icon {
+      width: 16px; }
 
 /*# sourceMappingURL=uqlibrary-fbs-booking-form.css.map */

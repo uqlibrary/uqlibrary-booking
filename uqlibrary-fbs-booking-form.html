@@ -15,8 +15,8 @@ Element providing a form for booking a room.
           var bookingForm = document.querySelector('uqlibrary-fbs-booking-form');
 
           bookingForm.roomDetails = {
-            id:       1
-            room:     "Group Room 3",
+            id:       'abdsfsdf34234234'
+            title:     "Group Room 3",
             location:    "Level 3",
             building: "Biological Sciences Library",
             campus:   "St Lucia",
@@ -28,12 +28,9 @@ Element providing a form for booking a room.
             maxtime: 120,    //in minutes
             mintime: 30,    //in minutes
 
-            //TODO: sync uqlibrary-booking and form data
-            //raw data from FBS API, time in UNIX timestamp
             scheduleid : 'abcd12313123123',
             available_from : 1419429600,
             available_to: 1419516000,
-            time_span : "30",       //is time_span
 
             bookings: [
                       {
@@ -79,6 +76,8 @@ Element providing a form for booking a room.
 <template>
   <link rel="stylesheet" href="uqlibrary-fbs-booking-form.css">
 
+  <div class="roomDetailsWrapper">
+
   <core-ajax id="createBookingRequest" url="https://app.library.uq.edu.au/api/booking"
              auto="false" method="POST" contentType="application/json"
              on-core-response="{{ createBookingResponse }}" on-core-error="{{ createBookingError }}" on-core-complete="{{ createBookingComplete }}"></core-ajax>
@@ -96,8 +95,7 @@ Element providing a form for booking a room.
                            searchDuration="{{ searchDuration }}"
                            maxBookingDate="{{ maxBookingDate }}"
                            bookingTimeslots = "{{ bookingTimeslots }}"
-                           maxtime="{{ roomDetails.maxtime / roomDetails.time_span }}"
-                           on-time-selector-changed="{{ bookingSelectionChanged }}">
+                           maxBookingLength="{{ roomDetails.maxtime / roomDetails.time_span }}">
   </uqlibrary-date-selector>
 
   <p class="booking-room-hint">Maximum booking duration is {{ roomDetails.maxtime }} min, minimum booking duration is {{ roomDetails.mintime }} min</p>
@@ -107,13 +105,14 @@ Element providing a form for booking a room.
     <span class="hint-box unavailable"></span> - unavailable time slot
   </p>
 
-  <paper-toast id="infoToast" flex></paper-toast>
+  <div class="buttonWrapper" horizontal layout hidden?={{transitioning}}>
+    <paper-toast id="infoToast" flex></paper-toast>
+    <div flex>&nbsp;</div>
+    <paper-button id="createRoomBooking" end-justified  icon="done" on-click="{{createRoomBooking}}">Save booking</paper-button>
+  </div>
 
-  <paper-fab
-          id="createRoomBooking"
-          icon="check"
-          class="action"
-          on-tap="{{ createRoomBooking }}"></paper-fab>
+  </div>
+
 
 </template>
 
@@ -173,11 +172,9 @@ Element providing a form for booking a room.
     },
 
     searchDateChanged : function (oldValue, newValue) {
-      this.fire('booking-date-changed', { searchDate: this.searchDate });
-
-      //TODO: when data is received for new date, update timeslots
-      this.bookingTimeslots = this.createTimeslots();
-      this.selectTimeslots();
+      if (this.searchDate.toDateString() != moment(this.roomDetails.available_from, "X").toDate().toDateString()) {
+        this.fire('booking-date-changed', {searchDate: this.searchDate});
+      }
     },
 
     created: function () {
@@ -265,13 +262,13 @@ Element providing a form for booking a room.
     formatLocation : function (roomDetails) {
       var location = [];
 
-      if (roomDetails.location !== undefined)
+      if (roomDetails.location)
         location.push(roomDetails.location);
 
-      if (roomDetails.building !== undefined)
+      if (roomDetails.building)
         location.push(roomDetails.building);
 
-      if (roomDetails !== undefined)
+      if (roomDetails)
         location.push(roomDetails.campus);
 
       return location.join(", ");

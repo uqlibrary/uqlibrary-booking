@@ -78,7 +78,7 @@
             </section>
 
             <section id="bookingFormSection">
-              <uqlibrary-fbs-booking-form id="bookingForm" on-booking-created="{{bookingCreated}}"></uqlibrary-fbs-booking-form>
+              <uqlibrary-fbs-booking-form id="bookingForm" on-booking-date-changed="{{bookingDateChanged}}" on-booking-created="{{bookingCreated}}"></uqlibrary-fbs-booking-form>
             </section>
 
             <section id="bookingDetailsSection">
@@ -126,6 +126,10 @@
           this.$.account.addEventListener('uqlibrary-api-account-loaded', function(e) {
             if (e.detail.hasSession) {
               that.user = e.detail;
+
+              that.$.bookingForm.authTokenValue = this.getCookie("UQLID");
+              that.$.bookingDetails.authTokenValue = this.getCookie("UQLID");
+
             } else {
               // Not logged in
               // TODO: Redirect to login
@@ -135,10 +139,18 @@
 
           this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function(e) {
             that.facilities = e.detail;
+
             if (that.facilities.length > 0) {
               that.buildFilterFormDataFacilitiesArray();
-              //that.getFilteredRooms();
-              that.showMyBookings();
+
+              switch(that.currentPage) {
+                case 'myBookings':
+                  that.showMyBookings();
+                  break;
+                case 'bookingFormSection':
+                  that.$.bookingForm.roomDetails = that.rooms[that.$.bookingForm.roomDetails.id];
+                  break;
+              }
             }
           });
           this.$.facilities.get();
@@ -248,11 +260,10 @@
           };
 
           this.addEventListener('selected-date-changed', function(e) {
-            //this.$.fbsFilterForm.getSelectedValues();
-            //this.filterFormSelectedValues = this.$.fbsFilterForm.selectedValues;
             var _newDate = new Date(e.detail.date);
-            this.$.jsonp.url = this.apiUrlBase   + '?date=' + moment(_newDate).format('DD-MM-YYYY') + '&callback=';
             this.formData = e.detail.formData;
+
+            this.$.facilities.get({date: moment(_newDate).format('DD-MM-YYYY')});
           });
 
           this.addEventListener('selected-values-changed', function(e) {
@@ -272,15 +283,10 @@
           this.getFilteredRooms();
           if(this.searchResults.length == 0) {
             return false;
-            //this.$.fbsFilterForm.showInfoToast('No rooms found for selected filter');
           }
           else {
-            this.generateListData();
             this.doTransition(e, data, sender);
           }
-
-          // this.$.fbsFilterForm.showInfoToast('No rooms found for selected filter');
-
         },
 
         showResultsPage: function() {
@@ -315,7 +321,7 @@
 
           var roomsList = document.createElement('uqlibrary-rooms-list');
           roomsList.setAttribute('id', 'resultsList');
-          roomsList.setData(this.listData);
+          roomsList.setData(this.searchResults);
 
           var container = document.querySelector("#main /deep/ #mainContainer");
           if(container && container.offsetHeight) {
@@ -337,16 +343,6 @@
         showBookingDetails : function (data) {
 
           this.$.bookingDetails.bookingDetails = data;
-
-          //TODO: load room details for this booking
-          this.$.bookingDetails.roomDetails = {
-            id:       1,
-            room:     data.title,
-            campus:   data.subtitle,
-            summary:  "6 chairs, 1 table, PC, Large Screen, whiteboard.",
-            image:    "test/images/images-resized/0.jpg",
-            imageLarge:    "test/images/images-resized/0.jpg"
-          };
 
           this.pageToolbar = {
             leftButton: { icon:'arrow-back' },
@@ -425,6 +421,10 @@
           this.showInfoToast(this.$.myBookingsInfoToast, "Your booking was deleted.");
         },
 
+        bookingDateChanged: function(e, data, sender) {
+          this.$.facilities.get({date: moment(data.searchDate).format('DD-MM-YYYY')});
+        },
+
         bookingCreated: function(e, data, sender) {
           this.$.ga.addEvent('bookingCreated');
 
@@ -487,8 +487,10 @@
                     notes: _facility.notes,
                     next_available_time: null,
                     next_available_time_text: '',
-                    time_span: this.facilities[i].resources[j].schedule['time_span']
-                  };
+                    time_span: this.facilities[i].resources[j].schedule['time_span'],
+                    image : 'test/images/images-resized/'+ (k % 4) + '.jpg',
+                    imageLarge : 'test/images/images-resized/'+ (k % 4) + '.jpg'
+              };
               }
             }
           }
@@ -653,36 +655,8 @@
               date: new Date().setDate(today.getDate() + i)
             });
           }
-        },
-
-        generateListData: function(results) {
-          this.listData = [];
-          for(var i = 0; i < this.searchResults.length; i++ ) {
-            var _result = this.searchResults[i];
-
-            _result.image = 'test/images/images-resized/'+ (i % 4) + '.jpg';
-            _result.imageLarge = 'test/images/images-resized/'+ (i % 4) + '.jpg';
-//            _result.details = _result.next_available_time_text;
-
-            this.listData.push(_result);
-
-//            this.listData.push({
-//              id: _result.id,
-//              name:  _result.title,
-//              room: _result.title,
-//              building: _result.building,
-//              campus: _result.campus,
-//              summary: _result.notes,
-//              image: 'test/images/images-resized/'+ (i % 4) + '.jpg',
-//              imageLarge: 'test/images/images-resized/'+ (i % 4) + '.jpg',
-//
-//              timeslotLength: _result.time_span,     //in minutes
-//              maxBookingLength: _result.maxtime,  //in minutes
-//              minBookingLength: _result.mintime,    //in minutes
-//              details: _result.next_available_time_text
-//            });
-          }
         }
+
       });
     })();
   </script>
