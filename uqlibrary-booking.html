@@ -15,18 +15,9 @@
     <uqlibrary-api-account-bookings id="bookings"></uqlibrary-api-account-bookings>
     <uqlibrary-api-facilities-availability id="facilities"></uqlibrary-api-facilities-availability>
 
-    <core-drawer-panel id="drawerPanel" responsiveWidth="9999px">
+    <core-drawer-panel id="drawerPanel" drawerWidth="320px" responsiveWidth="9999px">
       <core-header-panel drawer id="drawer">
-        <core-menu selectedAttribute="">
-          <paper-item>Dashboard</paper-item>
-          <paper-item>Agenda</paper-item>
-          <paper-item>Study</paper-item>
-          <paper-item>Library</paper-item>
-          <paper-item>News</paper-item>
-          <paper-item>Events</paper-item>
-          <paper-item>Settings</paper-item>
-          <paper-item>Logout</paper-item>
-        </core-menu>
+        <uqlibrary-menu account="{{user}}"></uqlibrary-menu>
       </core-header-panel>
 
       <core-header-panel main id="main">

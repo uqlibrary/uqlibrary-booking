@@ -31,12 +31,11 @@ core-drawer-panel {
   margin: 16px; }
 
 #drawer {
-  background-color: rgba(0, 0, 0, 0.87);
-  color: rgba(255, 255, 255, 0.87); }
+  background-color: #ffffff; }
 
 core-toolbar {
-  background-color: #49075e;
-  border-bottom: 1px solid #49075e;
+  background-color: #49075E;
+  border-bottom: 1px solid #49075E;
   color: rgba(255, 255, 255, 0.87); }
 
 core-menu {
@@ -47,7 +46,7 @@ core-header-panel#drawer core-menu paper-item.core-selected {
   background-color: rgba(0, 0, 0, 0.87); }
 
 paper-fab.action {
-  background-color: #4caf50; }
+  background-color: #4CAF50; }
   paper-fab.action#addBookingButton {
     position: fixed;
     bottom: 16px;
@@ -58,3 +57,5 @@ paper-fab.action {
   #filterForm uqlibrary-fbs-filter-form {
     position: relative;
     display: block; }
+
+/*# sourceMappingURL=uqlibrary-booking.css.map */
