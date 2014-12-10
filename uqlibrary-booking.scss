@@ -12,8 +12,7 @@ core-drawer-panel {
 }
 
 #drawer {
-  background-color: $text;
-  color: $text-inverse;
+  background-color: $white;
 }
 
 core-toolbar {
@@ -25,20 +24,6 @@ core-toolbar {
 core-menu {
   margin: 0;
 }
-
-core-header-panel {
- &#drawer {
-   core-menu {
-     paper-item {
-       &.core-selected {
-         color: $text-inverse;
-         background-color: $text;
-       }
-     }
-   }
- }
-}
-
 
 paper-fab {
   &.action{

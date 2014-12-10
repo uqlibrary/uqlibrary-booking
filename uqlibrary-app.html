@@ -1,0 +1,65 @@
+<link rel="import" href="../uqlibrary-elements/0.5.1/lib/vulcanized.html">
+
+<polymer-element name="uqlibrary-app">
+
+  <template>
+    <uqlibrary-ga id="ga" appName="{{appName}}"></uqlibrary-ga>
+  </template>
+
+  <script>
+    (function() {
+      Polymer({
+
+        created: function () {
+        },
+
+        ready: function () {
+        },
+
+        togglePanel: function () {
+          this.$.drawerPanel.togglePanel();
+        },
+
+        showInfoToast: function(toast, text) {
+          toast.text = text;
+          toast.show();
+        },
+
+        doTransition: function (e, data, sender) {
+          var p = this.pageTransitions[sender.id];
+          if (p.transition) {
+            this.transition = p.transition;
+          }
+          if (p.destination) {
+            this.$.pages.selectedItem = this.$[p.destination];
+            this.currentPage = p.destination;
+          }
+
+          if (p.action) {
+            if (p.destination) {
+              this.$.ga.addPageView(p.destination);
+            } else {
+              this.$.ga.addEvent(p.action);
+            }
+            this[p.action](data);
+          }
+        },
+
+        transitionPrepareHandler: function(e) {
+          this.transitioning = true;
+          this.fire('core-signal', {name: "transition-prepare"});
+        },
+
+        transitionEndHandler: function(e) {
+          this.transitioning = false;
+          if(e.target.selectedItem.id == 'results') {
+            this.createResultsList();
+          }
+          this.fire('core-signal', {name: "transition-end"});
+        }
+
+      });
+    })();
+  </script>
+
+</polymer-element>
