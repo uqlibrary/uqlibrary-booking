@@ -3,6 +3,10 @@
 :host {
 }
 
+a.icon, a.icon:active, a.icon:link {
+  color: $fbs-selected-time;
+}
+
 .booking-room-header {
   background-color: $uq-fbs-room-header-bg;
   background-size: cover;

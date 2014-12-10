@@ -51,7 +51,7 @@
             >
             <section id="myBookings">
               <template if="{{events.length}}">
-                <uqlibrary-timeline events="{{events}}" on-event-selected="{{eventSelected}}"></uqlibrary-timeline>
+                <uqlibrary-timeline events="{{events}}" on-event-selected="{{bookingSelected}}"></uqlibrary-timeline>
               </template>
               <paper-toast id="myBookingsInfoToast" flex></paper-toast>
               <paper-fab hero-id="filterForm"
@@ -78,7 +78,7 @@
             </section>
 
             <section id="bookingFormSection">
-              <uqlibrary-fbs-booking-form id="bookingForm" on-booking-date-changed="{{bookingDateChanged}}" on-booking-created="{{bookingCreated}}"></uqlibrary-fbs-booking-form>
+              <uqlibrary-fbs-booking-form id="bookingForm" on-booking-date-changed="{{searchDateChanged}}" on-booking-created="{{bookingCreated}}"></uqlibrary-fbs-booking-form>
             </section>
 
             <section id="bookingDetailsSection">
@@ -225,7 +225,8 @@
                   id: b.id,
                   startDate: new Date(b.from * 1000),
                   endDate: new Date(b.to * 1000),
-                  title: b.resource.title
+                  title: b.resource.title,
+                  scheduleid: b.resource.id
                 });
               });
               that.events = events;
@@ -396,7 +397,7 @@
           this.$.bookingForm.fire('submit-form');
         },
 
-        eventSelected: function(e, data, sender){
+        bookingSelected: function(e, data, sender){
           //transition to booking details
           this.doTransition(e, data, {id: 'bookingDetails'});
         },
@@ -404,15 +405,7 @@
         bookingDeleted: function(e, data, sender){
           this.$.ga.addEvent('bookingDeleted');
 
-          //Remove event from this.events
-          var deletedEvent = e.detail;
-          var eventIndex = -1;
-          for(var i=0; i<this.events.length; i++) {
-            if(this.events[i].id == deletedEvent.id){
-              eventIndex = i;
-            }
-          }
-          this.events.splice(eventIndex, 1);
+          this.$.bookings.get();
 
           //Transition to timeline page
           this.doTransition(e, data, {id: 'toolBarLeftButton'});
@@ -421,18 +414,18 @@
           this.showInfoToast(this.$.myBookingsInfoToast, "Your booking was deleted.");
         },
 
-        bookingDateChanged: function(e, data, sender) {
-          this.$.facilities.get({date: moment(data.searchDate).format('DD-MM-YYYY')});
-        },
-
         bookingCreated: function(e, data, sender) {
           this.$.ga.addEvent('bookingCreated');
 
           // add new booking details to events on timeline
-          this.events.push(data);
+          this.$.bookings.get();
 
           // transition to timeline
           this.doTransition(e, data, {id: 'bookingForm'});
+        },
+
+        searchDateChanged: function(e, data, sender) {
+          this.$.facilities.get({date: moment(data.searchDate).format('DD-MM-YYYY')});
         },
 
         buildFilterFormDataFacilitiesArray: function() {
@@ -470,6 +463,9 @@
                     mintime: _facility.mintime
                   });
 
+                var buildingImageName = _facility.building.replace(/\s/g, '_').replace(/\W/g, '').toLowerCase();
+                var campusImageName = _facility.campus.replace(/\s/g, '_').replace(/\W/g, '').toLowerCase();
+
                 this.rooms[_facility.id] = {
                     id: _facility.id,
                     scheduleid: _facility.scheduleid,
@@ -488,8 +484,8 @@
                     next_available_time: null,
                     next_available_time_text: '',
                     time_span: this.facilities[i].resources[j].schedule['time_span'],
-                    image : 'test/images/images-resized/'+ (k % 4) + '.jpg',
-                    imageLarge : 'test/images/images-resized/'+ (k % 4) + '.jpg'
+                    image : campusImageName + '/' + buildingImageName + '_thumb' + '.jpg',
+                    imageLarge : campusImageName + '/' + buildingImageName + '.jpg'
               };
               }
             }

@@ -23,6 +23,7 @@ Element providing a form for booking a room.
             notes:  "6 chairs, 1 table, PC, Large Screen, whiteboard.",
             image:    "image-thumb.jpg",
             imageLarge:    "image-large.jpg",
+            url: "", //url to maps, open in new window
 
             time_span: 30,     //in minutes
             maxtime: 120,    //in minutes
@@ -82,14 +83,18 @@ Element providing a form for booking a room.
              auto="false" method="POST" contentType="application/json"
              on-core-response="{{ createBookingResponse }}" on-core-error="{{ createBookingError }}" on-core-complete="{{ createBookingComplete }}"></core-ajax>
 
-  <div class="booking-room-header" style="background-image: url('{{ roomDetails.imageLarge }}')">
+  <div class="booking-room-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ roomDetails.imageLarge }}')">
     <h2>
       {{ roomDetails.title }} <br>
       <small>{{roomDetails | formatLocation }}</small>
     </h2>
   </div>
 
-  <p class="booking-room-summary">{{ roomDetails.notes }}</p>
+  <p class="booking-room-summary">{{ roomDetails.notes }}
+    <a class="icon" hidden?="{{!roomDetails.url}}" href="{{roomDetails.url}}" target="_blank">
+      <core-icon icon="file-map"></core-icon>
+    </a>
+  </p>
 
   <uqlibrary-date-selector searchDate="{{ searchDate }}"
                            searchDuration="{{ searchDuration }}"

@@ -14,6 +14,54 @@ Element providing a simple booking display.
 
           var element = document.querySelector('uqlibrary-fbs-booking-display');
 
+          bookingForm.roomDetails = {
+            id:       'abdsfsdf34234234'
+            title:     "Group Room 3",
+            location:    "Level 3",
+            building: "Biological Sciences Library",
+            campus:   "St Lucia",
+            notes:  "6 chairs, 1 table, PC, Large Screen, whiteboard.",
+            image:    "image-thumb.jpg",
+            imageLarge:    "image-large.jpg",
+
+            time_span: 30,     //in minutes
+            maxtime: 120,    //in minutes
+            mintime: 30,    //in minutes
+
+            scheduleid : 'abcd12313123123',
+            available_from : 1419429600,
+            available_to: 1419516000,
+
+            bookings: [
+                      {
+                          "id": "sc1547b9f971ca95",
+                          "from": 1417647600,
+                          "to": 1417654800
+                      },
+                      {
+                          "id": "sc1547b9fbcb4e45",
+                          "from": 1417654800,
+                          "to": 1417662000
+                      },
+                      {
+                          "id": "sc1547b9fd13d5ef",
+                          "from": 1417662000,
+                          "to": 1417669200
+                      },
+                      {
+                          "id": "sc1547522d054d86",
+                          "from": 1417669200,
+                          "to": 1417672800
+                      }]
+          };
+
+          bookingForm.searchDate = new Date();        //search date and time
+          bookingForm.searchDuration = 60;            //in minutes
+          bookingForm.maxBookingDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
+
+          bookingForm.authTokenValue = 'abcd1234';
+        });
+
           element.roomDetails = {
             id:       1
             room:     "Group Room 3",
@@ -52,7 +100,7 @@ Element providing a simple booking display.
   <template>
     <link rel="stylesheet" href="uqlibrary-fbs-booking-display.css">
 
-    <div class="booking-room-header" style="background-image: url('{{ roomDetails.imageLarge }}')">
+    <div class="booking-room-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ roomDetails.imageLarge }}')">
       <h2>
         {{ roomDetails.room }} <br>
         <small>{{roomDetails | formatLocation }}</small>
