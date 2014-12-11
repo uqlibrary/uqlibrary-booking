@@ -24,6 +24,10 @@
   box-sizing: border-box;
   outline: none; }
 
+.big-icon {
+  height: 32px;
+  width: 32px; }
+
 a.icon, a.icon:active, a.icon:link {
   color: #009688; }
 
@@ -38,6 +42,16 @@ a.icon, a.icon:active, a.icon:link {
     line-height: 1;
     background-color: rgba(73, 7, 94, 0.6);
     padding: 5px 0 5px 40px; }
+
+.booking-details-item {
+  padding: 10px 0 20px 40px; }
+  .booking-details-item h3 {
+    margin: 0;
+    padding-left: 20px; }
+  .booking-details-item p {
+    font-size: 13px;
+    margin: 0;
+    padding-left: 20px; }
 
 .booking-room-summary {
   padding: 10px 40px; }
@@ -59,11 +73,10 @@ a.icon, a.icon:active, a.icon:link {
     .booking-room-hint .hint-box.unavailable {
       background-color: #BDBDBD; }
 
-.roomDetailsWrapper {
-  background-color: #ffffff;
+.display-section {
   margin-bottom: 50px; }
 
-.buttonWrapper {
+.persistent-footer {
   padding: 0px 20px 0px 20px;
   position: fixed;
   bottom: 0px;
@@ -71,10 +84,10 @@ a.icon, a.icon:active, a.icon:link {
   width: 100%;
   border-top: 1px solid #EEEEEE;
   background: #ffffff; }
-  .buttonWrapper paper-button#createRoomBooking {
+  .persistent-footer paper-button#createRoomBooking {
     height: 36px;
     text-align: right; }
-    .buttonWrapper paper-button#createRoomBooking core-icon {
+    .persistent-footer paper-button#createRoomBooking core-icon {
       width: 16px; }
 
 /*# sourceMappingURL=uqlibrary-fbs-booking-form.css.map */

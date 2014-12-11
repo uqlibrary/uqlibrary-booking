@@ -3,6 +3,11 @@
 :host {
 }
 
+.big-icon {
+  height: 32px;
+  width: 32px;
+}
+
 a.icon, a.icon:active, a.icon:link {
   color: $fbs-selected-time;
 }
@@ -19,6 +24,20 @@ a.icon, a.icon:active, a.icon:link {
     line-height: 1;
     background-color: $uq-fbs-room-title-bg;
     padding: 5px 0 5px 40px;
+  }
+}
+
+.booking-details-item {
+  padding: 10px 0 20px 40px;
+
+  & h3 {
+    margin: 0;
+    padding-left: 20px;
+  }
+  & p {
+    font-size: 13px;
+    margin: 0;
+    padding-left: 20px;
   }
 }
 
@@ -54,12 +73,11 @@ a.icon, a.icon:active, a.icon:link {
   }
 }
 
-.roomDetailsWrapper {
-  background-color: $white;
+.display-section {
   margin-bottom: 50px;
 }
 
-.buttonWrapper {
+.persistent-footer {
   padding: 0px 20px 0px 20px;
   position: fixed;
   bottom: 0px;

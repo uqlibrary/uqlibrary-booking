@@ -14,6 +14,15 @@ Element providing a simple booking display.
 
           var element = document.querySelector('uqlibrary-fbs-booking-display');
 
+          bookingForm.bookingDetails = {
+            id: "abc123123123",
+            startDate: new Date(),
+            endDate: new Date(),
+            title: "",
+            scheduleid: "abcd12313123123",
+            machid: "abdsfsdf34234234"
+          };
+
           bookingForm.roomDetails = {
             id:       'abdsfsdf34234234'
             title:     "Group Room 3",
@@ -95,60 +104,76 @@ Element providing a simple booking display.
 @homepage https://github.com/uqlibrary/uqlibrary-fbs-booking-display
 -->
 
-<polymer-element name="uqlibrary-fbs-booking-display" attributes="roomDetails bookingDetails">
+<polymer-element name="uqlibrary-fbs-booking-display" attributes="roomDetails bookingDetails authTokenValue">
 
   <template>
-    <link rel="stylesheet" href="uqlibrary-fbs-booking-display.css">
+    <link rel="stylesheet" href="uqlibrary-fbs-booking-form.css">
 
-    <div class="booking-room-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ roomDetails.imageLarge }}')">
-      <h2>
-        {{ roomDetails.room }} <br>
-        <small>{{roomDetails | formatLocation }}</small>
-      </h2>
+    <core-ajax id="deleteBookingRequest" url="https://app.library.uq.edu.au/api/booking"
+               auto="false" method="DELETE" contentType="application/json"
+               on-core-response="{{ deleteBookingResponse }}" on-core-error="{{ deleteBookingError }}" on-core-complete="{{ deleteBookingComplete }}"></core-ajax>
+
+    <div class="display-section">
+
+      <div class="booking-room-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ roomDetails.imageLarge }}')">
+        <h2>
+          {{ roomDetails.title }} <br>
+          <small>{{roomDetails | formatLocation }}</small>
+        </h2>
+      </div>
+
+      <div class="booking-details-item" horizontal layout>
+        <div>
+          <core-icon icon="today" class="big-icon"></core-icon>
+        </div>
+        <div flex>
+          <h3>Date</h3>
+          <p>{{bookingDetails | formatBookingDate }}</p>
+        </div>
+      </div>
+
+      <div class="booking-details-item" horizontal layout>
+        <div>
+          <core-icon icon="schedule" class="big-icon"></core-icon>
+        </div>
+        <div flex>
+          <h3>Time</h3>
+          <p>{{bookingDetails | formatBookingTime}}</p>
+        </div>
+      </div>
+
+      <div class="booking-details-item" horizontal layout>
+        <div>
+          <core-icon icon="description" class="big-icon"></core-icon>
+        </div>
+        <div flex>
+          <h3>Room Details</h3>
+          <p>{{roomDetails.notes}}</p>
+        </div>
+      </div>
+
+      <div class="booking-details-item" horizontal layout hidden?="{{!roomDetails.url}}">
+        <div>
+          <core-icon icon="file-map" class="big-icon"></core-icon>
+        </div>
+        <div flex>
+          <h3>Map</h3>
+          <p><a href="{{roomDetails.url}}}">View map</a></p>
+        </div>
+      </div>
+
+      <paper-dialog backdrop autoCloseDisabled id="infoDialog" role="dialog">
+        <p>Delete this booking?</p>
+        <paper-button affirmative on-tap="{{toggleDeleteDialog}}">Cancel</paper-button>
+        <paper-button affirmative autofocus on-tap="{{deleteBooking}}">Delete</paper-button>
+      </paper-dialog>
+
+      <div class="persistent-footer" horizontal layout>
+        <paper-toast id="infoToast" flex></paper-toast>
+        <div flex>&nbsp;</div>
+        <paper-button end-justified on-tap="{{toggleDeleteDialog}}">Delete Booking</paper-button>
+      </div>
     </div>
-
-    <div class="booking-details-item" horizontal layout>
-      <div>
-        <core-icon icon="today" class="big-icon"></core-icon>
-      </div>
-      <div flex>
-        <h3>Date</h3>
-        <p>{{bookingDetails | formatBookingDate }}</p>
-      </div>
-    </div>
-
-    <div class="booking-details-item" horizontal layout>
-      <div>
-        <core-icon icon="schedule" class="big-icon"></core-icon>
-      </div>
-      <div flex>
-        <h3>Time</h3>
-        <p>{{bookingDetails | formatBookingTime}}</p>
-      </div>
-    </div>
-
-    <div class="booking-details-item" horizontal layout>
-      <div>
-        <core-icon icon="description" class="big-icon"></core-icon>
-      </div>
-      <div flex>
-        <h3>Room Details</h3>
-        <p>{{roomDetails.summary}}</p>
-      </div>
-    </div>
-
-    <paper-toast id="infoToast" flex></paper-toast>
-
-    <paper-dialog backdrop autoCloseDisabled id="infoDialog" role="dialog">
-      <p>Delete this booking?</p>
-      <paper-button affirmative on-tap="{{toggleDeleteDialog}}">Cancel</paper-button>
-      <paper-button affirmative autofocus on-tap="{{deleteBooking}}">Delete</paper-button>
-    </paper-dialog>
-
-    <div horizontal center-justified layout>
-      <paper-button on-tap="{{toggleDeleteDialog}}">Delete Booking</paper-button>
-    </div>
-
 
   </template>
 
@@ -162,12 +187,21 @@ Element providing a simple booking display.
          * @type object
          */
 
-        /** The `bookingDetails` attribute object represents booking details, eg start date, end date, etc
+        /** The `bookingDetails` attribute object represents booking details, eg resid, start date, end date, etc
          *
          * @property bookingDetails
          * @type object
          *
          */
+
+        /** The `authTokenValue` value of authentication token
+         *
+         * @property authTokenValue
+         * @type String
+         *
+         */
+
+        authTokenValue : '',
 
         created: function () {
           this.roomDetails = {};
@@ -180,8 +214,8 @@ Element providing a simple booking display.
         formatLocation : function (roomDetails) {
           var location = [];
 
-          if (roomDetails.level !== undefined)
-            location.push(roomDetails.level);
+          if (roomDetails.location !== undefined)
+            location.push(roomDetails.location);
 
           if (roomDetails.building !== undefined)
             location.push(roomDetails.building);
@@ -198,7 +232,7 @@ Element providing a simple booking display.
         },
 
         formatBookingDate : function(bookingDetails) {
-          return moment(bookingDetails.startDate).format('MMMM D, YYYY');
+          return moment(bookingDetails.startDate).format('dddd MMMM D, YYYY');
         },
 
         toggleDeleteDialog: function () {
@@ -210,15 +244,28 @@ Element providing a simple booking display.
           this.$.infoToast.show();
         },
 
+        deleteBookingComplete : function(event, object, sender){
+          if (object.response != 200) {
+            //display error returned by the server
+            this.showInfoToast("Error deleting this booking: " + object.xhr.responseText);
+
+          } else {
+            //if booking delete is successful, fire event to indicate booking delete is done and move on to other page
+            this.fire('booking-deleted');
+          }
+        },
+
         deleteBooking : function () {
           this.toggleDeleteDialog();
 
-          //TODO: delete booking via API
-          //if delete failed, show toast with failed message from API
-          //this.showInfoToast("Failed to delete this booking. " + failedMessage);
+          var deleteBooking = {
+            resid	: this.bookingDetails.id
+          };
 
-          //fire event to indicate booking is done and move on to other page
-          this.fire('booking-deleted', this.bookingDetails);
+          this.$.deleteBookingRequest.headers = { 'X-Uql-Token' : this.authTokenValue };
+          this.$.deleteBookingRequest.body = JSON.stringify(deleteBooking);
+
+          this.$.deleteBookingRequest.go();
         }
       });
     })();

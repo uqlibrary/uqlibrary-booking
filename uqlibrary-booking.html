@@ -90,14 +90,14 @@
     (function() {
       Polymer('uqlibrary-booking', {
 
-        transition: 'hero-transition',
-        currentPage: 'myBookings',
+         currentPage: 'myBookings',
         transitioning: false,
 
         created: function () {
           this.facilities = [];
           this.rooms = [];
           this.user = {};
+          this.events = [];
         },
 
         ready: function() {
@@ -217,14 +217,15 @@
                   startDate: new Date(b.from * 1000),
                   endDate: new Date(b.to * 1000),
                   title: b.resource.title,
-                  scheduleid: b.resource.id
+                  scheduleid: b.resource.id,
+                  machid: b.resource.machid
                 });
               });
               that.events = events;
           }
           });
-          this.$.bookings.get();
 
+          this.$.bookings.get();
         },
 
         showFilterForm: function() {
@@ -334,6 +335,7 @@
 
         showBookingDetails : function (data) {
 
+          this.$.bookingDetails.roomDetails = this.rooms[data.machid];
           this.$.bookingDetails.bookingDetails = data;
 
           this.pageToolbar = {
@@ -401,8 +403,11 @@
           //Transition to timeline page
           this.doTransition(e, data, {id: 'toolBarLeftButton'});
 
-          //Show toast that event was deleted
-          this.showInfoToast(this.$.myBookingsInfoToast, "Your booking was deleted.");
+          //Show toast that event was deleted after the transition is done
+          var that = this;
+          setTimeout(function(){
+            that.showInfoToast(that.$.myBookingsInfoToast, "Your booking was deleted.");
+          }, 2000, that);
         },
 
         bookingCreated: function(e, data, sender) {
@@ -414,6 +419,7 @@
           // transition to timeline
           this.doTransition(e, data, {id: 'bookingForm'});
         },
+
 
         searchDateChanged: function(e, data, sender) {
           this.$.facilities.get({date: moment(data.searchDate).format('DD-MM-YYYY')});
@@ -477,7 +483,7 @@
                     time_span: this.facilities[i].resources[j].schedule['time_span'],
                     image : campusImageName + '/' + buildingImageName + '_thumb' + '.jpg',
                     imageLarge : campusImageName + '/' + buildingImageName + '.jpg'
-              };
+                };
               }
             }
           }

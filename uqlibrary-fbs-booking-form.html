@@ -77,7 +77,7 @@ Element providing a form for booking a room.
 <template>
   <link rel="stylesheet" href="uqlibrary-fbs-booking-form.css">
 
-  <div class="roomDetailsWrapper">
+  <div class="display-section">
 
   <core-ajax id="createBookingRequest" url="https://app.library.uq.edu.au/api/booking"
              auto="false" method="POST" contentType="application/json"
@@ -110,7 +110,7 @@ Element providing a form for booking a room.
     <span class="hint-box unavailable"></span> - unavailable time slot
   </p>
 
-  <div class="buttonWrapper" horizontal layout hidden?={{transitioning}}>
+  <div class="persistent-footer" horizontal layout hidden?={{transitioning}}>
     <paper-toast id="infoToast" flex></paper-toast>
     <div flex>&nbsp;</div>
     <paper-button id="createRoomBooking" end-justified  icon="done" on-click="{{createRoomBooking}}">Save booking</paper-button>
