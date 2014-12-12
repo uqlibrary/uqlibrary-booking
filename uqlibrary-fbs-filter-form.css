@@ -29,7 +29,7 @@
   width: 100%; }
 
 .filterWrapper {
-  background-color: #ffffff;
+  background-color: white;
   margin-bottom: 30px; }
 
 uqlibrary-filter-group {
@@ -46,9 +46,9 @@ paper-dropdown-menu {
   display: block;
   width: 100%; }
   paper-dropdown-menu[disabled]::shadow #label, paper-dropdown-menu[disabled]::shadow #arrow, paper-dropdown-menu[disabled]::shadow #ripple {
-    color: #BDBDBD; }
+    color: #bdbdbd; }
   paper-dropdown-menu paper-dropdown paper-item:hover {
-    background-color: #F5F5F5; }
+    background-color: whitesmoke; }
 
 paper-input {
   display: block; }
@@ -59,26 +59,28 @@ paper-input {
     width: 100%; }
 
 md-timepicker::shadow #card {
-  border: 1px solid #F5F5F5;
+  border: 1px solid whitesmoke;
   margin-top: 0pt;
   margin-bottom: 0pt;
-  height: 320px;
-  width: 200px; }
+  height: 360px;
+  width: 225px; }
   md-timepicker::shadow #card #display {
     background-color: #009688 !important;
-    height: 96px;
-    padding: 19.2px;
-    color: #ffffff;
-    font-size: 36.8px; }
+    height: 108px;
+    padding: 21.6px;
+    color: white;
+    font-size: 41.4px; }
     md-timepicker::shadow #card #display .digit {
       opacity: 0.7; }
       md-timepicker::shadow #card #display .digit[active] {
         opacity: 1; }
   md-timepicker::shadow #card #keypad {
-    font-size: 33.6px; }
+    font-size: 37.8px; }
     md-timepicker::shadow #card #keypad .digit {
-      flex-basis: 50.4px;
-      -webkit-flex-basis: 50.4px; }
+      flex-basis: 56.7px;
+      -webkit-flex-basis: 56.7px; }
+md-timepicker::shadow paper-button {
+  font-size: 12.6px; }
 
 paper-slider {
   width: 100%; }
@@ -115,8 +117,8 @@ paper-checkbox::shadow #checkbox.checked {
   bottom: 0px;
   height: 48px;
   width: 100%;
-  border-top: 1px solid #EEEEEE;
-  background: #ffffff; }
+  border-top: 1px solid #eeeeee;
+  background: white; }
   .buttonWrapper paper-button#applyButton {
     color: #009688;
     height: 36px; }
@@ -132,13 +134,11 @@ paper-toast#infoToast {
   max-height: 48px; }
 
 .error {
-  border-bottom: 1px solid #F44336; }
+  border-bottom: 1px solid #f44336; }
   .error::shadow #label {
-    color: #F44336; }
+    color: #f44336; }
 
 core-overlay#timepickerDialog::shadow #actions {
   display: none; }
 core-overlay#timepickerDialog::shadow #main {
   padding: 0px; }
-
-/*# sourceMappingURL=uqlibrary-fbs-filter-form.css.map */

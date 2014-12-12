@@ -1,12 +1,12 @@
 @import "../uqlibrary-elements/resources/theme/element";
 
-$timepickerRatio: 0.8;
+$timepickerRatio: 0.9;
 $mainColor: $teal-500;
 $inputColor: $secondary-text;
 $textColor: $secondary-text;
 
 :host {
-  font-size: 10pt;
+  font-size: 10pt; 
   width: 100%;
 }
 
@@ -105,6 +105,10 @@ md-timepicker {
       }
     }
 
+    paper-button {
+      font-size: 14px * $timepickerRatio;
+
+    }
 
 
   }
