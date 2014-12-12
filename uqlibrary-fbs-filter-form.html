@@ -157,8 +157,8 @@ Element providing solution to no problem in particular.
       selectedBuilding: '',
       selectedRoom: '',
       selectedDate: '',
-      timeFormat: '12h',
-      timeOutputFormat: 'hh:mm a',
+      timeFormat: '24h',
+      timeOutputFormat: 'HH:mm',
       selectedTime: '',
       selectedEquipment: {},
 
@@ -399,14 +399,17 @@ Element providing solution to no problem in particular.
           this.selectedValues.searchDate = new Date();
         }
         if(this.selectedTime){
+
           if(this.timeFormat == '12h') {
             this.selectedValues.searchDate.setHours(this.$.timepicker.convertHoursTo24hFormat(this.selectedTime.substring(0,this.selectedTime.indexOf(":"))));
+            this.selectedValues.searchDate.setMinutes(this.selectedTime.substring(this.selectedTime.indexOf(":")+1, this.selectedTime.indexOf(" ")));
           }
           else {
             this.selectedValues.searchDate.setHours(this.selectedTime.substring(0,this.selectedTime.indexOf(":")));
+            this.selectedValues.searchDate.setMinutes(this.selectedTime.substring(this.selectedTime.indexOf(":")+1));
           }
 
-          this.selectedValues.searchDate.setMinutes(this.selectedTime.substring(this.selectedTime.indexOf(":")+1, this.selectedTime.indexOf(" ")));
+
         } else {
           this.selectedValues.searchDate.setHours(new Date().getHours());
           this.selectedValues.searchDate.setMinutes(new Date().getMinutes());
@@ -417,7 +420,6 @@ Element providing solution to no problem in particular.
         this.selectedValues.capacity = this.selectedCapacity;
         this.selectedValues.equipment = this.selectedEquipment;
 
-console.log(this.selectedValues);
       },
 
       selectedDateChanged: function(oldValue, newValue) {
@@ -436,7 +438,10 @@ console.log(this.selectedValues);
         if(this.selectedTime) {
           this.$.timepicker.hours = this.selectedTime.substring(0,this.selectedTime.indexOf(":"));
           this.$.timepicker.isPm = (this.selectedTime.substring(this.selectedTime.indexOf(" ") + 1) == 'pm');
-          this.$.timepicker.minutes = this.selectedTime.substring(this.selectedTime.indexOf(":")+1, this.selectedTime.indexOf(" "));
+          if(this.timeFormat == '12h')
+            this.$.timepicker.minutes = this.selectedTime.substring(this.selectedTime.indexOf(":")+1, this.selectedTime.indexOf(" "));
+          else
+            this.$.timepicker.minutes = this.selectedTime.substring(this.selectedTime.indexOf(":")+1);
         }
         this.$.timepicker.selectHours();
         this.$.timepickerDialog.toggle();
