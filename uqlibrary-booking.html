@@ -208,7 +208,7 @@
           };
 
           this.$.bookings.addEventListener('uqlibrary-api-account-bookings-loaded', function(e) {
-            var bookings = e.detail;
+            var bookings = Array.isArray(e.detail) ? e.detail : [];
             if (bookings.length > 0) {
               var events = [];
               bookings.forEach(function (b) {
@@ -289,10 +289,27 @@
         filterFormSubmitted: function(e, data, sender) {
           this.formData = e.detail.formData;
           this.getFilteredRooms();
+
           if(this.searchResults.length == 0) {
             return false;
+          } else if (this.searchResults.length == 1) {
+
+            this.pageTransitions.fbsFilterForm = {
+              transition: 'slide-from-right',
+              destination: 'bookingFormSection',
+              action: 'showBookingForm'
+            };
+
+            this.doTransition(e, this.searchResults[0], sender);
+
           }
           else {
+            this.pageTransitions.fbsFilterForm = {
+              transition: 'slide-from-right',
+              destination: 'results',
+              action: 'showResultsPage'
+            };
+
             this.doTransition(e, data, sender);
           }
         },
@@ -366,23 +383,6 @@
         },
 
         showBookingForm: function(data) {
-          //setup booking form page
-          this.pageTransitions.bookingForm = {
-            transition: 'slide-from-right',
-            destination: 'myBookings',
-            action: 'showMyBookings'
-          }
-
-          this.pageTransitions.toolBarLeftButton = {
-            transition: 'slide-from-right',
-            destination: 'results',
-            action: 'showResultsPage'
-          };
-
-          this.pageTransitions.toolBarRightButton = {
-            transition: 'slide-from-right',
-            action: 'submitBookingForm'
-          };
 
           this.pageToolbar = {
             leftButton: { icon:'arrow-back' },
@@ -390,15 +390,41 @@
             title: 'Book a room'
           };
 
+          //setup booking form page transitions
+          this.pageTransitions.toolBarRightButton = {
+            transition: 'slide-from-right',
+            action: 'submitBookingForm'
+          };
+
+          this.pageTransitions.bookingForm = {
+            transition: 'slide-from-right',
+            destination: 'myBookings',
+            action: 'showMyBookings'
+          }
+
+          if (this.searchResults.length == 1) {
+            //transition back to filter form if only one room is found
+            this.pageTransitions.toolBarLeftButton = {
+              transition: 'slide-from-right',
+              destination: 'filterForm',
+              action: 'showFilterForm'
+            };
+          } else {
+            //transition back to results listing
+            this.pageTransitions.toolBarLeftButton = {
+              transition: 'slide-from-right',
+              destination: 'results',
+              action: 'showResultsPage'
+            };
+          }
+
           //setup booking form properties
           this.$.bookingForm.roomDetails = data;
-          var searchDate = this.formData.searchDate ?
-                  this.formData.searchDate : new Date();
+          var searchDate = this.formData.searchDate ? this.formData.searchDate : new Date();
           this.$.bookingForm.searchDate = searchDate;
           this.$.bookingForm.searchDuration = this.formData.duration;
           //TODO: maybe this should be a global setting?
           this.$.bookingForm.maxBookingDate = new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000);
-
         },
 
         submitBookingForm: function() {
