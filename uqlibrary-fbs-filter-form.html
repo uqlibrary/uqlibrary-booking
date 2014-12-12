@@ -94,7 +94,7 @@ Element providing solution to no problem in particular.
               </paper-input-decorator>
 
               <core-overlay id="timepickerDialog" transition="core-transition-center" autoCloseDisabled>
-                  <md-timepicker id="timepicker" on-time-selected="{{timeSelectedHandler}}"></md-timepicker>
+                  <md-timepicker id="timepicker" timeFormat="{{timeFormat}}" on-time-selected="{{timeSelectedHandler}}"></md-timepicker>
               </core-overlay>
               <div class="sliderWrapper" layout horizontal justified center>
                 <div>Duration</div>
@@ -157,7 +157,9 @@ Element providing solution to no problem in particular.
       selectedBuilding: '',
       selectedRoom: '',
       selectedDate: '',
-      selectedTime: moment().format('HH:mm'),
+      timeFormat: '12h',
+      timeOutputFormat: 'hh:mm a',
+      selectedTime: '',
       selectedEquipment: {},
 
       errors: {},
@@ -174,6 +176,7 @@ Element providing solution to no problem in particular.
       ready: function() {
         this.addEventListener('submit-form', this.submitForm);
         this.addEventListener('results-changed', this.resultsChanged);
+        this.selectedTime = moment().format(this.timeOutputFormat);
       },
 
       triggerSelectedValuesChange: function() {
@@ -372,7 +375,7 @@ Element providing solution to no problem in particular.
           this.selectedBuilding = this.selectedValues.building;
           this.selectedRoom = this.selectedValues.room;
           this.selectedDate = this.selectedValues.date;
-          this.selectedTime = this.selectedValues.time ? this.selectedValues.time : moment().format('HH:mm');
+          this.selectedTime = this.selectedValues.time ? this.selectedValues.time : moment().format(this.timeOutputFormat);
           this.selectedDuration = this.selectedValues.duration;
           this.selectedCapacity = this.selectedValues.capacity;
           this.selectedEquipment = (this.selectedValues.equipment ? this.selectedValues.equipment : {});
@@ -396,8 +399,17 @@ Element providing solution to no problem in particular.
           this.selectedValues.searchDate = new Date();
         }
         if(this.selectedTime){
-          this.selectedValues.searchDate.setHours(this.selectedTime.substring(0,this.selectedTime.indexOf(":")));
-          this.selectedValues.searchDate.setMinutes(this.selectedTime.substring(this.selectedTime.indexOf(":")+1));
+
+          if(this.timeFormat == '12h') {
+            this.selectedValues.searchDate.setHours(this.$.timepicker.convertHoursTo24hFormat(this.selectedTime.substring(0,this.selectedTime.indexOf(":"))));
+            this.selectedValues.searchDate.setMinutes(this.selectedTime.substring(this.selectedTime.indexOf(":")+1, this.selectedTime.indexOf(" ")));
+          }
+          else {
+            this.selectedValues.searchDate.setHours(this.selectedTime.substring(0,this.selectedTime.indexOf(":")));
+            this.selectedValues.searchDate.setMinutes(this.selectedTime.substring(this.selectedTime.indexOf(":")+1));
+          }
+
+
         } else {
           this.selectedValues.searchDate.setHours(new Date().getHours());
           this.selectedValues.searchDate.setMinutes(new Date().getMinutes());
@@ -407,7 +419,6 @@ Element providing solution to no problem in particular.
         this.selectedValues.duration = this.selectedDuration;
         this.selectedValues.capacity = this.selectedCapacity;
         this.selectedValues.equipment = this.selectedEquipment;
-
 
       },
 
@@ -426,7 +437,11 @@ Element providing solution to no problem in particular.
       showTimepicker: function() {
         if(this.selectedTime) {
           this.$.timepicker.hours = this.selectedTime.substring(0,this.selectedTime.indexOf(":"));
-          this.$.timepicker.minutes = this.selectedTime.substring(this.selectedTime.indexOf(":")+1);
+          this.$.timepicker.isPm = (this.selectedTime.substring(this.selectedTime.indexOf(" ") + 1) == 'pm');
+          if(this.timeFormat == '12h')
+            this.$.timepicker.minutes = this.selectedTime.substring(this.selectedTime.indexOf(":")+1, this.selectedTime.indexOf(" "));
+          else
+            this.$.timepicker.minutes = this.selectedTime.substring(this.selectedTime.indexOf(":")+1);
         }
         this.$.timepicker.selectHours();
         this.$.timepickerDialog.toggle();
