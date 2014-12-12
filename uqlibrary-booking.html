@@ -90,7 +90,7 @@
     (function() {
       Polymer('uqlibrary-booking', {
 
-         currentPage: 'myBookings',
+        currentPage: 'myBookings',
         transitioning: false,
 
         created: function () {
@@ -212,11 +212,25 @@
             if (bookings.length > 0) {
               var events = [];
               bookings.forEach(function (b) {
+
+                var title = [];
+                var subtitle = [];
+
+                if (b.resource.title)
+                  title.push(b.resource.title);
+                if (b.resource.location)
+                  title.push(b.resource.location);
+                if (that.rooms && that.rooms[b.resource.machid]) {
+                  subtitle.push(that.rooms[b.resource.machid].building);
+                  subtitle.push(that.rooms[b.resource.machid].campus);
+                }
+
                 events.push({
                   id: b.id,
                   startDate: new Date(b.from * 1000),
                   endDate: new Date(b.to * 1000),
-                  title: b.resource.title,
+                  title: title.join(", "),
+                  subtitle: subtitle.join(", "),
                   scheduleid: b.resource.id,
                   machid: b.resource.machid
                 });
