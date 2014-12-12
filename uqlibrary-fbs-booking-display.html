@@ -109,6 +109,9 @@ Element providing a simple booking display.
   <template>
     <link rel="stylesheet" href="uqlibrary-fbs-booking-form.css">
 
+    <core-signals on-core-signal-transition-prepare="{{transitionPrepareHandler}}"></core-signals>
+    <core-signals on-core-signal-transition-end="{{transitionEndHandler}}"></core-signals>
+
     <core-ajax id="deleteBookingRequest" url="https://app.library.uq.edu.au/api/booking"
                auto="false" method="DELETE" contentType="application/json"
                on-core-response="{{ deleteBookingResponse }}" on-core-error="{{ deleteBookingError }}" on-core-complete="{{ deleteBookingComplete }}"></core-ajax>
@@ -168,7 +171,7 @@ Element providing a simple booking display.
         <paper-button affirmative autofocus on-tap="{{deleteBooking}}">Delete</paper-button>
       </paper-dialog>
 
-      <div class="persistent-footer" horizontal layout>
+      <div class="persistent-footer" horizontal layout hidden?={{transitioning}}>
         <paper-toast id="infoToast" flex></paper-toast>
         <div flex>&nbsp;</div>
         <paper-button end-justified on-tap="{{toggleDeleteDialog}}">Delete Booking</paper-button>
@@ -209,6 +212,14 @@ Element providing a simple booking display.
         },
 
         ready: function () {
+        },
+
+        transitionPrepareHandler: function() {
+          this.transitioning = true;
+        },
+
+        transitionEndHandler: function() {
+          this.transitioning = false;
         },
 
         formatLocation : function (roomDetails) {
