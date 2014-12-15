@@ -60,6 +60,7 @@ Element providing solution to no problem in particular.
                 <paper-dropdown-menu id="buildingSelect" label="Building" hidden?="{{!buildings.length}}">
                   <paper-dropdown class="dropdown">
                     <core-menu class="menu" id="buildingSelectMenu" selectedAttribute="" selected="{{selectedBuilding}}">
+                      <paper-item name=""  hidden?="{{buildings.length <= 1}}" label="">Any building</paper-item>
                       <template repeat="{{building in buildings}}">
                         <paper-item name="{{building.id}}" label="{{building.title}}">{{building.title}}</paper-item>
                       </template>
@@ -70,6 +71,7 @@ Element providing solution to no problem in particular.
                 <paper-dropdown-menu id="roomSelect" label="Room" hidden?="{{!rooms.length}}">
                   <paper-dropdown class="dropdown">
                     <core-menu class="menu"  id="roomSelectMenu" selectedAttribute="" selected="{{selectedRoom}}">
+                      <paper-item name=""  hidden?="{{rooms.length <= 1}}" label="">Any room</paper-item>
                       <template repeat="{{rooms as room}}">
                         <paper-item name="{{room.id}}" label="{{room.title}}">{{room.title}}</paper-item>
                       </template>
@@ -262,6 +264,13 @@ Element providing solution to no problem in particular.
                 }
               );
             }
+            if (this.buildings.length == 1) {
+              this.selectedBuilding = this.buildings[0].id;
+            } else {
+              if (this.buildings.length > 1) {
+                this.rooms = [];
+              }
+            }
           }
         }
         var el = document.querySelector("paper-dropdown-menu#buildingSelect paper-dropdown /deep/ #scroller");
@@ -269,11 +278,7 @@ Element providing solution to no problem in particular.
           el.style.width = null;
           el.style.height = null;
         }
-       if(this.buildings.length == 1) {
-          this.selectedBuilding = this.buildings[0].id;
-        } else {
-          this.rooms = [];
-        }
+
 
       },
 
@@ -284,7 +289,7 @@ Element providing solution to no problem in particular.
           if(this.selectedCampus && this.selectedCampus == _campus.id ){
             for(var j = 0; j < _campus.buildings.length; j++) {
               var _building = _campus.buildings[j];
-              if(this.selectedBuilding && this.selectedBuilding == _building.id ) {
+              if(this.selectedBuilding && this.selectedBuilding == _building.id) {
                 for(var k = 0; k < _building.rooms.length; k++) {
                   var _room = _building.rooms[k];
                   this.rooms.push(
@@ -295,6 +300,10 @@ Element providing solution to no problem in particular.
                 }
               }
             }
+
+            if(this.rooms.length == 1) {
+              this.selectedRoom = this.rooms[0].id;
+            }
           }
         }
 
@@ -304,9 +313,6 @@ Element providing solution to no problem in particular.
           el.style.height = null;
         }
 
-        if(this.rooms.length == 1) {
-          this.selectedRoom = this.rooms[0].id;
-        }
       },
 
 
@@ -325,8 +331,14 @@ Element providing solution to no problem in particular.
         if (oldValue != '') {
           this.selectedRoom = '';
         }
+
         if (newValue) {
           this.loadRooms();
+        }
+        // If "any building" option was selected
+        if(newValue === 0) {
+          this.rooms = [];
+          this.selectedBuilding = '';
         }
         this.triggerSelectedValuesChange();
       },
@@ -335,8 +347,10 @@ Element providing solution to no problem in particular.
         // If user selects a value. Not acceptable to initial form state
         if (newValue) {
           // As selected index for roomSelect isn't set yet we have to loop through rooms to find selected one and set capacity and min/max booking time
-          for(var i = 0; i < this.formData.facilities[this.$.campusSelectMenu.selectedIndex].buildings[this.$.buildingSelectMenu.selectedIndex].rooms.length; i++) {
-            var _room = this.formData.facilities[this.$.campusSelectMenu.selectedIndex].buildings[this.$.buildingSelectMenu.selectedIndex].rooms[i];
+          // If there's a 'Any building' and 'Any Room' options index must be adjusted
+          var _buildingIndex = (this.$.buildingSelectMenu.items.length > 1 ? this.$.buildingSelectMenu.selectedIndex-1 :0);
+          for(var i = 0; i < this.formData.facilities[this.$.campusSelectMenu.selectedIndex].buildings[_buildingIndex].rooms.length; i++) {
+            var _room = this.formData.facilities[this.$.campusSelectMenu.selectedIndex].buildings[_buildingIndex].rooms[i];
             if(_room.id == newValue) {
               if (_room.capacity) {
                 this.selectedCapacity = _room.capacity;
@@ -360,6 +374,10 @@ Element providing solution to no problem in particular.
               break;
             }
           }
+        }
+        // If "any room" option was selected
+        if(newValue === 0) {
+          this.selectedRoom = '';
         }
         this.triggerSelectedValuesChange();
       },
