@@ -5,11 +5,19 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>My bookings</title>
   <script>
+    function isIE () {
+      var myNav = navigator.userAgent.toLowerCase();
+      return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+    }
+
     if (! ('registerElement' in document
      && 'createShadowRoot' in HTMLElement.prototype
      && 'import' in document.createElement('link')
      && 'content' in document.createElement('template'))) {
-     document.write('<script src="../uqlibrary-elements/0.5.1/webcomponentsjs/webcomponents.js"><\/script>');
+      // IE 8 and 9 throw errors if you try to include webcomponents.js, which prevents other user messages working
+      if (!isIE() || isIE () > 9) {
+        document.write('<script src="../uqlibrary-elements/0.5.2/webcomponentsjs/webcomponents.js"><\/script>');
+      }
     }
   </script>
   <link rel="import" href="uqlibrary-booking.html">
@@ -18,6 +26,5 @@
 <body unresolved fullbleed>
 
   <uqlibrary-booking></uqlibrary-booking>
-
 </body>
 </html>
