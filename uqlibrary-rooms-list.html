@@ -7,7 +7,7 @@
   <core-list id="list" on-core-activate="{{selectRoom}}" data="{{data}}" selection="{{selection}}" fit>
     <template>
       <div horizontal layout class="item">
-        <div class="message-image" style="background-image: url({{model.image}});"></div>
+        <div class="message-image" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{model.image}}');" hidden?={{!model.image}} ></div>
         <div class="message" flex>
           <paper-ripple fit></paper-ripple>
           <div class="primary">{{model.title}}</div>
