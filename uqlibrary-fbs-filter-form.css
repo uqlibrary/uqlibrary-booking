@@ -121,9 +121,8 @@ paper-checkbox::shadow #checkbox.checked {
   background: white; }
   .buttonWrapper paper-button#applyButton {
     color: #009688;
-    height: 36px; }
-    .buttonWrapper paper-button#applyButton core-icon {
-      width: 16px; }
+    height: 36px;
+    margin-top: 6px; }
   .buttonWrapper .resultsText {
     height: 36px;
     padding-top: 12px; }

@@ -251,11 +251,6 @@
             action: 'showMyBookings'
           };
 
-          this.pageTransitions.toolBarRightButton = {
-            transition: 'slide-from-right',
-            action: 'submitFilterForm'
-          };
-
           this.pageTransitions.fbsFilterForm = {
               transition: 'slide-from-right',
               destination: 'results',
@@ -264,7 +259,6 @@
 
           this.pageToolbar = {
             leftButton: {icon:'arrow-back'},
-            rightButton: {icon:'check'},
             title: 'Find a room'
           };
 
@@ -387,14 +381,7 @@
 
           this.pageToolbar = {
             leftButton: { icon:'arrow-back' },
-            rightButton: { icon:'check' },
             title: 'Book a room'
-          };
-
-          //setup booking form page transitions
-          this.pageTransitions.toolBarRightButton = {
-            transition: 'slide-from-right',
-            action: 'submitBookingForm'
           };
 
           this.pageTransitions.bookingForm = {

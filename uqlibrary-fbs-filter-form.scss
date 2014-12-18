@@ -191,9 +191,7 @@ paper-checkbox {
   paper-button#applyButton {
     color: $mainColor;
     height: 36px;
-    core-icon {
-      width: 16px;
-    }
+    margin-top: 6px;
   }
   .resultsText {
     height: 36px;
