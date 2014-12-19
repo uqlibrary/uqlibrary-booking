@@ -37,14 +37,14 @@
 
           <core-animated-pages id="pages"
                                transitions="{{transition}}"
-                                on-core-animated-pages-transition-prepare="{{transitionPrepareHandler}}"
-                                on-core-animated-pages-transition-end="{{transitionEndHandler}}"
-            >
+                               on-core-animated-pages-transition-prepare="{{transitionPrepareHandler}}"
+                               on-core-animated-pages-transition-end="{{transitionEndHandler}}">
+
             <section id="myBookings">
-              <template if="{{events.length}}">
-                <uqlibrary-timeline events="{{events}}" on-event-selected="{{bookingSelected}}"></uqlibrary-timeline>
-              </template>
+              <uqlibrary-timeline events="{{events}}" on-event-selected="{{bookingSelected}}"></uqlibrary-timeline>
+
               <paper-toast id="myBookingsInfoToast" flex></paper-toast>
+
               <paper-fab hero-id="filterForm"
                          hero?="{{transition === 'hero-transition'}}"
                          id="addBookingButton"
@@ -60,6 +60,8 @@
                 <uqlibrary-fbs-filter-form id="fbsFilterForm"
                                            hero-id="filterForm"
                                            on-filter-form-submitted="{{filterFormSubmitted}}"
+                                           on-selected-date-changed="{{filterFormDateChanged}}"
+                                           on-selected-values-changed="{{filterFormSearchChanged}}"
                                            hero?="{{transition === 'hero-transition'}}"
                                            formData="{{filterFormData}}" selectedValues={{filterFormSelectedValues}}></uqlibrary-fbs-filter-form>
                 </div>
@@ -118,10 +120,6 @@
           this.$.account.addEventListener('uqlibrary-api-account-loaded', function(e) {
             if (e.detail.hasSession) {
               that.user = e.detail;
-
-              that.$.bookingForm.authTokenValue = this.getCookie("UQLID");
-              that.$.bookingDetails.authTokenValue = this.getCookie("UQLID");
-
             } else {
               // Not logged in
               // TODO: Redirect to login
@@ -261,24 +259,24 @@
             leftButton: {icon:'arrow-back'},
             title: 'Find a room'
           };
-
-          this.addEventListener('selected-date-changed', function(e) {
-            var _newDate = new Date(e.detail.date);
-            this.formData = e.detail.formData;
-
-            this.$.facilities.get({date: moment(_newDate).format('DD-MM-YYYY')});
-          });
-
-          this.addEventListener('selected-values-changed', function(e) {
-            this.formData = e.detail.formData;
-            this.getFilteredRooms();
-            this.$.fbsFilterForm.setResultsText(this.searchResults.length + ' room(s) found')
-          });
-
         },
 
         submitFilterForm: function() {
           this.$.fbsFilterForm.fire('submit-form');
+        },
+
+        //register events expected from Filter Form
+        filterFormDateChanged : function(e) {
+          var _newDate = new Date(e.detail.date);
+          this.formData = e.detail.formData;
+
+          this.$.facilities.get({date: moment(_newDate).format('DD-MM-YYYY')});
+        },
+
+        filterFormSearchChanged : function(e) {
+          this.formData = e.detail.formData;
+          this.getFilteredRooms();
+          this.$.fbsFilterForm.setResultsText(this.searchResults.length + ' room(s) found')
         },
 
         filterFormSubmitted: function(e, data, sender) {
@@ -427,7 +425,7 @@
         bookingDeleted: function(e, data, sender){
           this.$.ga.addEvent('bookingDeleted');
 
-          this.$.bookings.get();
+          this.$.bookings.get({ nocache : true });
 
           //Transition to timeline page
           this.doTransition(e, data, {id: 'toolBarLeftButton'});
@@ -443,7 +441,7 @@
           this.$.ga.addEvent('bookingCreated');
 
           // add new booking details to events on timeline
-          this.$.bookings.get();
+          this.$.bookings.get({ nocache : true });
 
           // transition to timeline
           this.doTransition(e, data, {id: 'bookingForm'});
@@ -451,7 +449,11 @@
 
 
         searchDateChanged: function(e, data, sender) {
-          this.$.facilities.get({date: moment(data.searchDate).format('DD-MM-YYYY')});
+          this.$.facilities.get(
+                  {
+                    date: moment(data.searchDate).format('DD-MM-YYYY'),
+                    nocache : true
+                  });
         },
 
         buildFilterFormDataFacilitiesArray: function() {

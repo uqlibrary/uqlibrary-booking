@@ -67,8 +67,6 @@ Element providing a simple booking display.
           bookingForm.searchDate = new Date();        //search date and time
           bookingForm.searchDuration = 60;            //in minutes
           bookingForm.maxBookingDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
-
-          bookingForm.authTokenValue = 'abcd1234';
         });
 
           element.roomDetails = {
@@ -112,7 +110,9 @@ Element providing a simple booking display.
     <core-signals on-core-signal-transition-prepare="{{transitionPrepareHandler}}"></core-signals>
     <core-signals on-core-signal-transition-end="{{transitionEndHandler}}"></core-signals>
 
-    <core-ajax id="deleteBookingRequest" url="https://app.library.uq.edu.au/api/booking"
+    <uqlibrary-api-facilities-booking id="deleteBookingRequest" on-uqlibrary-api-facilities-booking-executed="{{ deleteBookingComplete }}"></uqlibrary-api-facilities-booking>
+
+    <core-ajax id="deleteBookingRequest2" url="https://app.library.uq.edu.au/api/booking"
                auto="false" method="DELETE" contentType="application/json"
                on-core-response="{{ deleteBookingResponse }}" on-core-error="{{ deleteBookingError }}" on-core-complete="{{ deleteBookingComplete }}"></core-ajax>
 
@@ -197,15 +197,6 @@ Element providing a simple booking display.
          *
          */
 
-        /** The `authTokenValue` value of authentication token
-         *
-         * @property authTokenValue
-         * @type String
-         *
-         */
-
-        authTokenValue : '',
-
         created: function () {
           this.roomDetails = {};
           this.bookingDetails = {};
@@ -255,10 +246,10 @@ Element providing a simple booking display.
           this.$.infoToast.show();
         },
 
-        deleteBookingComplete : function(event, object, sender){
-          if (object.response != 200) {
+        deleteBookingComplete : function(event){
+          if (event.detail.response) {
             //display error returned by the server
-            this.showInfoToast("Error deleting this booking: " + object.xhr.responseText);
+            this.showInfoToast("Error deleting this booking: " + event.detail.responseText);
 
           } else {
             //if booking delete is successful, fire event to indicate booking delete is done and move on to other page
@@ -269,14 +260,12 @@ Element providing a simple booking display.
         deleteBooking : function () {
           this.toggleDeleteDialog();
 
-          var deleteBooking = {
-            resid	: this.bookingDetails.id
+          var deleteBooking = { booking : {
+              resid: this.bookingDetails.id
+            }
           };
 
-          this.$.deleteBookingRequest.headers = { 'X-Uql-Token' : this.authTokenValue };
-          this.$.deleteBookingRequest.body = JSON.stringify(deleteBooking);
-
-          this.$.deleteBookingRequest.go();
+          this.$.deleteBookingRequest.delete(deleteBooking);
         }
       });
     })();

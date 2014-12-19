@@ -59,8 +59,6 @@ Element providing a form for booking a room.
           bookingForm.searchDate = new Date();        //search date and time
           bookingForm.searchDuration = 60;            //in minutes
           bookingForm.maxBookingDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
-
-          bookingForm.authTokenValue = 'abcd1234';
         });
 
       }());
@@ -72,7 +70,7 @@ Element providing a form for booking a room.
 @homepage https://github.com/uqlibrary/uqlibrary-fbs-booking-form
 -->
 
-<polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails searchDate searchDuration maxBookingDate authTokenValue">
+<polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails searchDate searchDuration maxBookingDate">
 
 <template>
 
@@ -83,7 +81,9 @@ Element providing a form for booking a room.
 
   <div class="display-section">
 
-  <core-ajax id="createBookingRequest" url="https://app.library.uq.edu.au/api/booking"
+    <uqlibrary-api-facilities-booking id="createBookingRequest" on-uqlibrary-api-facilities-booking-executed="{{ createBookingComplete }}"></uqlibrary-api-facilities-booking>
+
+  <core-ajax id="createBookingRequest2" url="https://app.library.uq.edu.au/api/booking"
              auto="false" method="POST" contentType="application/json"
              on-core-response="{{ createBookingResponse }}" on-core-error="{{ createBookingError }}" on-core-complete="{{ createBookingComplete }}"></core-ajax>
 
@@ -156,13 +156,6 @@ Element providing a form for booking a room.
      *
      */
 
-    /** The `authTokenValue` value of authentication token
-     *
-     * @property authTokenValue
-     * @type String
-     *
-     */
-
 
     /** Fired when booking was successfully created
      *
@@ -192,9 +185,6 @@ Element providing a form for booking a room.
       this.searchDuration = 90;
       this.maxBookingDate = new Date();
       this.bookingTimeslots = [];
-
-      //TODO: session management, if token is not set - disable interactions
-      this.authTokenValue = '';
     },
 
     ready: function () {
@@ -238,10 +228,10 @@ Element providing a form for booking a room.
       return validation;
     },
 
-    createBookingComplete : function(event, object, sender){
-      if (object.response != 200) {
+    createBookingComplete : function(event){
+      if (event.detail.response) {
         //display error returned by the server
-        this.showInfoToast("Error creating a booking: " + object.xhr.responseText);
+        this.showInfoToast("Error creating a booking: " + e.detail.responseText);
 
       } else {
         //if booking is successful, fire event to indicate booking is done and move on to other page
@@ -262,18 +252,16 @@ Element providing a form for booking a room.
         var startTime = (selectedTimeslots[0].startTime - midnight) / (1000 * 60);
         var endTime = (selectedTimeslots[selectedTimeslots.length-1].endTime - midnight) / (1000 * 60);
 
-        var newBooking = {
-          machid	: this.roomDetails.id,
-          scheduleid : this.roomDetails.scheduleid,
-          date : moment(selectedTimeslots[0].startTime).format("MM/DD/YYYY"),
-          starttime : startTime,
-          endtime : endTime
+        var newBooking = { booking : {
+            machid: this.roomDetails.id,
+            scheduleid: this.roomDetails.scheduleid,
+            date: moment(selectedTimeslots[0].startTime).format("MM/DD/YYYY"),
+            starttime: startTime,
+            endtime: endTime
+          }
         };
 
-        this.$.createBookingRequest.headers = { 'X-Uql-Token' : this.authTokenValue };
-        this.$.createBookingRequest.body = JSON.stringify(newBooking);
-
-        this.$.createBookingRequest.go();
+        this.$.createBookingRequest.post(newBooking);
       }
     },
 
