@@ -114,11 +114,9 @@ Element providing a form for booking a room.
     <span class="hint-box unavailable"></span> - unavailable time slot
   </p>
 
-  <div class="persistent-footer" horizontal layout hidden?={{transitioning}}>
-    <paper-toast id="infoToast" flex></paper-toast>
-    <div flex>&nbsp;</div>
-    <paper-button id="createRoomBooking" end-justified  icon="done" on-click="{{createRoomBooking}}">Save booking</paper-button>
-  </div>
+
+  <uqlibrary-persistent-footer id="persistentFooter"></uqlibrary-persistent-footer>
+  <paper-toast id="infoToast" flex></paper-toast>
 
   </div>
 
@@ -189,6 +187,15 @@ Element providing a form for booking a room.
 
     ready: function () {
       this.addEventListener('submit-form', this.createRoomBooking);
+
+      this.$.persistentFooter.actionButtons = [{title: 'Save booking', id: 'createRoomBooking'}];
+
+      this.addEventListener('uqlibrary-persistent-footer-action-button-clicked', function(e) {
+        if(e.detail.button && e.detail.button.id == 'createRoomBooking') {
+          this.createRoomBooking();
+        }
+      });
+
     },
 
     transitionPrepareHandler: function() {
@@ -231,7 +238,7 @@ Element providing a form for booking a room.
     createBookingComplete : function(event){
       if (event.detail.response) {
         //display error returned by the server
-        this.showInfoToast("Error creating a booking: " + e.detail.responseText);
+        this.showInfoToast("Error creating a booking: " + event.detail.responseText);
 
       } else {
         //if booking is successful, fire event to indicate booking is done and move on to other page

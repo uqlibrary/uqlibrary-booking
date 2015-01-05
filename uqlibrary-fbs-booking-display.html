@@ -171,12 +171,9 @@ Element providing a simple booking display.
         <paper-button affirmative autofocus on-tap="{{deleteBooking}}">Delete</paper-button>
       </paper-dialog>
 
-      <div class="persistent-footer" horizontal layout hidden?={{transitioning}}>
-        <paper-toast id="infoToast" flex></paper-toast>
-        <div flex>&nbsp;</div>
-        <paper-button end-justified on-tap="{{toggleDeleteDialog}}">Delete Booking</paper-button>
-      </div>
-    </div>
+
+    <uqlibrary-persistent-footer id="persistentFooter"></uqlibrary-persistent-footer>
+    <paper-toast id="infoToast" flex></paper-toast>
 
   </template>
 
@@ -203,6 +200,14 @@ Element providing a simple booking display.
         },
 
         ready: function () {
+
+          this.$.persistentFooter.actionButtons = [{title: 'Delete Booking', id: 'toggleDeleteDialog'}];
+
+          this.addEventListener('uqlibrary-persistent-footer-action-button-clicked', function(e) {
+            if(e.detail.button && e.detail.button.id == 'toggleDeleteDialog') {
+              this.toggleDeleteDialog();
+            }
+          });
         },
 
         transitionPrepareHandler: function() {

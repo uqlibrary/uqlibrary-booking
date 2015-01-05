@@ -1,3 +1,161 @@
+h1 {
+  font-family: "Roboto light";
+  font-size: 8em;
+  line-height: 1.1em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: rgba(0, 0, 0, 0.54); }
+
+h1.inverse {
+  font-family: "Roboto light";
+  font-size: 8em;
+  line-height: 1.1em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: white; }
+
+h2 {
+  font-family: "Roboto regular";
+  font-size: 4em;
+  white-space: nowrap;
+  line-height: 1.1em;
+  text-overflow: ellipsis;
+  color: rgba(0, 0, 0, 0.54); }
+
+h2.inverse {
+  font-family: "Roboto regular";
+  font-size: 4em;
+  white-space: nowrap;
+  line-height: 1.1em;
+  text-overflow: ellipsis;
+  color: white; }
+
+h3 {
+  font-family: "Roboto regular";
+  font-size: 3.4em;
+  line-height: 1.1em;
+  color: rgba(0, 0, 0, 0.54); }
+
+h3.inverse {
+  font-family: "Roboto regular";
+  font-size: 3.4em;
+  line-height: 1.1em;
+  color: white; }
+
+h4 {
+  font-family: "Roboto regular";
+  font-size: 2.6em;
+  line-height: 1.1em;
+  color: rgba(0, 0, 0, 0.54); }
+
+h4.inverse {
+  font-family: "Roboto regular";
+  font-size: 2.6em;
+  line-height: 1.1em;
+  color: white; }
+
+.headline {
+  font-family: "Roboto regular";
+  font-size: 1.8em;
+  line-height: 1.1em;
+  color: rgba(0, 0, 0, 0.87); }
+
+.headline.inverse {
+  font-family: "Roboto regular";
+  font-size: 1.8em;
+  line-height: 1.1em;
+  color: rgba(255, 255, 255, 0.87); }
+
+.title {
+  font-family: "Roboto medium";
+  font-size: 1.42857em;
+  line-height: 1.1em;
+  color: rgba(0, 0, 0, 0.87); }
+
+.title.inverse {
+  font-family: "Roboto medium";
+  font-size: 1.42857em;
+  line-height: 1.1em;
+  color: rgba(255, 255, 255, 0.87); }
+
+.subhead {
+  font-family: "Roboto regular";
+  font-size: 1.14286em;
+  line-height: 1.1em;
+  color: rgba(0, 0, 0, 0.87); }
+
+.subhead.inverse {
+  font-family: "Roboto regular";
+  font-size: 1.14286em;
+  line-height: 1.1em;
+  color: rgba(255, 255, 255, 0.87); }
+
+.body2 {
+  font-family: "Roboto medium";
+  font-size: 1em;
+  line-height: 1.1em;
+  color: rgba(0, 0, 0, 0.87); }
+
+.body2.inverse {
+  font-family: "Roboto medium";
+  font-size: 1em;
+  line-height: 1.1em;
+  color: rgba(255, 255, 255, 0.87); }
+
+.body1 {
+  font-family: "Roboto regular";
+  font-size: 1em;
+  line-height: 1.1em;
+  color: rgba(0, 0, 0, 0.87); }
+
+.body1.inverse {
+  font-family: "Roboto regular";
+  font-size: 1em;
+  line-height: 1.1em;
+  color: rgba(255, 255, 255, 0.87); }
+
+.caption {
+  font-family: "Roboto regular";
+  font-size: 0.85714em;
+  line-height: 1.1em;
+  color: rgba(0, 0, 0, 0.54); }
+
+.caption.inverse {
+  font-family: "Roboto regular";
+  font-size: 0.85714em;
+  line-height: 1.1em;
+  color: rgba(255, 255, 255, 0.54); }
+
+.menu {
+  font-family: "Roboto medium";
+  font-size: 1em;
+  color: rgba(0, 0, 0, 0.87);
+  line-height: 1.1em;
+  color: rgba(0, 0, 0, 0.87); }
+
+.menu.inverse {
+  font-family: "Roboto medium";
+  font-size: 1em;
+  color: rgba(0, 0, 0, 0.87);
+  line-height: 1.1em;
+  color: rgba(255, 255, 255, 0.87); }
+
+.button {
+  font-family: "Roboto medium";
+  font-size: 1em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.87);
+  line-height: 1.1em;
+  color: rgba(0, 0, 0, 0.87); }
+
+.button.inverse {
+  font-family: "Roboto medium";
+  font-size: 1em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.87);
+  line-height: 1.1em;
+  color: rgba(255, 255, 255, 0.87); }
+
 :host,
 :host *,
 ::content * {
@@ -12,12 +170,12 @@ a.icon, a.icon:active, a.icon:link {
   color: #009688; }
 
 .booking-room-header {
-  background-color: #ffffff;
+  background-color: white;
   background-size: cover;
   background-position: 50% 50%;
   padding-top: 150px; }
   .booking-room-header h2 {
-    color: #ffffff;
+    color: white;
     font-weight: normal;
     line-height: 1;
     background-color: rgba(73, 7, 94, 0.6);
@@ -44,14 +202,14 @@ a.icon, a.icon:active, a.icon:link {
     display: inline-block;
     height: 20px;
     width: 20px;
-    border: 1px solid #EEEEEE;
+    border: 1px solid #eeeeee;
     vertical-align: middle; }
     .booking-room-hint .hint-box.selected {
       background-color: #009688; }
     .booking-room-hint .hint-box.available {
-      background-color: #EEEEEE; }
+      background-color: #eeeeee; }
     .booking-room-hint .hint-box.unavailable {
-      background-color: #BDBDBD; }
+      background-color: #bdbdbd; }
 
 .display-section {
   margin-bottom: 50px; }
@@ -62,12 +220,10 @@ a.icon, a.icon:active, a.icon:link {
   bottom: 0px;
   height: 48px;
   width: 100%;
-  border-top: 1px solid #EEEEEE;
-  background: #ffffff; }
+  border-top: 1px solid #eeeeee;
+  background: white; }
   .persistent-footer paper-button#createRoomBooking {
     height: 36px;
     text-align: right; }
     .persistent-footer paper-button#createRoomBooking core-icon {
       width: 16px; }
-
-/*# sourceMappingURL=uqlibrary-fbs-booking-form.css.map */

@@ -113,12 +113,10 @@ Element providing solution to no problem in particular.
             </uqlibrary-filter-group>
 
           </div>
-        <div class="buttonWrapper" horizontal layout hidden?={{transitioning}}>
+          <uqlibrary-persistent-footer id="persistentFooter">
+            {{resultsText}}
+          </uqlibrary-persistent-footer>
          <paper-toast id="infoToast"></paper-toast>
-          <div class="resultsText" flex>{{resultsText}}</div>
-          <paper-button id="applyButton" end-justified on-click="{{submitForm}}">Search</paper-button>
-        </div>
-
       </div>
     <content></content>
 
@@ -179,6 +177,14 @@ Element providing solution to no problem in particular.
         this.addEventListener('submit-form', this.submitForm);
         this.addEventListener('results-changed', this.resultsChanged);
         this.selectedTime = moment().format(this.timeOutputFormat);
+
+        this.$.persistentFooter.actionButtons = [{title: 'Search', id: 'submitFormButton'}];
+        this.addEventListener('uqlibrary-persistent-footer-action-button-clicked', function(e) {
+          if(e.detail.button && e.detail.button.id == 'submitFormButton') {
+            this.submitForm();
+          }
+        });
+
       },
 
       triggerSelectedValuesChange: function() {
