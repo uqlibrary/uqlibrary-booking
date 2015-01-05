@@ -94,6 +94,7 @@
 
         currentPage: 'myBookings',
         transitioning: false,
+        bookingsUseCache: true,
 
         created: function () {
           this.facilities = [];
@@ -206,6 +207,8 @@
             action: 'showBookingDetails'
           };
 
+          this.$.bookings.get({nocache : !this.bookingsUseCache} );
+
           this.$.bookings.addEventListener('uqlibrary-api-account-bookings-loaded', function(e) {
             var bookings = Array.isArray(e.detail) ? e.detail : [];
             if (bookings.length > 0) {
@@ -236,9 +239,13 @@
               });
               that.events = events;
           }
-          });
+            else {
+              that.events = [];
+            }
 
-          this.$.bookings.get();
+            that.bookingsUseCache = true;
+
+          });
 
         },
 
@@ -425,7 +432,8 @@
         bookingDeleted: function(e, data, sender){
           this.$.ga.addEvent('bookingDeleted');
 
-          this.$.bookings.get({ nocache : true });
+          //this.$.bookings.get({ nocache : true });
+          this.bookingsUseCache = false;
 
           //Transition to timeline page
           this.doTransition(e, data, {id: 'toolBarLeftButton'});
@@ -441,7 +449,8 @@
           this.$.ga.addEvent('bookingCreated');
 
           // add new booking details to events on timeline
-          this.$.bookings.get({ nocache : true });
+          this.bookingsUseCache = false;
+          //this.$.bookings.get({ nocache : true });
 
           // transition to timeline
           this.doTransition(e, data, {id: 'bookingForm'});
