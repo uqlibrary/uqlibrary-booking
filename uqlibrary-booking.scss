@@ -4,7 +4,7 @@
 }
 
 core-drawer-panel {
-  background-color: #FFF;
+  background-color: $white;
 }
 
 #booking {
@@ -16,7 +16,7 @@ core-drawer-panel {
 }
 
 core-toolbar {
-  background-color: $primary-500;
+  background-color: $highlight-primary;
   border-bottom: 1px solid $primary-700;
   color: $text-inverse;
 }
@@ -27,7 +27,7 @@ core-menu {
 
 paper-fab {
   &.action{
-    background-color: $green;
+    background-color: $highlight-primary;
 
     &#addBookingButton {
       position: fixed;
