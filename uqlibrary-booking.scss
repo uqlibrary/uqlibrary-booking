@@ -16,7 +16,7 @@ core-drawer-panel {
 }
 
 core-toolbar {
-  background-color: $highlight-primary;
+  background-color: $primary;
   border-bottom: 1px solid $primary-700;
   color: $text-inverse;
 }
@@ -27,7 +27,7 @@ core-menu {
 
 paper-fab {
   &.action{
-    background-color: $highlight-primary;
+    background-color: $primary;
 
     &#addBookingButton {
       position: fixed;

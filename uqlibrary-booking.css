@@ -164,6 +164,16 @@ h4.inverse {
   line-height: 1.1em;
   color: rgba(255, 255, 255, 0.87); }
 
+core-icon {
+  color: rgba(0, 0, 0, 0.54);
+  margin-right: 2em; }
+  core-icon.inactive {
+    color: rgba(0, 0, 0, 0.26); }
+  core-icon.active-inverse {
+    color: white; }
+  core-icon.inactive-inverse {
+    color: rgba(255, 255, 255, 0.3); }
+
 :host,
 :host *,
 ::content * {
@@ -171,24 +181,24 @@ h4.inverse {
   outline: none; }
 
 core-drawer-panel {
-  background-color: white; }
+  background-color: #ffffff; }
 
 #booking {
   margin: 16px; }
 
 #drawer {
-  background-color: white; }
+  background-color: #ffffff; }
 
 core-toolbar {
-  background-color: #7b1fa2;
-  border-bottom: 1px solid #49075e;
+  background-color: #7b0c9d;
+  border-bottom: 1px solid #49075E;
   color: rgba(255, 255, 255, 0.87); }
 
 core-menu {
   margin: 0; }
 
 paper-fab.action {
-  background-color: #7b1fa2; }
+  background-color: #7b0c9d; }
   paper-fab.action#addBookingButton {
     position: fixed;
     bottom: 16px;
@@ -199,3 +209,5 @@ paper-fab.action {
   #filterForm uqlibrary-fbs-filter-form {
     position: relative;
     display: block; }
+
+/*# sourceMappingURL=uqlibrary-booking.css.map */
