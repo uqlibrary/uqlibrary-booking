@@ -593,12 +593,10 @@ core-toolbar {
 core-menu {
   margin: 0; }
 
-paper-fab.action {
-  background-color: #7b0c9d; }
-  paper-fab.action#addBookingButton {
-    position: fixed;
-    bottom: 16px;
-    right: 16px; }
+paper-fab.action#addBookingButton {
+  position: fixed;
+  bottom: 16px;
+  right: 16px; }
 
 #filterForm {
   /*padding-left: 50%;*/ }

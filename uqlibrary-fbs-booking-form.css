@@ -581,7 +581,7 @@ paper-fab {
   width: 32px; }
 
 a.icon, a.icon:active, a.icon:link {
-  color: #009688; }
+  color: #2874d7; }
 
 .booking-room-header {
   background-color: #ffffff;
@@ -619,7 +619,7 @@ a.icon, a.icon:active, a.icon:link {
     border: 1px solid #EEEEEE;
     vertical-align: middle; }
     .booking-room-hint .hint-box.selected {
-      background-color: #009688; }
+      background-color: #2874d7; }
     .booking-room-hint .hint-box.available {
       background-color: #EEEEEE; }
     .booking-room-hint .hint-box.unavailable {
