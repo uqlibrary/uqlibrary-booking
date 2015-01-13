@@ -2,23 +2,30 @@
 
 <polymer-element name="uqlibrary-rooms-list" attributes="data">
 <template>
-  <link rel="stylesheet" href="uqlibrary-rooms-list.css">
+  <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/element.css">
+  <ul class="three-line-icon-list">
+    <li class="gap"></li>
+    <core-list id="list" on-core-activate="{{selectRoom}}" data="{{data}}" selection="{{selection}}" fit>
+      <template>
+          <li class="list-item border">
+            <div class="avatar" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{model.image}}');"></div>
+            <div class="content">
 
-  <core-list id="list" on-core-activate="{{selectRoom}}" data="{{data}}" selection="{{selection}}" fit>
-    <template>
-      <div horizontal layout class="item">
-        <div class="message-image" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{model.image}}');" hidden?={{!model.image}} ></div>
-        <div class="message" flex>
-          <paper-ripple fit></paper-ripple>
-          <div class="primary">{{model.title}}</div>
-          <span class="secondary" hidden?={{!model.location}}>{{ model.location }}, </span>
-          <span class="secondary" hidden?={{!model.building}}>{{ model.building }}, </span>
-          <span class="secondary" hidden?={{!model.campus}}>{{ model.campus }}</span><br>
-          <span class="secondary level" hidden?={{!model.next_available_time_text}}>Available time: {{model.next_available_time_text}}</span><br>
-        </div>
-      </div>
-    </template>
-  </core-list>
+              <paper-ripple fit></paper-ripple>
+
+              <div class="line1">{{model.title}}</div>
+              <div class="line2">
+                <span hidden?={{!model.location}}>{{ model.location }}, </span>
+                <span hidden?={{!model.building}}>{{ model.building }}, </span>
+                <span hidden?={{!model.campus}}>{{ model.campus }}</span>
+              </div>
+              <div class="line3" hidden?={{!model.next_available_time_text}}>Available time: {{model.next_available_time_text}}</div>
+            </div>
+          </li>
+      </template>
+    </core-list>
+  </ul>
+
 </template>
 
 <script>

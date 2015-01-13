@@ -77,24 +77,23 @@ Element providing a form for booking a room.
   <core-signals on-core-signal-transition-prepare="{{transitionPrepareHandler}}"></core-signals>
   <core-signals on-core-signal-transition-end="{{transitionEndHandler}}"></core-signals>
 
-  <link rel="stylesheet" href="uqlibrary-fbs-booking-form.css">
+  <!--<link rel="stylesheet" href="uqlibrary-fbs-booking-form.css">-->
+  <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/element.css">
 
-  <div class="display-section">
+  <div class="body-footer-container">
 
     <uqlibrary-api-facilities-booking id="createBookingRequest" on-uqlibrary-api-facilities-booking-executed="{{ createBookingComplete }}"></uqlibrary-api-facilities-booking>
 
-  <core-ajax id="createBookingRequest2" url="https://app.library.uq.edu.au/api/booking"
-             auto="false" method="POST" contentType="application/json"
-             on-core-response="{{ createBookingResponse }}" on-core-error="{{ createBookingError }}" on-core-complete="{{ createBookingComplete }}"></core-ajax>
+  <div class="image-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ roomDetails.imageLarge }}')">
 
-  <div class="booking-room-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ roomDetails.imageLarge }}')">
-    <h2>
-      {{ roomDetails.title }} <br>
-      <small>{{roomDetails | formatLocation }}</small>
-    </h2>
+    <div class="title-container">
+      <div class="title inverse">{{ roomDetails.title }}</div>
+      <div class="subhead inverse">{{roomDetails | formatLocation }}</div>
+    </div>
+
   </div>
 
-  <p class="booking-room-summary">{{ roomDetails.notes }}
+  <p class="text-container body1">{{ roomDetails.notes }}
     <a class="icon" hidden?="{{!roomDetails.url}}" href="{{roomDetails.url}}" target="_blank">
       <core-icon icon="file-map"></core-icon>
     </a>
@@ -107,8 +106,8 @@ Element providing a form for booking a room.
                            maxBookingLength="{{ roomDetails.maxtime / roomDetails.time_span }}">
   </uqlibrary-date-selector>
 
-  <p class="booking-room-hint">Maximum booking duration is {{ roomDetails.maxtime }} min, minimum booking duration is {{ roomDetails.mintime }} min</p>
-  <p class="booking-room-hint">
+  <p class="text-container caption">Maximum booking duration is {{ roomDetails.maxtime }} min, minimum booking duration is {{ roomDetails.mintime }} min</p>
+  <p class="text-container caption">
     <span class="hint-box selected"></span> - your current selection
     <span class="hint-box available"></span> - available time slot
     <span class="hint-box unavailable"></span> - unavailable time slot

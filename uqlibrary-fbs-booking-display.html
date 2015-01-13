@@ -105,75 +105,74 @@ Element providing a simple booking display.
 <polymer-element name="uqlibrary-fbs-booking-display" attributes="roomDetails bookingDetails authTokenValue">
 
   <template>
-    <link rel="stylesheet" href="uqlibrary-fbs-booking-form.css">
+    <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/element.css">
 
     <core-signals on-core-signal-transition-prepare="{{transitionPrepareHandler}}"></core-signals>
     <core-signals on-core-signal-transition-end="{{transitionEndHandler}}"></core-signals>
 
     <uqlibrary-api-facilities-booking id="deleteBookingRequest" on-uqlibrary-api-facilities-booking-executed="{{ deleteBookingComplete }}"></uqlibrary-api-facilities-booking>
 
-    <core-ajax id="deleteBookingRequest2" url="https://app.library.uq.edu.au/api/booking"
-               auto="false" method="DELETE" contentType="application/json"
-               on-core-response="{{ deleteBookingResponse }}" on-core-error="{{ deleteBookingError }}" on-core-complete="{{ deleteBookingComplete }}"></core-ajax>
+    <div class="body-footer-container">
 
-    <div class="display-section">
+      <div class="image-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ roomDetails.imageLarge }}')">
 
-      <div class="booking-room-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ roomDetails.imageLarge }}')">
-        <h2>
-          {{ roomDetails.title }} <br>
-          <small>{{roomDetails | formatLocation }}</small>
-        </h2>
+        <div class="title-container">
+          <div class="title inverse">{{ roomDetails.title }}</div>
+          <div class="subhead inverse">{{roomDetails | formatLocation }}</div>
+        </div>
       </div>
 
-      <div class="booking-details-item" horizontal layout>
+      <div class="text-container" horizontal layout>
         <div>
           <core-icon icon="today" class="big-icon"></core-icon>
         </div>
         <div flex>
-          <h3>Date</h3>
-          <p>{{bookingDetails | formatBookingDate }}</p>
+          <div class="title">Date</div>
+          <div class="body1">{{bookingDetails | formatBookingDate }}</div>
         </div>
       </div>
 
-      <div class="booking-details-item" horizontal layout>
+      <div class="text-container" horizontal layout>
         <div>
           <core-icon icon="schedule" class="big-icon"></core-icon>
         </div>
         <div flex>
-          <h3>Time</h3>
-          <p>{{bookingDetails | formatBookingTime}}</p>
+          <div class="title">Time</div>
+          <div class="body1">{{bookingDetails | formatBookingTime}}</div>
         </div>
       </div>
 
-      <div class="booking-details-item" horizontal layout>
+      <div class="text-container" horizontal layout>
         <div>
           <core-icon icon="description" class="big-icon"></core-icon>
         </div>
         <div flex>
-          <h3>Room Details</h3>
-          <p>{{roomDetails.notes}}</p>
+          <div class="title">Room Details</div>
+          <div class="body1">{{roomDetails.notes}}</div>
         </div>
       </div>
 
-      <div class="booking-details-item" horizontal layout hidden?="{{!roomDetails.url}}">
+      <div class="text-container" horizontal layout hidden?="{{!roomDetails.url}}">
         <div>
           <core-icon icon="file-map" class="big-icon"></core-icon>
         </div>
         <div flex>
-          <h3>Map</h3>
-          <p><a href="{{roomDetails.url}}}">View map</a></p>
+          <div class="title">Map</div>
+          <div class="body1"><a href="{{roomDetails.url}}}">View map</a></div>
         </div>
       </div>
 
       <paper-dialog backdrop autoCloseDisabled id="infoDialog" role="dialog">
-        <p>Delete this booking?</p>
-        <paper-button affirmative on-tap="{{toggleDeleteDialog}}">Cancel</paper-button>
-        <paper-button affirmative autofocus on-tap="{{deleteBooking}}">Delete</paper-button>
+        <div class="body2">Delete this booking?</div>
+        <paper-button affirmative on-tap="{{toggleDeleteDialog}}" class="button">Cancel</paper-button>
+        <paper-button affirmative autofocus on-tap="{{deleteBooking}}" class="button">Delete</paper-button>
       </paper-dialog>
 
+      <uqlibrary-persistent-footer id="persistentFooter"></uqlibrary-persistent-footer>
 
-    <uqlibrary-persistent-footer id="persistentFooter"></uqlibrary-persistent-footer>
-    <paper-toast id="infoToast" flex></paper-toast>
+      <paper-toast id="infoToast" flex></paper-toast>
+
+    </div>
 
   </template>
 
@@ -221,13 +220,13 @@ Element providing a simple booking display.
         formatLocation : function (roomDetails) {
           var location = [];
 
-          if (roomDetails.location !== undefined)
+          if (roomDetails.location)
             location.push(roomDetails.location);
 
-          if (roomDetails.building !== undefined)
+          if (roomDetails.building)
             location.push(roomDetails.building);
 
-          if (roomDetails !== undefined)
+          if (roomDetails.campus)
             location.push(roomDetails.campus);
 
           return location.join(", ");
