@@ -7,7 +7,7 @@
 <polymer-element name="uqlibrary-booking">
 
   <template>
-    <link rel="stylesheet" href="uqlibrary-booking.css">
+    <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/element.css" shim-shadowdom>
 
     <uqlibrary-ga id="ga" appName="FBS"></uqlibrary-ga>
 
@@ -49,7 +49,7 @@
                          hero?="{{transition === 'hero-transition'}}"
                          id="addBookingButton"
                          icon="add"
-                         class="action"
+                         class="bottom-fixed"
                          hidden?="{{transitioning}}"
                          on-tap="{{doTransition}}"></paper-fab>
             </section>

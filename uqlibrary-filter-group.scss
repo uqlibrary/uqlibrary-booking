@@ -1,28 +1,18 @@
-@import "../uqlibrary-elements/resources/theme/element";
+@import "../uqlibrary-elements/resources/theme/variables";
+@import "../uqlibrary-elements/resources/theme/margins";
 
 :host {
   display: block;
   position: relative;
-  background-color: white;
-  padding: 16pt;
+  background-color: $white;
+  padding: $form-padding;
   border-bottom: 1pt solid $divider;
 }
-.card-header {
-  margin-bottom: 10px;
-  font-size: 14pt;
-  color: $teal-500;
-  font-weight: normal;
 
-  core-icon {
-    position: absolute;
-    left: 16pt;
-  }
-  .group-label {
-    padding-left: 24pt;
-
-  }
+.group-label {
+  margin-left: $form-icon-padding-left - $form-padding - $form-icon-size;
 }
 .group-content {
-  padding-left: 24pt;
+  padding-left: $form-icon-padding-left - $form-padding;
 }
 

@@ -1,7 +1,8 @@
-@import "../uqlibrary-elements/resources/theme/element";
+@import "../uqlibrary-elements/resources/theme/variables";
+@import "../uqlibrary-elements/resources/theme/margins";
 
 $timepickerRatio: 0.9;
-$mainColor: $teal-500;
+
 $inputColor: $secondary-text;
 $textColor: $secondary-text;
 
@@ -13,15 +14,10 @@ $textColor: $secondary-text;
 .filterWrapper {
   background-color: $white;
   margin-bottom: 30px;
-
-
 }
 
 
 uqlibrary-filter-group {
-  padding-right: 20pt;
-
-
   div.groupContentWrapper[horizontal] {
     paper-dropdown-menu {
       min-width: 150px;
@@ -55,10 +51,18 @@ paper-dropdown-menu {
   }
 }
 
-
+paper-input-decorator {
+  &::shadow {
+    #focusedUnderline
+    {
+      background-color: $button !important;
+    }
+  }
+}
 
 paper-input {
   display: block;
+
   &::shadow {
     input {
       color: $inputColor;
@@ -74,14 +78,14 @@ paper-input {
 md-timepicker {
   &::shadow {
     #card {
-      border: 1px solid $grey-A100;
-      margin-top: 0pt;
-      margin-bottom: 0pt;
+      border: 1px solid $divider;
+      margin-top: 0;
+      margin-bottom: 0;
       height: 400px * $timepickerRatio;
       width: 250px * $timepickerRatio;
 
       #display {
-        background-color: $mainColor !important;
+        background-color: $button !important;
         height: 120px * $timepickerRatio;
         padding: 24px * $timepickerRatio;
         color: $white;
@@ -107,7 +111,6 @@ md-timepicker {
 
     paper-button {
       font-size: 14px * $timepickerRatio;
-
     }
 
 
@@ -121,16 +124,16 @@ paper-slider {
       box-sizing: content-box;
       &::shadow {
         #activeProgress {
-          background-color: $mainColor;
+          background-color: $button;
         }
       }
     }
 
     #sliderKnobInner {
-      background-color: $mainColor;
+      background-color: $button;
 
       &::before {
-        background-color: $mainColor;
+        background-color: $button;
         display: block !important;
       }
 
@@ -163,7 +166,7 @@ paper-checkbox {
   &::shadow {
     #checkbox {
       &.checked {
-        border-color: $mainColor;
+        border-color: $button;
       }
     }
   }
@@ -177,26 +180,6 @@ paper-checkbox {
     margin-right: 10pt;
   }
 
-}
-
-.buttonWrapper {
-  padding: 0px 20px 0px 20px;
-  position: fixed;
-  bottom: 0px;
-  height: 48px;
-  width: 100%;
-  border-top: 1px solid $grey-A200;
-  background: $white;
-
-  paper-button#applyButton {
-    color: $mainColor;
-    height: 36px;
-    margin-top: 6px;
-  }
-  .resultsText {
-    height: 36px;
-    padding-top: 12px;
-  }
 }
 
 paper-toast {

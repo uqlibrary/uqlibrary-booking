@@ -110,7 +110,6 @@ Element providing a simple booking display.
     <core-signals on-core-signal-transition-prepare="{{transitionPrepareHandler}}"></core-signals>
     <core-signals on-core-signal-transition-end="{{transitionEndHandler}}"></core-signals>
 
-    <uqlibrary-api-facilities-booking id="deleteBookingRequest" on-uqlibrary-api-facilities-booking-executed="{{ deleteBookingComplete }}"></uqlibrary-api-facilities-booking>
 
     <div class="body-footer-container">
 
@@ -173,6 +172,8 @@ Element providing a simple booking display.
       <paper-toast id="infoToast" flex></paper-toast>
 
     </div>
+
+    <uqlibrary-api-facilities-booking id="deleteBookingRequest" on-uqlibrary-api-facilities-booking-executed="{{ deleteBookingComplete }}"></uqlibrary-api-facilities-booking>
 
   </template>
 
