@@ -44,27 +44,27 @@
 
       before(function () {
         element = document.querySelector('uqlibrary-fbs-booking-display');
-
         element.roomDetails = roomDetails;
         element.bookingDetails = bookingDetails;
       });
 
       //properties unit tests
-      test('defines roomDetails property', function () {
+      test('defines roomDetails property', function (done) {
         assert.equal(roomDetails.id, element.roomDetails.id);
+        done();
       });
 
-      test('defines bookingDetails property', function () {
+      test('defines bookingDetails property', function (done) {
         assert.equal(bookingDetails.id, element.bookingDetails.id);
+        done();
       });
 
       //methods unit tests
-      test('deleteBooking - deletes current booking', function(){
+      test('deleteBooking - deletes current booking', function(done){
         var setRandomAvailability = false;
 
-
         element.addEventListener('booking-deleted', function(event) {
-          assert.equal(event.detail.title, bookingDetails.title);
+          done();
         });
 
         element.deleteBooking();

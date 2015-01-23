@@ -15,13 +15,222 @@
   <uqlibrary-booking></uqlibrary-booking>
 
   <script>
+
     window.addEventListener('polymer-ready', function() {
-      var myEl = document.querySelector('uqlibrary-booking');
+      var parent = document.querySelector('uqlibrary-booking');
 
-      describe('uqlibrary-booking', function () {
-        before(function () {
+      test('can display my bookings page', function(done) {
+        setTimeout(function() {
+          //check page title
+          var pageTitle = parent.shadowRoot.querySelector('#toolbar-page-title').innerHTML;
+          expect(pageTitle).to.be.equal('My bookings');
 
-        });
+          //check bookings are displayed
+          var bookingsTimeline = parent.shadowRoot.querySelectorAll('uqlibrary-timeline /deep/ li.list-item');
+          expect(bookingsTimeline.length).to.be.above(0);
+
+          done();
+
+        }, 2000);
+      });
+
+      test('can transition to filter form', function(done) {
+        setTimeout(function() {
+          //activate new booking button
+          var newBookingFab = parent.shadowRoot.querySelector('#addBookingButton');
+          newBookingFab.fire('tap');
+
+          setTimeout(function() {
+
+            //check title is correct
+            var pageTitle = parent.shadowRoot.querySelector('#toolbar-page-title').innerHTML;
+            expect(pageTitle).to.be.equal('Find a room');
+
+            //check campus drop down exists
+            var filterForm = parent.shadowRoot.querySelector('uqlibrary-fbs-filter-form');
+
+            var campusDropDown = filterForm.shadowRoot.querySelector('#campusSelect');
+            assert.isNotNull(campusDropDown);
+
+            //check campus has data
+            var campusMenuItems = campusDropDown.querySelectorAll('#campusSelectMenu paper-item');
+            expect(campusMenuItems.length).to.be.equal(2);
+
+            //check buildings data is hidden
+            var buildingDropDown = filterForm.shadowRoot.querySelector('#buildingSelect');
+
+            //select a campus, check selection is correct
+            var campusMenu = campusDropDown.querySelector('#campusSelectMenu');
+            filterForm.selectedCampus = 'St Lucia';
+            expect(campusMenu.selected).to.be.equal('St Lucia');
+
+            setTimeout(function() {
+              //check buildings drop down is displayed
+              expect(buildingDropDown).not.to.be.null;
+              expect(buildingDropDown.hidden).to.be.false;
+
+              done();
+
+            }, 500);
+          }, 2000)
+        }, 2000);
+      });
+
+      test('can transition to rooms list', function(done) {
+        setTimeout(function() {
+          //select footer's action button and emulate search button click
+          var filterFormFooter = parent.shadowRoot.querySelector('uqlibrary-fbs-filter-form /deep/ uqlibrary-persistent-footer');
+          var footerActionButton = filterFormFooter.shadowRoot.querySelector('.footerActionButton');
+          footerActionButton.fire('click');
+
+          setTimeout(function() {
+            //check page transitioned to list of rooms
+            //check title of page
+            var pageTitle = parent.shadowRoot.querySelector('#toolbar-page-title').innerHTML;
+            expect(pageTitle).to.be.equal('Select a room');
+
+            //check list of rooms is displayed
+            var roomsList = parent.shadowRoot.querySelectorAll('uqlibrary-rooms-list /deep/ li.list-item');
+            expect(roomsList).not.to.null;
+            expect(roomsList.length).not.to.be.equal(0);
+
+            done();
+          }, 2000);
+        }, 2000);
+
+      });
+
+      test('can transition to room booking form', function(done) {
+        setTimeout(function () {
+          //select 4th room in the list
+          var roomsList = parent.shadowRoot.querySelectorAll('uqlibrary-rooms-list /deep/ li.list-item');
+          var roomItem = roomsList[3];
+          roomItem.dispatchEvent(new MouseEvent('tap', {'view': window, 'bubbles': true}));
+
+          setTimeout(function () {
+            //check page transitioned to room booking form
+            //check page title is set
+            var pageTitle = parent.shadowRoot.querySelector('#toolbar-page-title').innerHTML;
+            expect(pageTitle).to.be.equal('Book a room');
+
+            var bookingForm = parent.shadowRoot.querySelector('uqlibrary-fbs-booking-form');
+
+            //check room title is set
+            var roomTitle = bookingForm.shadowRoot.querySelector('.title-container .title');
+            expect(roomTitle).not.to.be.null;
+            expect(roomTitle.innerHTML).not.to.be.undefined;
+
+            //check date selector shows 7 days
+            var dateSelector = bookingForm.shadowRoot.querySelectorAll('uqlibrary-date-selector /deep/ paper-tab');
+
+            expect(dateSelector).not.to.be.null;
+            expect(dateSelector.length).to.be.equal(7);
+
+            //check timeslot selector shows timeslots
+            var timeSelector = bookingForm.shadowRoot.querySelectorAll('uqlibrary-date-selector /deep/ uqlibrary-time-selector /deep/ paper-button');
+            expect(timeSelector).not.to.be.null;
+            expect(timeSelector.length).to.be.above(0);
+
+            done();
+
+          }, 2000);
+        }, 2000);
+      });
+
+      test('can book a room and transition to my bookings page', function(done) {
+        setTimeout(function () {
+          var bookingForm = parent.shadowRoot.querySelector('uqlibrary-fbs-booking-form');
+
+          //select timeslots
+          var selectedTimeslots = bookingForm.shadowRoot.querySelectorAll('uqlibrary-date-selector /deep/ uqlibrary-time-selector /deep/ paper-button.selected-true');
+
+          if (selectedTimeslots.length == 0) {
+            //nothing is selected, select first timeslot and continue
+            timeSelector[0].fire('click');
+          }
+
+          setTimeout(function() {
+            //select footer's action button and emulate book room button click
+            var bookingFormFooter = bookingForm.shadowRoot.querySelector('uqlibrary-persistent-footer');
+            var footerActionButton = bookingFormFooter.shadowRoot.querySelector('.footerActionButton');
+            footerActionButton.fire('click');
+
+            setTimeout(function() {
+
+              //check page title is set
+              var pageTitle = parent.shadowRoot.querySelector('#toolbar-page-title').innerHTML;
+              expect(pageTitle).to.be.equal('My bookings');
+
+              done();
+
+            }, 2000);
+          }, 2000);
+        }, 2000);
+      });
+
+      test('can transition to booking details page', function(done) {
+        setTimeout(function() {
+          //check page title
+          var pageTitle = parent.shadowRoot.querySelector('#toolbar-page-title').innerHTML;
+          expect(pageTitle).not.to.be.null;
+          expect(pageTitle).to.be.equal('My bookings');
+
+          //check bookings are displayed
+          var bookingsTimeline = parent.shadowRoot.querySelectorAll('uqlibrary-timeline /deep/ li.list-item .content');
+          expect(bookingsTimeline.length).to.be.above(0);
+
+
+          //select first booking
+          var booking = bookingsTimeline[0];
+          booking.dispatchEvent(new MouseEvent('tap', {'view': window, 'bubbles': true}));
+
+          setTimeout(function(){
+
+            var bookingDisplay = parent.shadowRoot.querySelector('uqlibrary-fbs-booking-display');
+
+            //check page title is set
+            var pageTitle = parent.shadowRoot.querySelector('#toolbar-page-title').innerHTML;
+            expect(pageTitle).to.be.equal('Booking details');
+
+            //check room title is set
+            var roomTitle = bookingDisplay.shadowRoot.querySelector('.title-container .title');
+            expect(roomTitle).not.to.be.null;
+            expect(roomTitle.innerHTML).not.to.be.undefined;
+
+            done();
+          }, 2000);
+        }, 2000);
+      });
+
+      test('can delete a room booking and transition to my bookings page', function(done) {
+        setTimeout(function () {
+          var bookingDisplay = parent.shadowRoot.querySelector('uqlibrary-fbs-booking-display');
+
+          //select footer's action button and emulate book room button click
+          var bookingDetailsFooter = bookingDisplay.shadowRoot.querySelector('uqlibrary-persistent-footer');
+          var footerActionButton = bookingDetailsFooter.shadowRoot.querySelector('.footerActionButton');
+          footerActionButton.fire('click');
+
+          setTimeout(function() {
+            //confirm delete
+            var dialogBoxButtons = document.querySelectorAll('core-overlay-layer /deep/ #infoDialog paper-button');
+            expect(dialogBoxButtons).not.to.be.null;
+            expect(dialogBoxButtons.length).to.be.above(0);
+
+            var deleteButton = dialogBoxButtons[1];
+            expect(deleteButton).not.to.be.null;
+            deleteButton.dispatchEvent(new MouseEvent('tap', {'view': window, 'bubbles': true}));
+
+            setTimeout(function(){
+              //check page title is set
+              var pageTitle = parent.shadowRoot.querySelector('#toolbar-page-title').innerHTML;
+              expect(pageTitle).to.be.equal('My bookings');
+
+              done();
+
+            }, 2000);
+          }, 2000);
+        }, 2000);
       });
 
     });

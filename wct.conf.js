@@ -1,4 +1,4 @@
 module.exports = {
   verbose: true,
-  browsers: ["chrome", "firefox"]
+  browsers: ["chrome", "firefox", "safari"]
 };
