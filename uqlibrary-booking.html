@@ -26,7 +26,7 @@
                   id="toolBarLeftButton"
                   hidden?="{{!pageToolbar.leftButton.icon}}"
                   icon="{{pageToolbar.leftButton.icon ? pageToolbar.leftButton.icon : ''}}"
-                  class="{{pageToolbar.title=='My bookings' ? 'responsiveToolbarButton' : ''}}"
+                  class="{{currentPage=='myBookings' ? 'responsiveToolbarButton' : ''}}"
                   on-tap="{{doTransition}}"></paper-icon-button>
           <span flex id="toolbar-page-title">{{pageToolbar.title}}</span>
           <paper-icon-button id="toolBarRightButton"
@@ -248,7 +248,6 @@
             that.bookingsUseCache = true;
 
           });
-
         },
 
         showFilterForm: function() {
