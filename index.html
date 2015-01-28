@@ -24,7 +24,18 @@
   <link rel="import" href="uqlibrary-booking.html">
   <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/app.css">
 </head>
-<body unresolved>
-  <uqlibrary-booking></uqlibrary-booking>
+<body>
+<div id="loader" class="subhead">
+    <p>Loading...</p>
+    <svg class="circular">
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/>
+    </svg>
+</div>
+  <uqlibrary-booking unresolved></uqlibrary-booking>
+<script>
+    window.addEventListener('polymer-ready', function() {
+        document.body.removeChild(document.getElementById('loader'));
+    });
+</script>
 </body>
 </html>
