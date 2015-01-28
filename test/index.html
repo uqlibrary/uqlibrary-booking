@@ -1,23 +1,26 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>Tests</title>
 
-  <script src="../../webcomponentsjs/webcomponents.js"></script>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Test Runner</title>
+  <meta charset="UTF-8">
+
   <script src="../../web-component-tester/browser.js"></script>
 </head>
 
 <body>
-<script>
-  document.cookie="UQLMockData=true";
 
-  WCT.loadSuites([
-//    'uqlibrary-fbs-booking-form-test.html',
-//    'uqlibrary-fbs-booking-display-test.html',
-    'uqlibrary-booking-test.html'
-  ]);
-</script>
+  <script>
+    document.cookie="UQLMockData=enabled";
+
+    WCT.loadSuites([
+//      'uqlibrary-fbs-booking-display.html',
+//      'uqlibrary-fbs-booking-form-test.html',
+      'uqlibrary-booking-test.html'
+    ]);
+
+  </script>
+
 </body>
 </html>
