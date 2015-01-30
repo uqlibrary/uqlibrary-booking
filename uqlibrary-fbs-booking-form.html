@@ -185,7 +185,7 @@ Element providing a form for booking a room.
     ready: function () {
       this.addEventListener('submit-form', this.createRoomBooking);
 
-      this.$.persistentFooter.actionButtons = [{title: 'Save booking', id: 'createRoomBooking'}];
+      this.$.persistentFooter.actionButtons = [{title: 'Save booking', id: 'createRoomBooking', class:'colored'}];
 
       this.addEventListener('uqlibrary-persistent-footer-action-button-clicked', function(e) {
         if(e.detail.button && e.detail.button.id == 'createRoomBooking') {

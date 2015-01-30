@@ -180,7 +180,7 @@ Element providing solution to no problem in particular.
         this.addEventListener('results-changed', this.resultsChanged);
         this.selectedTime = moment().format(this.timeOutputFormat);
 
-        this.$.persistentFooter.actionButtons = [{title: 'Search', id: 'submitFormButton'}];
+        this.$.persistentFooter.actionButtons = [{title: 'Search', id: 'submitFormButton', class:'colored'}];
         this.addEventListener('uqlibrary-persistent-footer-action-button-clicked', function(e) {
           if(e.detail.button && e.detail.button.id == 'submitFormButton') {
             this.submitForm();

@@ -201,7 +201,7 @@ Element providing a simple booking display.
 
         ready: function () {
 
-          this.$.persistentFooter.actionButtons = [{title: 'Delete Booking', id: 'toggleDeleteDialog'}];
+          this.$.persistentFooter.actionButtons = [{title: 'Delete Booking', id: 'toggleDeleteDialog', class:'colored'}];
 
           this.addEventListener('uqlibrary-persistent-footer-action-button-clicked', function(e) {
             if(e.detail.button && e.detail.button.id == 'toggleDeleteDialog') {
