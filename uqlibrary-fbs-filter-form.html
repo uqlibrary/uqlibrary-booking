@@ -16,6 +16,12 @@ Element providing solution to no problem in particular.
 <polymer-element name="uqlibrary-fbs-filter-form" attributes="formData selectedValues">
 
   <template>
+    <style>
+      :host {
+        font-size: 10pt;
+        width: 100%;
+      }
+    </style>
     <core-signals on-core-signal-transition-prepare="{{transitionPrepareHandler}}"></core-signals>
     <core-signals on-core-signal-transition-end="{{transitionEndHandler}}"></core-signals>
 
