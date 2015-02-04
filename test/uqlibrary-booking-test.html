@@ -93,7 +93,7 @@
             var filterFormFooter = parent.shadowRoot.querySelector('uqlibrary-fbs-filter-form');
             filterFormFooter = filterFormFooter.shadowRoot.querySelector('uqlibrary-persistent-footer');
 
-            var footerActionButton = filterFormFooter.shadowRoot.querySelector('.footerActionButton');
+            var footerActionButton = filterFormFooter.shadowRoot.querySelector('paper-button');
             footerActionButton.fire('click');
 
             setTimeout(function() {
@@ -186,7 +186,7 @@
             setTimeout(function() {
               //select footer's action button and emulate book room button click
               var bookingFormFooter = bookingForm.shadowRoot.querySelector('uqlibrary-persistent-footer');
-              var footerActionButton = bookingFormFooter.shadowRoot.querySelector('.footerActionButton');
+              var footerActionButton = bookingFormFooter.shadowRoot.querySelector('paper-button');
               footerActionButton.fire('click');
 
               setTimeout(function() {
@@ -245,7 +245,7 @@
 
             //select footer's action button and emulate book room button click
             var bookingDetailsFooter = bookingDisplay.shadowRoot.querySelector('uqlibrary-persistent-footer');
-            var footerActionButton = bookingDetailsFooter.shadowRoot.querySelector('.footerActionButton');
+            var footerActionButton = bookingDetailsFooter.shadowRoot.querySelector('paper-button');
             footerActionButton.fire('click');
 
             setTimeout(function() {
