@@ -121,41 +121,41 @@ Element providing a simple booking display.
         </div>
       </div>
 
-      <div class="text-container" horizontal layout>
-        <div>
+      <div horizontal layout>
+        <div class="text-container">
           <core-icon icon="today" class="big-icon"></core-icon>
         </div>
-        <div flex>
+        <div class="text-container" flex>
           <div class="title">Date</div>
           <div class="body1">{{bookingDetails | formatBookingDate }}</div>
         </div>
       </div>
 
-      <div class="text-container" horizontal layout>
-        <div>
-          <core-icon icon="schedule" class="big-icon"></core-icon>
+      <div horizontal layout>
+        <div class="text-container">
+        <core-icon icon="schedule" class="big-icon"></core-icon>
         </div>
-        <div flex>
+        <div class="text-container" flex>
           <div class="title">Time</div>
           <div class="body1">{{bookingDetails | formatBookingTime}}</div>
         </div>
       </div>
 
-      <div class="text-container" horizontal layout>
-        <div>
+      <div horizontal layout>
+        <div class="text-container">
           <core-icon icon="description" class="big-icon"></core-icon>
         </div>
-        <div flex>
+        <div class="text-container" flex>
           <div class="title">Room Details</div>
           <div class="body1">{{roomDetails.notes}}</div>
         </div>
       </div>
 
-      <div class="text-container" horizontal layout hidden?="{{!roomDetails.url}}">
-        <div>
+      <div horizontal layout hidden?="{{!roomDetails.url}}">
+        <div class="text-container">
           <core-icon icon="file-map" class="big-icon"></core-icon>
         </div>
-        <div flex>
+        <div class="text-container" flex>
           <div class="title">Map</div>
           <div class="body1"><a href="{{roomDetails.url}}}">View map</a></div>
         </div>
