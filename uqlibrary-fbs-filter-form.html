@@ -102,7 +102,11 @@ Element providing solution to no problem in particular.
                 <input id="time" readonly  value="{{selectedTime}}" label="From" floatingLabel>
               </paper-input-decorator>
 
-              <core-overlay id="timepickerDialog" transition="core-transition-center" autoCloseDisabled>
+              <core-overlay id="timepickerDialog" transition="core-transition-center" autoCloseDisabled backdrop
+
+                            on-core-overlay-open-completed="{{timepickerOpenCompletedHandler}}"
+                            on-core-overlay-close-completed="{{timepickerCloseCompletedHandler}}"
+                >
                   <md-timepicker id="timepicker" timeFormat="{{timeFormat}}" on-time-selected="{{timeSelectedHandler}}"></md-timepicker>
               </core-overlay>
               <div class="sliderWrapper" layout horizontal justified center>
@@ -168,6 +172,7 @@ Element providing solution to no problem in particular.
       timeOutputFormat: 'hh:mm a',
       selectedTime: '',
       selectedEquipment: {},
+      timepickerOpened: false,
 
       errors: {},
       resultsText: '',
@@ -191,7 +196,6 @@ Element providing solution to no problem in particular.
             this.submitForm();
           }
         });
-
       },
 
       triggerSelectedValuesChange: function() {
@@ -494,6 +498,24 @@ Element providing solution to no problem in particular.
 
       setResultsText: function(text) {
           this.resultsText = text;
+      },
+
+      setTimepickerListener: false,
+      timepickerOpenCompletedHandler: function() {
+        this.timepickerOpened = true;
+
+        var el = document.querySelector('div.core-overlay-backdrop');
+        if(el && !this.setTimepickerListener) {
+          var that = this;
+          el.addEventListener('click', function() {
+            that.$.timepickerDialog.toggle();
+          });
+          this.setTimepickerListener = true;
+        }
+      },
+
+      timepickerCloseCompletedHandler: function() {
+        this.timepickerOpened = false;
       }
 
     });
