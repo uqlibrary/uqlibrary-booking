@@ -372,6 +372,7 @@
           this.$.bookingDetails.bookingDetails = data;
 
           this.pageToolbar = {
+            rightButton: { icon:'delete' },
             leftButton: { icon:'arrow-back' },
             title: 'Booking details'
           };
@@ -381,6 +382,16 @@
             destination: 'myBookings',
             action: 'showMyBookings'
           };
+
+          this.pageTransitions.toolBarRightButton = {
+            transition: null,
+            destination: null,
+            action: 'deleteBooking'
+          };
+        },
+
+        deleteBooking: function() {
+          this.$.bookingDetails.fire('delete-booking');
         },
 
         showBookingForm: function(data) {
@@ -417,7 +428,6 @@
           var searchDate = this.formData.searchDate ? this.formData.searchDate : new Date();
           this.$.bookingForm.searchDate = searchDate;
           this.$.bookingForm.searchDuration = this.formData.duration;
-          //TODO: maybe this should be a global setting?
           this.$.bookingForm.maxBookingDate = new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000);
         },
 

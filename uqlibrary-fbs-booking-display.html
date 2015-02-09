@@ -107,71 +107,62 @@ Element providing a simple booking display.
   <template>
     <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/element.css">
 
-    <core-signals on-core-signal-transition-prepare="{{transitionPrepareHandler}}"></core-signals>
-    <core-signals on-core-signal-transition-end="{{transitionEndHandler}}"></core-signals>
+    <div class="image-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ roomDetails.imageLarge }}')">
 
-
-    <div class="body-footer-container">
-
-      <div class="image-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ roomDetails.imageLarge }}')">
-
-        <div class="title-container">
-          <div class="title inverse">{{ roomDetails.title }}</div>
-          <div class="subhead inverse">{{roomDetails | formatLocation }}</div>
-        </div>
+      <div class="title-container">
+        <div class="title inverse">{{ roomDetails.title }}</div>
+        <div class="subhead inverse">{{roomDetails | formatLocation }}</div>
       </div>
-
-      <div horizontal layout>
-        <div class="text-container">
-          <core-icon icon="today" class="big-icon"></core-icon>
-        </div>
-        <div class="text-container" flex>
-          <div class="title">Date</div>
-          <div class="body1">{{bookingDetails | formatBookingDate }}</div>
-        </div>
-      </div>
-
-      <div horizontal layout>
-        <div class="text-container">
-        <core-icon icon="schedule" class="big-icon"></core-icon>
-        </div>
-        <div class="text-container" flex>
-          <div class="title">Time</div>
-          <div class="body1">{{bookingDetails | formatBookingTime}}</div>
-        </div>
-      </div>
-
-      <div horizontal layout hidden?="{{!roomDetails.notes}}">
-        <div class="text-container">
-          <core-icon icon="description" class="big-icon"></core-icon>
-        </div>
-        <div class="text-container" flex>
-          <div class="title">Room Details</div>
-          <div class="body1">{{roomDetails.notes}}</div>
-        </div>
-      </div>
-
-      <div horizontal layout hidden?="{{!roomDetails.url}}">
-        <div class="text-container">
-          <core-icon icon="file-map" class="big-icon"></core-icon>
-        </div>
-        <div class="text-container" flex>
-          <div class="title">Map</div>
-          <div class="body1"><a href="{{roomDetails.url}}}">View map</a></div>
-        </div>
-      </div>
-
-      <paper-dialog backdrop autoCloseDisabled id="infoDialog" role="dialog">
-        <div class="body2">Delete this booking?</div>
-        <paper-button affirmative on-tap="{{toggleDeleteDialog}}" class="button">Cancel</paper-button>
-        <paper-button affirmative autofocus on-tap="{{deleteBooking}}" class="button">Delete</paper-button>
-      </paper-dialog>
-
-      <uqlibrary-persistent-footer id="persistentFooter"></uqlibrary-persistent-footer>
-
-      <paper-toast id="infoToast" flex></paper-toast>
-
     </div>
+
+    <div horizontal layout>
+      <div class="text-container">
+        <core-icon icon="today" class="big-icon"></core-icon>
+      </div>
+      <div class="text-container" flex>
+        <div class="title">Date</div>
+        <div class="body1">{{bookingDetails | formatBookingDate }}</div>
+      </div>
+    </div>
+
+    <div horizontal layout>
+      <div class="text-container">
+      <core-icon icon="schedule" class="big-icon"></core-icon>
+      </div>
+      <div class="text-container" flex>
+        <div class="title">Time</div>
+        <div class="body1">{{bookingDetails | formatBookingTime}}</div>
+      </div>
+    </div>
+
+    <div horizontal layout hidden?="{{!roomDetails.notes}}">
+      <div class="text-container">
+        <core-icon icon="description" class="big-icon"></core-icon>
+      </div>
+      <div class="text-container" flex>
+        <div class="title">Room Details</div>
+        <div class="body1">{{roomDetails.notes}}</div>
+      </div>
+    </div>
+
+    <div horizontal layout hidden?="{{!roomDetails.url}}">
+      <div class="text-container">
+        <core-icon icon="file-map" class="big-icon"></core-icon>
+      </div>
+      <div class="text-container" flex>
+        <div class="title">Map</div>
+        <div class="body1"><a href="{{roomDetails.url}}}">View map</a></div>
+      </div>
+    </div>
+
+    <paper-dialog backdrop autoCloseDisabled id="infoDialog" role="dialog">
+      <div class="body2">Delete this booking?</div>
+      <paper-button affirmative on-tap="{{toggleDeleteDialog}}" class="button">Cancel</paper-button>
+      <paper-button affirmative autofocus on-tap="{{deleteBooking}}" class="button">Delete</paper-button>
+    </paper-dialog>
+
+    <paper-toast id="infoToast" flex></paper-toast>
+
 
     <uqlibrary-api-facilities-booking id="deleteBookingRequest" on-uqlibrary-api-facilities-booking-executed="{{ deleteBookingComplete }}"></uqlibrary-api-facilities-booking>
 
@@ -200,22 +191,7 @@ Element providing a simple booking display.
         },
 
         ready: function () {
-
-          this.$.persistentFooter.actionButtons = [{title: 'Delete Booking', id: 'toggleDeleteDialog', class:'colored'}];
-
-          this.addEventListener('uqlibrary-persistent-footer-action-button-clicked', function(e) {
-            if(e.detail.button && e.detail.button.id == 'toggleDeleteDialog') {
-              this.toggleDeleteDialog();
-            }
-          });
-        },
-
-        transitionPrepareHandler: function() {
-          this.transitioning = true;
-        },
-
-        transitionEndHandler: function() {
-          this.transitioning = false;
+          this.addEventListener('delete-booking', this.toggleDeleteDialog);
         },
 
         formatLocation : function (roomDetails) {
