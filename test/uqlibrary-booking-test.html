@@ -243,10 +243,9 @@
           setTimeout(function () {
             var bookingDisplay = parent.shadowRoot.querySelector('uqlibrary-fbs-booking-display');
 
-            //select footer's action button and emulate book room button click
-            var bookingDetailsFooter = bookingDisplay.shadowRoot.querySelector('uqlibrary-persistent-footer');
-            var footerActionButton = bookingDetailsFooter.shadowRoot.querySelector('paper-button');
-            footerActionButton.fire('click');
+            //select top action button and emulate delete booking button click
+            var deleteButton = parent.shadowRoot.querySelector('#toolBarRightButton');
+            deleteButton.fire('tap');
 
             setTimeout(function() {
               //confirm delete
@@ -266,9 +265,9 @@
 
                 done();
 
-              }, 2000);
-            }, 2000);
-          }, 2000);
+              }, 1200);
+            }, 1200);
+          }, 1000);
         });
       });
   </script>
