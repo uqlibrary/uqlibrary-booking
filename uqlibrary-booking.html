@@ -124,10 +124,10 @@
             if (e.detail.hasSession) {
               that.user = e.detail;
             } else {
-              // Not logged in
-              // TODO: Redirect to login
+              that.$.account.login(window.location.href);
             }
           });
+
           this.$.account.get();
 
           this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function(e) {

@@ -73,10 +73,6 @@ Element providing a form for booking a room.
 <polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails searchDate searchDuration maxBookingDate">
 
 <template>
-
-  <core-signals on-core-signal-transition-prepare="{{transitionPrepareHandler}}"></core-signals>
-  <core-signals on-core-signal-transition-end="{{transitionEndHandler}}"></core-signals>
-
   <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/element.css">
 
   <div class="body-footer-container">
@@ -194,15 +190,6 @@ Element providing a form for booking a room.
       });
 
     },
-
-    transitionPrepareHandler: function() {
-      this.transitioning = true;
-    },
-
-    transitionEndHandler: function() {
-      this.transitioning = false;
-    },
-
 
     showInfoToast: function(text) {
       this.$.infoToast.text = text;
