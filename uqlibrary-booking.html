@@ -22,13 +22,16 @@
 
       <core-header-panel main class="main">
         <core-toolbar>
+
           <paper-icon-button
                   id="toolBarLeftButton"
                   hidden?="{{!pageToolbar.leftButton.icon}}"
                   icon="{{pageToolbar.leftButton.icon ? pageToolbar.leftButton.icon : ''}}"
                   class="{{currentPage=='myBookings' ? 'responsiveToolbarButton' : ''}}"
                   on-tap="{{doTransition}}"></paper-icon-button>
-          <span flex id="toolbar-page-title">{{pageToolbar.title}}</span>
+
+          <h1 flex id="toolbar-page-title">{{pageToolbar.title}}</h1>
+
           <paper-icon-button id="toolBarRightButton"
                              on-tap="{{doTransition}}"
                              hidden?="{{!pageToolbar.rightButton.icon}}"
