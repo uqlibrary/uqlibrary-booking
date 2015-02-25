@@ -23,6 +23,11 @@
       <core-header-panel main class="main">
         <core-toolbar>
 
+          <core-a11y-keys id="a11yToolBarLeftButton" target="{{$.toolBarLeftButton}}" keys="{{keyboardNavigationKeys}}"
+                          on-keys-pressed="{{ a11yKeyPressed }}"></core-a11y-keys>
+          <core-a11y-keys id="a11yToolBarRightButton" target="{{$.toolBarRightButton}}" keys="{{keyboardNavigationKeys}}"
+                          on-keys-pressed="{{ a11yKeyPressed }}"></core-a11y-keys>
+
           <paper-icon-button
                   id="toolBarLeftButton"
                   hidden?="{{!pageToolbar.leftButton.icon}}"
@@ -49,6 +54,9 @@
               <uqlibrary-timeline events="{{events}}" on-event-selected="{{bookingSelected}}"></uqlibrary-timeline>
 
               <paper-toast id="myBookingsInfoToast" flex></paper-toast>
+
+              <core-a11y-keys id="a11yAddBookingButton" target="{{$.addBookingButton}}" keys="{{keyboardNavigationKeys}}"
+                              on-keys-pressed="{{ a11yKeyPressed }}"></core-a11y-keys>
 
               <paper-fab hero-id="filterForm"
                          hero?="{{transition === 'hero-transition'}}"
@@ -96,6 +104,19 @@
   <script>
     (function() {
       Polymer('uqlibrary-booking', {
+
+        // Accessibility issues fixes
+
+        keyboardNavigationKeys: 'space enter',
+
+        a11yKeyPressed: function(source, event) {
+          if (source.path && source.path.length > 0 && source.path[0].target) {
+            source.path[0].target.fire("tap");
+          }
+        },
+
+
+        // end accessibility issues fixes
 
         currentPage: 'myBookings',
         transitioning: false,

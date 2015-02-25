@@ -13,7 +13,12 @@
 
               <paper-ripple fit></paper-ripple>
 
-              <div class="line1">{{model.title}}</div>
+              <div class="line1">
+                <uqlibrary-a11y-link data-id="{{model.id}}" on-tap="{{ a11yKeyPressed  }}">
+                {{model.title}}
+                </uqlibrary-a11y-link>
+              </div>
+
               <div class="line2">
                 <span hidden?={{!model.location}}>{{ model.location }}, </span>
                 <span hidden?={{!model.building}}>{{ model.building }}, </span>
@@ -35,7 +40,19 @@
       ready: function() {
       },
 
-      dataChanged: function(oldValue, newValue) {
+      a11yKeyPressed: function(source, event) {
+        if (source.path && source.path.length > 0 && source.path[0].attributes["data-id"]) {
+          var roomId = source.path[0].attributes["data-id"].value;
+
+          var rooms = this.data.filter(function(room) {
+            return room.id === roomId;
+          });
+
+          if (rooms && rooms.length == 1) {
+            this.selection = rooms[0];
+            this.selectRoom();
+          }
+        }
       },
 
       setData: function(newData) {
