@@ -10,7 +10,14 @@
 
   <!--Short title for homescreens on mobile devices-->
   <title>UQ Library | My Library Bookings</title>
-
+  <script>
+    if (!('registerElement' in document
+            && 'createShadowRoot' in HTMLElement.prototype
+            && 'import' in document.createElement('link')
+            && 'content' in document.createElement('template'))) {
+      document.write('<script type="text/javascript" src="../uqlibrary-elements/resources/common/jquery/dist/jquery.min.js"><\/script>');
+    }
+  </script>
   <script src="../uqlibrary-elements/resources/common/preloader.js"></script>
 
   <!--fav icons-->
