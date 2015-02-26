@@ -58,13 +58,13 @@ Element providing solution to no problem in particular.
                   <paper-dropdown class="dropdown">
                     <core-menu class="menu" id="campusSelectMenu" selectedAttribute="" selected="{{selectedCampus}}">
                       <template repeat="{{campuses as item}}">
-                        <paper-item name="{{item.id}}" label="{{item.title}}">{{item.title}}</paper-item>
+                        <paper-item name="{{item.id}}" label="{{item.title}}" role="listitem">{{item.title}}</paper-item>
                       </template>
                     </core-menu>
                   </paper-dropdown>
                 </paper-dropdown-menu>
 
-                <paper-dropdown-menu id="buildingSelect" label="Building" hidden?="{{!buildings.length}}">
+                <paper-dropdown-menu id="buildingSelect" label="Building" aria-hidden="{{!buildings.length}}" hidden?="{{!buildings.length}}">
                   <paper-dropdown class="dropdown">
                     <core-menu class="menu" id="buildingSelectMenu" selectedAttribute="" selected="{{selectedBuilding}}">
                       <paper-item name=""  hidden?="{{buildings.length <= 1}}" label="">Any building</paper-item>
@@ -75,7 +75,7 @@ Element providing solution to no problem in particular.
                   </paper-dropdown>
                 </paper-dropdown-menu>
 
-                <paper-dropdown-menu id="roomSelect" label="Room" hidden?="{{!rooms.length}}">
+                <paper-dropdown-menu id="roomSelect" label="Room" aria-hidden="{{!rooms.length}}" hidden?="{{!rooms.length}}">
                   <paper-dropdown class="dropdown">
                     <core-menu class="menu"  id="roomSelectMenu" selectedAttribute="" selected="{{selectedRoom}}">
                       <paper-item name=""  hidden?="{{rooms.length <= 1}}" label="">Any room</paper-item>
@@ -88,7 +88,7 @@ Element providing solution to no problem in particular.
             </uqlibrary-filter-group>
 
             <uqlibrary-filter-group label="Time" icon="device:access-time">
-              <paper-dropdown-menu id="dateSelect" label="Today">
+              <paper-dropdown-menu id="dateSelect" label="Today" aria-label="Booking date">
                 <paper-dropdown class="dropdown">
                   <core-menu class="menu" valueattr="value" selectedAttribute="" selected="{{selectedDate}}">
                     <template repeat="{{dates as date}}">
@@ -98,35 +98,36 @@ Element providing solution to no problem in particular.
                 </paper-dropdown>
               </paper-dropdown-menu>
 
-              <paper-input-decorator id="decorator" on-down="{{showTimepicker}}" label="From" floatingLabel>
-                <input id="time" readonly  value="{{selectedTime}}" label="From" floatingLabel>
+              <paper-input-decorator id="decorator" on-down="{{showTimepicker}}" label="Start time" floatingLabel>
+                <input id="time" readonly  value="{{selectedTime}}" label="Start time" floatingLabel>
               </paper-input-decorator>
 
               <core-overlay id="timepickerDialog" transition="core-transition-center" autoCloseDisabled
-
-                            on-core-overlay-open-completed="{{timepickerOpenCompletedHandler}}"
-                            on-core-overlay-close-completed="{{timepickerCloseCompletedHandler}}"
-                >
+                on-core-overlay-open-completed="{{timepickerOpenCompletedHandler}}"
+                on-core-overlay-close-completed="{{timepickerCloseCompletedHandler}}">
                   <md-timepicker id="timepicker" timeFormat="{{timeFormat}}" on-time-selected="{{timeSelectedHandler}}"></md-timepicker>
               </core-overlay>
+
               <div class="sliderWrapper" layout horizontal justified center>
-                <div>Duration</div>
-                <paper-slider flex id="timePeriod" pin step="30" min="30" max="120" immediateValue="{{durationImmidiate}}" value="{{selectedDuration}}"></paper-slider>
+                <div id="durationLabel">Duration</div>
+                <paper-slider aria-label="booking duration" flex id="timePeriod" pin step="30" aria-valuetext="{{durationImmidiate}} minutes" min="30" max="120" immediateValue="{{durationImmidiate}}" value="{{selectedDuration}}"></paper-slider>
                 <div end-justified class="durationText">{{durationImmidiate}} minutes</div>
               </div>
 
             </uqlibrary-filter-group>
             <uqlibrary-filter-group label="Capacity" icon="social:people">
               <div class="sliderWrapper" layout horizontal justified center>
-                <div>Number of people</div>
-                <paper-slider flex editable pin step="1" min="1" max="25" value="{{selectedCapacity}}"></paper-slider>
+                <div id="capacityLabel">Number of people</div>
+                <paper-slider aria-label="room capacity" flex editable pin step="1" aria-valuetext="{{selectedCapacity}} people" min="1" max="25" value="{{selectedCapacity}}"></paper-slider>
               </div>
             </uqlibrary-filter-group>
 
           </div>
+
           <uqlibrary-persistent-footer id="persistentFooter">
             <div flex class="footerInfo">{{resultsText}}</div>
           </uqlibrary-persistent-footer>
+
          <paper-toast id="infoToast"></paper-toast>
       </div>
     <content></content>
