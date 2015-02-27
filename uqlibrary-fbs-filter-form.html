@@ -54,33 +54,45 @@ Element providing solution to no problem in particular.
             <!-- end hidden groups -->
 
             <uqlibrary-filter-group label="Campus" icon="communication:location-on">
-                <paper-dropdown-menu id="campusSelect" label="{{errors.campus ? errors.campus : 'Campus'}}" class="{{errors.campus ? 'error' : ''}}" disabled?="{{!campuses.length}}"  >
+                <paper-dropdown-menu id="campusSelect" label="{{errors.campus ? errors.campus : 'Campus'}}" class="{{errors.campus ? 'error' : ''}}" disabled?="{{!campuses.length}}" aria-label="expand list of campuses">
                   <paper-dropdown class="dropdown">
                     <core-menu class="menu" id="campusSelectMenu" selectedAttribute="" selected="{{selectedCampus}}">
                       <template repeat="{{campuses as item}}">
-                        <paper-item name="{{item.id}}" label="{{item.title}}" role="listitem">{{item.title}}</paper-item>
+                        <paper-item name="{{item.id}}" label="{{item.title}}">
+                          <uqlibrary-a11y-link>
+                            {{item.title}}
+                          </uqlibrary-a11y-link>
+                        </paper-item>
                       </template>
                     </core-menu>
                   </paper-dropdown>
                 </paper-dropdown-menu>
 
-                <paper-dropdown-menu id="buildingSelect" label="Building" aria-hidden="{{!buildings.length}}" hidden?="{{!buildings.length}}">
+                <paper-dropdown-menu id="buildingSelect" label="Building" aria-label="select building in campus {{selectedCampus}}" aria-hidden="{{!buildings.length}}" hidden?="{{!buildings.length}}">
                   <paper-dropdown class="dropdown">
                     <core-menu class="menu" id="buildingSelectMenu" selectedAttribute="" selected="{{selectedBuilding}}">
-                      <paper-item name=""  hidden?="{{buildings.length <= 1}}" label="">Any building</paper-item>
+                      <paper-item name="" aria-hidden="{{buildings.length <= 1}}" hidden?="{{buildings.length <= 1}}" label="">Any building</paper-item>
                       <template repeat="{{building in buildings}}">
-                        <paper-item name="{{building.id}}" label="{{building.title}}">{{building.title}}</paper-item>
+                        <paper-item name="{{building.id}}" label="{{building.title}}">
+                          <uqlibrary-a11y-link>
+                            {{building.title}}
+                          </uqlibrary-a11y-link>
+                        </paper-item>
                       </template>
                     </core-menu>
                   </paper-dropdown>
                 </paper-dropdown-menu>
 
-                <paper-dropdown-menu id="roomSelect" label="Room" aria-hidden="{{!rooms.length}}" hidden?="{{!rooms.length}}">
+                <paper-dropdown-menu id="roomSelect" label="Room" aria-label="select room in building {{selectedBuilding}}" aria-hidden="{{!rooms.length}}" hidden?="{{!rooms.length}}">
                   <paper-dropdown class="dropdown">
                     <core-menu class="menu"  id="roomSelectMenu" selectedAttribute="" selected="{{selectedRoom}}">
                       <paper-item name=""  hidden?="{{rooms.length <= 1}}" label="">Any room</paper-item>
                       <template repeat="{{rooms as room}}">
-                        <paper-item name="{{room.id}}" label="{{room.title}}">{{room.title}}</paper-item>
+                        <paper-item name="{{room.id}}" label="{{room.title}}">
+                          <uqlibrary-a11y-link>
+                            {{room.title}}
+                          </uqlibrary-a11y-link>
+                        </paper-item>
                       </template>
                     </core-menu>
                   </paper-dropdown>
@@ -92,7 +104,11 @@ Element providing solution to no problem in particular.
                 <paper-dropdown class="dropdown">
                   <core-menu class="menu" valueattr="value" selectedAttribute="" selected="{{selectedDate}}">
                     <template repeat="{{dates as date}}">
-                      <paper-item value="{{date.value}}" label="{{date.text}}">{{date.text}}</paper-item>
+                      <paper-item value="{{date.value}}" label="{{date.text}}">
+                        <uqlibrary-a11y-link>
+                          {{date.text}}
+                        </uqlibrary-a11y-link>
+                      </paper-item>
                     </template>
                   </core-menu>
                 </paper-dropdown>
