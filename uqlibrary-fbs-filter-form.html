@@ -53,7 +53,7 @@ Element providing solution to no problem in particular.
             </uqlibrary-filter-group>
             <!-- end hidden groups -->
 
-            <uqlibrary-filter-group label="Campus" icon="communication:location-on">
+            <uqlibrary-filter-group label="Where do you need to book a resource?" icon="communication:location-on">
                 <paper-dropdown-menu id="campusSelect" label="{{errors.campus ? errors.campus : 'Campus'}}" class="{{errors.campus ? 'error' : ''}}" disabled?="{{!campuses.length}}" aria-label="expand list of campuses">
                   <paper-dropdown class="dropdown">
                     <core-menu class="menu" id="campusSelectMenu" selectedAttribute="" selected="{{selectedCampus}}">
@@ -99,7 +99,7 @@ Element providing solution to no problem in particular.
                 </paper-dropdown-menu>
             </uqlibrary-filter-group>
 
-            <uqlibrary-filter-group label="Time" icon="device:access-time">
+            <uqlibrary-filter-group label="When do you need to book this?" icon="device:access-time">
               <paper-dropdown-menu id="dateSelect" label="Today" aria-label="Booking date">
                 <paper-dropdown class="dropdown">
                   <core-menu class="menu" valueattr="value" selectedAttribute="" selected="{{selectedDate}}">
@@ -131,9 +131,9 @@ Element providing solution to no problem in particular.
               </div>
 
             </uqlibrary-filter-group>
-            <uqlibrary-filter-group label="Capacity" icon="social:people">
+            <uqlibrary-filter-group label="How many people are you expecting?" icon="social:people">
               <div class="sliderWrapper" layout horizontal justified center>
-                <div id="capacityLabel">Number of people</div>
+                <div id="capacityLabel">Please slide or enter a number</div>
                 <paper-slider aria-label="room capacity" flex editable pin snaps step="1" aria-valuetext="{{selectedCapacity}} people" min="1" max="25" value="{{selectedCapacity}}"></paper-slider>
               </div>
             </uqlibrary-filter-group>
