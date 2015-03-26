@@ -126,7 +126,7 @@ Element providing solution to no problem in particular.
 
               <div class="sliderWrapper" layout horizontal justified center>
                 <div id="durationLabel">Duration</div>
-                <paper-slider aria-label="booking duration" flex id="timePeriod" pin step="30" aria-valuetext="{{durationImmidiate}} minutes" min="30" max="120" immediateValue="{{durationImmidiate}}" value="{{selectedDuration}}"></paper-slider>
+                <paper-slider aria-label="booking duration" flex id="timePeriod" pin snaps step="30" aria-valuetext="{{durationImmidiate}} minutes" min="30" max="120" immediateValue="{{durationImmidiate}}" value="{{selectedDuration}}"></paper-slider>
                 <div end-justified class="durationText">{{durationImmidiate}} minutes</div>
               </div>
 
@@ -134,7 +134,7 @@ Element providing solution to no problem in particular.
             <uqlibrary-filter-group label="Capacity" icon="social:people">
               <div class="sliderWrapper" layout horizontal justified center>
                 <div id="capacityLabel">Number of people</div>
-                <paper-slider aria-label="room capacity" flex editable pin step="1" aria-valuetext="{{selectedCapacity}} people" min="1" max="25" value="{{selectedCapacity}}"></paper-slider>
+                <paper-slider aria-label="room capacity" flex editable pin snaps step="1" aria-valuetext="{{selectedCapacity}} people" min="1" max="25" value="{{selectedCapacity}}"></paper-slider>
               </div>
             </uqlibrary-filter-group>
 
