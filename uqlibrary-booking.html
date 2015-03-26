@@ -30,10 +30,10 @@
 
           <paper-icon-button
                   id="toolBarLeftButton"
-                  hidden?="{{!pageToolbar.leftButton.icon}}"
+                  hidden?="{{ pageToolbar.leftButton.icon == '' }}"
                   icon="{{pageToolbar.leftButton.icon ? pageToolbar.leftButton.icon : ''}}"
-                  class="{{currentPage=='myBookings' ? 'responsiveToolbarButton' : ''}}"
-                  on-tap="{{doTransition}}"></paper-icon-button>
+                  on-tap="{{doTransition}}"
+                  core-drawer-toggle?="{{ currentPage == 'myBookings' }}"></paper-icon-button>
 
           <h1 flex id="toolbar-page-title">{{pageToolbar.title}}</h1>
 
@@ -173,10 +173,6 @@
           this.$.facilities.get();
         },
 
-        togglePanel: function () {
-          this.$.drawerPanel.togglePanel();
-        },
-
         showInfoToast: function(toast, text) {
           toast.text = text;
           toast.show();
@@ -218,9 +214,7 @@
         showMyBookings: function() {
           var that = this;
 
-          this.pageTransitions.toolBarLeftButton = {
-            action: 'togglePanel'
-          };
+          this.pageTransitions.toolBarLeftButton = {};
 
           this.pageToolbar = {
             leftButton: {icon:'menu'},
