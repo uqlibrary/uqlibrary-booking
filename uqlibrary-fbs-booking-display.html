@@ -155,7 +155,13 @@ Element providing a simple booking display.
       </div>
     </div>
 
-    <paper-dialog backdrop autoCloseDisabled heading="Delete Booking" id="infoDialog" role="dialog">
+      <div horizontal layout>
+          <div class="text-container" flex>
+              <paper-button raised colored on-tap="{{toggleDeleteDialog}}" class="button">Delete this booking</paper-button>
+          </div>
+      </div>
+
+    <paper-dialog backdrop transition="core-transition-bottom" heading="Delete Booking" id="infoDialog" role="dialog">
       <p class="body2">Are you sure you want to delete this booking?</p>
       <paper-button affirmative on-tap="{{toggleDeleteDialog}}" class="button">Cancel</paper-button>
       <paper-button affirmative autofocus on-tap="{{deleteBooking}}" class="button">Delete</paper-button>
