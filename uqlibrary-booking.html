@@ -144,16 +144,6 @@
           this.$.ga.addPageView(this.currentPage);
           this.loadFilterFormData();
 
-          this.$.account.addEventListener('uqlibrary-api-account-loaded', function(e) {
-            if (e.detail.hasSession) {
-              that.user = e.detail;
-            } else {
-              that.$.account.login(window.location.href);
-            }
-          });
-
-          this.$.account.get();
-
           this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function(e) {
             that.facilities = e.detail;
 
@@ -170,7 +160,24 @@
               }
             }
           });
-          this.$.facilities.get();
+
+          this.$.account.addEventListener('uqlibrary-api-account-loaded', function(e) {
+            if (e.detail.hasSession) {
+              that.user = e.detail;
+
+              that.$.facilities.get(
+                      {
+                        "id" : that.user.id,
+                        "ptype" : that.user.type
+                      });
+
+            } else {
+              that.$.account.login(window.location.href);
+            }
+          });
+
+          this.$.account.get();
+
         },
 
         showInfoToast: function(toast, text) {
@@ -296,7 +303,13 @@
           var _newDate = new Date(e.detail.date);
           this.formData = e.detail.formData;
 
-          this.$.facilities.get({date: moment(_newDate).format('DD-MM-YYYY')});
+          this.$.facilities.get(
+                  {
+                    date: moment(_newDate).format('DD-MM-YYYY'),
+                    "id" : this.user.id,
+                    "ptype" : this.user.type
+                  }
+          );
         },
 
         filterFormSearchChanged : function(e) {
@@ -490,6 +503,8 @@
           this.$.facilities.get(
                   {
                     date: moment(data.searchDate).format('DD-MM-YYYY'),
+                    "id" : this.user.id,
+                    "ptype" : this.user.type,
                     nocache : true
                   });
         },
