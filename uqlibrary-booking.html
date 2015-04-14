@@ -413,8 +413,6 @@
 
         showBookingEditForm: function(data) {
 
-          console.log(data);
-
           this.pageToolbar = {
             leftButton: { icon:'arrow-back' },
             title: 'Edit my booking'
@@ -426,10 +424,14 @@
             action: 'showBookingDetails'
           };
 
+          this.pageTransitions.bookingForm = {
+            transition: 'slide-from-right',
+            destination: 'myBookings',
+            action: 'showMyBookings'
+          }
+
           if (data && data.id) {
             this.$.bookingForm.roomDetails = this.rooms[data.machid];
-            console.log(this.rooms[data.machid]);
-
             this.$.bookingForm.bookingDetails = data;
 
             this.$.bookingForm.searchDate = data.startDate;
@@ -487,7 +489,7 @@
             transition: 'slide-from-right',
             destination: 'myBookings',
             action: 'showMyBookings'
-          }
+          };
 
           if (this.searchResults.length == 1) {
             //transition back to filter form if only one room is found
