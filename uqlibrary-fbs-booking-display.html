@@ -155,10 +155,13 @@ Element providing a simple booking display.
       </div>
     </div>
 
-      <div horizontal layout>
-          <div class="text-container" flex>
-              <paper-button raised colored on-tap="{{toggleDeleteDialog}}" class="button">Delete this booking</paper-button>
-          </div>
+      <div horizontal layout wrap>
+        <div class="text-container">
+          <paper-button raised colored on-tap="{{editBooking}}" class="button">Edit this booking</paper-button>
+        </div>
+        <div class="text-container">
+          <paper-button raised colored on-tap="{{toggleDeleteDialog}}" class="button">Delete this booking</paper-button>
+        </div>
       </div>
 
     <paper-dialog backdrop transition="core-transition-bottom" heading="Delete Booking" id="infoDialog" role="dialog">
@@ -242,6 +245,10 @@ Element providing a simple booking display.
             //if booking delete is successful, fire event to indicate booking delete is done and move on to other page
             this.fire('booking-deleted');
           }
+        },
+
+        editBooking : function() {
+          this.fire('edit-booking-started', this.bookingDetails);
         },
 
         deleteBooking : function () {

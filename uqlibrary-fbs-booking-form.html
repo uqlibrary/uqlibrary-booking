@@ -70,7 +70,7 @@ Element providing a form for booking a room.
 @homepage https://github.com/uqlibrary/uqlibrary-fbs-booking-form
 -->
 
-<polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails searchDate searchDuration maxBookingDate">
+<polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails searchDate searchDuration maxBookingDate bookingDetails">
 
 <template>
   <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/element.css">
@@ -126,6 +126,13 @@ Element providing a form for booking a room.
      * @type object
      */
 
+    /**
+     * The `bookingDetails` attribute object contains properties of the existing room booking - for editing
+     *
+     * @property bookingDetails
+     * @type object
+     */
+
     /** The `searchDate` attribute represents search date/time value
      *
      * @property searchDate
@@ -172,6 +179,7 @@ Element providing a form for booking a room.
 
     created: function () {
       this.roomDetails = {};
+      this.bookingDetails = {};
       this.searchDate = new Date();
       this.searchDuration = 90;
       this.maxBookingDate = new Date();

@@ -88,7 +88,9 @@
             </section>
 
             <section id="bookingDetailsSection">
-              <uqlibrary-fbs-booking-display id="bookingDetails" on-booking-deleted="{{bookingDeleted}}"></uqlibrary-fbs-booking-display>
+              <uqlibrary-fbs-booking-display id="bookingDetails"
+                      on-booking-deleted="{{bookingDeleted}}"
+                      on-edit-booking-started="{{bookingEditingStarted}}"></uqlibrary-fbs-booking-display>
             </section>
 
           </core-animated-pages>
@@ -373,7 +375,6 @@
           }
 
           this.addEventListener('room-selected', this.roomSelected);
-
         },
 
         createResultsList: function() {
@@ -405,10 +406,46 @@
           this.doTransition(event, event.detail.item, { id: 'resultsList' });
         },
 
-        showBookingDetails : function (data) {
+        bookingEditingStarted: function(event) {
+          var bookingData = event.detail;
+          this.doTransition(event, bookingData, { id: 'bookingEditForm' });
+        },
 
-          this.$.bookingDetails.roomDetails = this.rooms[data.machid];
-          this.$.bookingDetails.bookingDetails = data;
+        showBookingEditForm: function(data) {
+
+          console.log(data);
+
+          this.pageToolbar = {
+            leftButton: { icon:'arrow-back' },
+            title: 'Edit my booking'
+          };
+
+          this.pageTransitions.toolBarLeftButton = {
+            transition: 'slide-from-right',
+            destination: 'bookingDetailsSection',
+            action: 'showBookingDetails'
+          };
+
+          if (data && data.id) {
+            this.$.bookingForm.roomDetails = this.rooms[data.machid];
+            console.log(this.rooms[data.machid]);
+
+            this.$.bookingForm.bookingDetails = data;
+
+            this.$.bookingForm.searchDate = data.startDate;
+            this.$.bookingForm.searchDuration = (data.endDate.getTime() - data.startDate.getTime()) / (60*1000);
+
+            var maxDate = new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000);
+            this.$.bookingForm.maxBookingDate = maxDate.getTime() > data.startDate.getTime() ? maxDate : data.startDate;
+          }
+        },
+
+        showBookingDetails : function (data) {
+          if (data && data.id) {
+            this.$.bookingDetails.roomDetails = this.rooms[data.machid];
+            this.$.bookingDetails.bookingDetails = data;
+          }
+
 
           this.pageToolbar = {
             rightButton: { icon:'delete' },
@@ -427,6 +464,12 @@
             destination: null,
             action: 'deleteBooking'
           };
+
+          this.pageTransitions.bookingEditForm = {
+            transition: 'slide-from-right',
+            destination: 'bookingFormSection',
+            action: 'showBookingEditForm'
+          }
         },
 
         deleteBooking: function() {
