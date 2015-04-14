@@ -305,6 +305,7 @@ Element providing a form for booking a room.
     },
 
     createTimeslots : function() {
+      var that = this;
 
       var openingHours = moment(this.roomDetails.available_from, "X");
       var closingHours = moment(this.roomDetails.available_to, "X");
@@ -320,6 +321,16 @@ Element providing a form for booking a room.
         var selectable = this.roomDetails.bookings.every(function(element, index, array){
           var bookingStartTime = moment(element.from, "X");
           var bookingEndTime = moment(element.to, "X");
+
+          //timeslot is selectable if it belongs to a current booking in editing form
+          if (that.bookingDetails &&
+                  timeslotStartTime.getTime() >= that.bookingDetails.startDate.getTime() &&
+                  timeslotEndTime.getTime() <= that.bookingDetails.endDate.getTime()) {
+
+            console.log(timeslotStartTime);
+            return true;
+
+          }
 
           //timeslot does not overlap with existing booking
           if (bookingStartTime >= timeslotEndTime || bookingEndTime <= timeslotStartTime)
