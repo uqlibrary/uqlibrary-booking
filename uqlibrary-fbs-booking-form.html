@@ -168,7 +168,6 @@ Element providing a form for booking a room.
      */
     roomDetailsChanged : function (oldValue, newValue) {
       this.bookingTimeslots = this.createTimeslots();
-      console.log("roomDetailsChanged");
       this.selectTimeslots();
     },
 
@@ -265,8 +264,6 @@ Element providing a form for booking a room.
           newBooking.booking.resid = this.bookingDetails.id;
         }
 
-        console.log(newBooking);
-
         this.$.createBookingRequest.post(newBooking);
       }
     },
@@ -320,9 +317,6 @@ Element providing a form for booking a room.
 
     createTimeslots : function() {
       var that = this;
-
-      console.log("Creating timeslots");
-
 
       var openingHours = moment(this.roomDetails.available_from, "X");
       var closingHours = moment(this.roomDetails.available_to, "X");

@@ -146,39 +146,98 @@
           this.$.ga.addPageView(this.currentPage);
           this.loadFilterFormData();
 
-          this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function(e) {
-            that.facilities = e.detail;
+          this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', this.facilitiesLoaded);
 
-            if (that.facilities.length > 0) {
-              that.buildFilterFormDataFacilitiesArray();
+          this.$.account.addEventListener('uqlibrary-api-account-loaded', this.accountLoaded);
 
-              switch(that.currentPage) {
-                case 'myBookings':
-                  that.showMyBookings();
-                  break;
-                case 'bookingFormSection':
-                  that.$.bookingForm.roomDetails = that.rooms[that.$.bookingForm.roomDetails.id];
-                  break;
-              }
-            }
-          });
-
-          this.$.account.addEventListener('uqlibrary-api-account-loaded', function(e) {
-            if (e.detail.hasSession) {
-              that.user = e.detail;
-
-              that.$.facilities.get(
-                      {
-                        "id" : that.user.id,
-                        "ptype" : that.user.type
-                      });
-
-            } else {
-              that.$.account.login(window.location.href);
-            }
-          });
+          this.$.bookings.addEventListener('uqlibrary-api-account-bookings-loaded', this.accountBookingsLoaded);
 
           this.$.account.get();
+
+        },
+
+        facilitiesLoaded: function(e) {
+          var that = document.querySelector('uqlibrary-booking');
+
+          that.facilities = e.detail;
+
+          if (that.facilities.length > 0) {
+            that.buildFilterFormDataFacilitiesArray();
+
+            switch(that.currentPage) {
+              case 'myBookings':
+                that.showMyBookings();
+                break;
+              case 'bookingFormSection':
+                that.$.bookingForm.roomDetails = that.rooms[that.$.bookingForm.roomDetails.id];
+                break;
+            }
+          }
+        },
+
+        accountLoaded: function(e) {
+          var that = document.querySelector('uqlibrary-booking');
+
+          if (e.detail.hasSession) {
+            that.user = e.detail;
+
+            that.$.facilities.get(
+                    {
+                      "id" : that.user.id,
+                      "ptype" : that.user.type
+                    });
+
+          } else {
+            that.$.account.login(window.location.href);
+          }
+        },
+
+        accountBookingsLoaded: function(e) {
+          var that = document.querySelector('uqlibrary-booking');
+
+          console.log('uqlibrary-api-account-bookings-loaded');
+
+          var bookings = Array.isArray(e.detail) ? e.detail : [];
+          if (bookings.length > 0) {
+            var events = [];
+
+            for (var i = bookings.length-1; i >= 0; i--) {
+
+              var title = [];
+              var subtitle = [];
+              var b = bookings[i];
+
+              if (b.resource.title)
+                title.push(b.resource.title);
+              if (b.resource.location)
+                title.push(b.resource.location);
+              if (that.rooms && that.rooms[b.resource.machid]) {
+                subtitle.push(that.rooms[b.resource.machid].building);
+                subtitle.push(that.rooms[b.resource.machid].campus);
+              }
+
+              events.push({
+                id: b.id,
+                startDate: new Date(b.from * 1000),
+                endDate: new Date(b.to * 1000),
+                title: title.join(", "),
+                subtitle: subtitle.join(", "),
+                scheduleid: b.resource.id,
+                machid: b.resource.machid
+              });
+
+              //display up to first 20 bookings
+              if (events.length == 20 || i == 0) {
+                that.events = events;
+                break;
+              }
+            }
+          }
+          else {
+            that.events = [];
+          }
+
+          that.bookingsUseCache = true;
 
         },
 
@@ -237,55 +296,6 @@
           };
 
           this.$.bookings.get({nocache : !this.bookingsUseCache} );
-
-          this.$.bookings.addEventListener('uqlibrary-api-account-bookings-loaded', function(e) {
-
-            console.log('uqlibrary-api-account-bookings-loaded');
-
-            var bookings = Array.isArray(e.detail) ? e.detail : [];
-            if (bookings.length > 0) {
-              var events = [];
-
-              for (var i = bookings.length-1; i >= 0; i--) {
-
-                var title = [];
-                var subtitle = [];
-                var b = bookings[i];
-
-                if (b.resource.title)
-                  title.push(b.resource.title);
-                if (b.resource.location)
-                  title.push(b.resource.location);
-                if (that.rooms && that.rooms[b.resource.machid]) {
-                  subtitle.push(that.rooms[b.resource.machid].building);
-                  subtitle.push(that.rooms[b.resource.machid].campus);
-                }
-
-                events.push({
-                  id: b.id,
-                  startDate: new Date(b.from * 1000),
-                  endDate: new Date(b.to * 1000),
-                  title: title.join(", "),
-                  subtitle: subtitle.join(", "),
-                  scheduleid: b.resource.id,
-                  machid: b.resource.machid
-                });
-
-                //display up to first 20 bookings
-                if (events.length == 20 || i == 0) {
-                  that.events = events;
-                  break;
-                }
-              }
-            }
-            else {
-              that.events = [];
-            }
-
-            that.bookingsUseCache = true;
-
-          });
-
         },
 
         showFilterForm: function() {
@@ -512,6 +522,7 @@
 
           //setup booking form properties
           this.$.bookingForm.roomDetails = data;
+          this.$.bookingForm.bookingDetails = null;
           var searchDate = this.formData.searchDate ? this.formData.searchDate : new Date();
           this.$.bookingForm.searchDate = searchDate;
           this.$.bookingForm.searchDuration = this.formData.duration;
@@ -548,10 +559,15 @@
 
           // add new booking details to events on timeline
           this.bookingsUseCache = false;
-          //this.$.bookings.get({ nocache : true });
 
           // transition to timeline
           this.doTransition(e, data, {id: 'bookingForm'});
+
+          //Show toast that event was deleted after the transition is done
+          var that = this;
+          setTimeout(function(){
+            that.showInfoToast(that.$.myBookingsInfoToast, "Your booking was saved.");
+          }, 2000, that);
         },
 
 
