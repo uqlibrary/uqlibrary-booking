@@ -521,8 +521,8 @@
           }
 
           //setup booking form properties
-          this.$.bookingForm.roomDetails = data;
           this.$.bookingForm.bookingDetails = null;
+          this.$.bookingForm.roomDetails = data;
           var searchDate = this.formData.searchDate ? this.formData.searchDate : new Date();
           this.$.bookingForm.searchDate = searchDate;
           this.$.bookingForm.searchDuration = this.formData.duration;
