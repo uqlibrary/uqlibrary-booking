@@ -169,7 +169,10 @@
                 that.showMyBookings();
                 break;
               case 'bookingFormSection':
-                that.$.bookingForm.roomDetails = that.rooms[that.$.bookingForm.roomDetails.id];
+                this.$.bookingForm.setData({
+                  roomDetails: that.rooms[that.$.bookingForm.roomDetails.id]
+                });
+
                 break;
             }
           }
@@ -383,7 +386,7 @@
             transition: 'slide-from-right',
             destination: 'bookingFormSection',
             action: 'showBookingForm'
-          }
+          };
 
           this.addEventListener('room-selected', this.roomSelected);
         },
@@ -521,6 +524,7 @@
           //setup booking form properties
           this.$.bookingForm.setData({
             roomDetails: data,
+            bookingDetails: null,
             searchDate: searchDate,
             searchDuration: this.formData.duration,
             maxBookingDate: new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000)
@@ -567,7 +571,6 @@
             that.showInfoToast(that.$.myBookingsInfoToast, "Your booking was saved.");
           }, 2000, that);
         },
-
 
         searchDateChanged: function(e, data, sender) {
           this.$.facilities.get(
@@ -787,7 +790,6 @@
           }
         },
 
-        // MOCK DATA
         loadFilterFormData: function() {
           this.filterFormData = {};
           this.filterFormData.dates = [];

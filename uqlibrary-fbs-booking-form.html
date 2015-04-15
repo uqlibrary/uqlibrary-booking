@@ -26,7 +26,7 @@ Element providing a form for booking a room.
 @homepage https://github.com/uqlibrary/uqlibrary-fbs-booking-form
 -->
 
-<polymer-element name="uqlibrary-fbs-booking-form">
+<polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails">
 
 <template>
   <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/element.css">
@@ -48,7 +48,7 @@ Element providing a form for booking a room.
     </a>
   </p>
 
-  <uqlibrary-date-selector searchDate="{{ searchDate }}"
+  <uqlibrary-date-selector id="dateSelector" searchDate="{{ searchDate }}"
                            searchDuration="{{ searchDuration }}"
                            maxBookingDate="{{ maxBookingDate }}"
                            bookingTimeslots = "{{ bookingTimeslots }}"
@@ -138,12 +138,12 @@ Element providing a form for booking a room.
      */
     setData: function(args) {
       //reset data
-      this.roomDetails = {};
-      this.bookingDetails = {};
-      this.searchDate = new Date();
-      this.searchDuration = 90;
-      this.maxBookingDate = new Date();
-      this.bookingTimeslots = [];
+//      this.roomDetails = {};
+//      this.bookingDetails = {};
+//      this.searchDate = new Date();
+//      this.searchDuration = 90;
+//      this.maxBookingDate = new Date();
+//      this.bookingTimeslots = [];
 
       if (args && args.roomDetails)
         this.roomDetails = args.roomDetails;
@@ -165,6 +165,8 @@ Element providing a form for booking a room.
 
       this.bookingTimeslots = this.createTimeslots();
       this.selectTimeslots();
+
+      this.$.dateSelector.bookingTimeslots = this.bookingTimeslots;
     },
 
     showInfoToast: function(text) {
