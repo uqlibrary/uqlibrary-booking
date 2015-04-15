@@ -439,17 +439,16 @@
             transition: 'slide-from-right',
             destination: 'myBookings',
             action: 'showMyBookings'
-          }
+          };
 
           if (data && data.id) {
-            this.$.bookingForm.bookingDetails = data;
-            this.$.bookingForm.roomDetails = this.rooms[data.machid];
-
-            this.$.bookingForm.searchDate = data.startDate;
-            this.$.bookingForm.searchDuration = (data.endDate.getTime() - data.startDate.getTime()) / (60*1000);
-
             var maxDate = new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000);
-            this.$.bookingForm.maxBookingDate = maxDate.getTime() > data.startDate.getTime() ? maxDate : data.startDate;
+
+            this.$.bookingForm.setData({
+              bookingDetails: data,
+              roomDetails: this.rooms[data.machid],
+              maxBookingDate: maxDate.getTime() > data.startDate.getTime() ? maxDate : data.startDate
+            });
           }
         },
 
@@ -458,7 +457,6 @@
             this.$.bookingDetails.roomDetails = this.rooms[data.machid];
             this.$.bookingDetails.bookingDetails = data;
           }
-
 
           this.pageToolbar = {
             rightButton: { icon:'delete' },
@@ -518,13 +516,15 @@
             };
           }
 
-          //setup booking form properties
-          this.$.bookingForm.bookingDetails = null;
-          this.$.bookingForm.roomDetails = data;
           var searchDate = this.formData.searchDate ? this.formData.searchDate : new Date();
-          this.$.bookingForm.searchDate = searchDate;
-          this.$.bookingForm.searchDuration = this.formData.duration;
-          this.$.bookingForm.maxBookingDate = new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000);
+
+          //setup booking form properties
+          this.$.bookingForm.setData({
+            roomDetails: data,
+            searchDate: searchDate,
+            searchDuration: this.formData.duration,
+            maxBookingDate: new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000)
+          });
         },
 
         submitBookingForm: function() {

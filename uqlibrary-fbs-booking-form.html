@@ -13,52 +13,8 @@ Element providing a form for booking a room.
         window.addEventListener('polymer-ready', function() {
 
           var bookingForm = document.querySelector('uqlibrary-fbs-booking-form');
+          bookingForm.setData({});
 
-          bookingForm.roomDetails = {
-            id:       'abdsfsdf34234234'
-            title:     "Group Room 3",
-            location:    "Level 3",
-            building: "Biological Sciences Library",
-            campus:   "St Lucia",
-            notes:  "6 chairs, 1 table, PC, Large Screen, whiteboard.",
-            image:    "image-thumb.jpg",
-            imageLarge:    "image-large.jpg",
-            url: "", //url to maps, open in new window
-
-            time_span: 30,     //in minutes
-            maxtime: 120,    //in minutes
-            mintime: 30,    //in minutes
-
-            scheduleid : 'abcd12313123123',
-            available_from : 1419429600,
-            available_to: 1419516000,
-
-            bookings: [
-                      {
-                          "id": "sc1547b9f971ca95",
-                          "from": 1417647600,
-                          "to": 1417654800
-                      },
-                      {
-                          "id": "sc1547b9fbcb4e45",
-                          "from": 1417654800,
-                          "to": 1417662000
-                      },
-                      {
-                          "id": "sc1547b9fd13d5ef",
-                          "from": 1417662000,
-                          "to": 1417669200
-                      },
-                      {
-                          "id": "sc1547522d054d86",
-                          "from": 1417669200,
-                          "to": 1417672800
-                      }]
-          };
-
-          bookingForm.searchDate = new Date();        //search date and time
-          bookingForm.searchDuration = 60;            //in minutes
-          bookingForm.maxBookingDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
         });
 
       }());
@@ -70,7 +26,7 @@ Element providing a form for booking a room.
 @homepage https://github.com/uqlibrary/uqlibrary-fbs-booking-form
 -->
 
-<polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails searchDate searchDuration maxBookingDate bookingDetails">
+<polymer-element name="uqlibrary-fbs-booking-form">
 
 <template>
   <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/element.css">
@@ -119,58 +75,27 @@ Element providing a form for booking a room.
 <script>
 (function() {
   Polymer('uqlibrary-fbs-booking-form', {
-    /**
-     * The `roomDetails` attribute object contains properties of the room
-     *
-     * @property roomDetails
-     * @type object
-     */
-
-    /**
-     * The `bookingDetails` attribute object contains properties of the existing room booking - for editing
-     *
-     * @property bookingDetails
-     * @type object
-     */
-
-    /** The `searchDate` attribute represents search date/time value
-     *
-     * @property searchDate
-     * @type Date
-     *
-     */
-
-    /** The `maxBookingDate` attribute represents maximum valid booking day (eg can book up to a week in advance)
-     *
-     * @property maxBookingDate
-     * @type Date
-     *
-     */
-
-    /** The `searchDuration` attribute represents booking duration value in minutes
-     *
-     * @property searchDuration
-     * @type Int
-     *
-     */
-
-
     /** Fired when booking was successfully created
      *
      * @event booking-created
      *
      */
+    createBookingComplete : function(event){
+      if (event.detail.response) {
+        //display error returned by the server
+        this.showInfoToast("Error creating a booking: " + event.detail.responseText);
+
+      } else {
+        //if booking is successful, fire event to indicate booking is done and move on to other page
+        this.fire('booking-created');
+      }
+    },
 
     /** Fired when search date was changed on the booking form
      *
      * @event booking-date-changed
      *
      */
-    roomDetailsChanged : function (oldValue, newValue) {
-      this.bookingTimeslots = this.createTimeslots();
-      this.selectTimeslots();
-    },
-
     searchDateChanged : function (oldValue, newValue) {
       if (this.searchDate.toDateString() != moment(this.roomDetails.available_from, "X").toDate().toDateString()) {
         this.fire('booking-date-changed', { searchDate: this.searchDate });
@@ -199,6 +124,49 @@ Element providing a form for booking a room.
 
     },
 
+    /** The `setData` method expects data for display in booking form, eg
+     * {
+     *    roomDetails - room details with availability details
+     *    bookingDetails - user's booking details for editing
+     *    searchDate - current search date (defaults to bookingDetails date if it's specified)
+     *    maxBookingDate - max date to display
+     *    searchDuration - booking duration value in minutes (defaults to bookingDetails date if it's specified)
+     * }
+     *
+     * @method setData
+     *
+     */
+    setData: function(args) {
+      //reset data
+      this.roomDetails = {};
+      this.bookingDetails = {};
+      this.searchDate = new Date();
+      this.searchDuration = 90;
+      this.maxBookingDate = new Date();
+      this.bookingTimeslots = [];
+
+      if (args && args.roomDetails)
+        this.roomDetails = args.roomDetails;
+
+      if (args && args.bookingDetails) {
+        this.bookingDetails = args.bookingDetails;
+        this.searchDate = this.bookingDetails.startDate;
+        this.searchDuration = (this.bookingDetails.endDate.getTime() - this.bookingDetails.startDate.getTime()) / (60*1000);
+      }
+
+      if (args && args.searchDate)
+        this.searchDate = args.searchDate;
+
+      if (args && args.searchDuration)
+        this.searchDuration = args.searchDuration;
+
+      if (args && args.maxBookingDate)
+        this.maxBookingDate = args.maxBookingDate;
+
+      this.bookingTimeslots = this.createTimeslots();
+      this.selectTimeslots();
+    },
+
     showInfoToast: function(text) {
       this.$.infoToast.text = text;
       this.$.infoToast.show();
@@ -225,17 +193,6 @@ Element providing a form for booking a room.
       }
 
       return validation;
-    },
-
-    createBookingComplete : function(event){
-      if (event.detail.response) {
-        //display error returned by the server
-        this.showInfoToast("Error creating a booking: " + event.detail.responseText);
-
-      } else {
-        //if booking is successful, fire event to indicate booking is done and move on to other page
-        this.fire('booking-created');
-      }
     },
 
     createRoomBooking : function () {
