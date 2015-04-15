@@ -239,6 +239,9 @@
           this.$.bookings.get({nocache : !this.bookingsUseCache} );
 
           this.$.bookings.addEventListener('uqlibrary-api-account-bookings-loaded', function(e) {
+
+            console.log('uqlibrary-api-account-bookings-loaded');
+
             var bookings = Array.isArray(e.detail) ? e.detail : [];
             if (bookings.length > 0) {
               var events = [];

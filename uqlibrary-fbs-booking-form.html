@@ -168,12 +168,8 @@ Element providing a form for booking a room.
      */
     roomDetailsChanged : function (oldValue, newValue) {
       this.bookingTimeslots = this.createTimeslots();
-
-      console.log(this.searchDate);
-      console.log(this.searchDuration);
-
+      console.log("roomDetailsChanged");
       this.selectTimeslots();
-
     },
 
     searchDateChanged : function (oldValue, newValue) {
@@ -293,11 +289,11 @@ Element providing a form for booking a room.
     selectTimeslots : function() {
 
       //for booking editing, only set time on the date of the booking
-      if (this.bookingDetails && this.bookingDetails.startdate) {
+      if (this.bookingDetails && this.bookingDetails.startDate) {
         //search duration is always the existing booking duration
         this.searchDuration = (this.bookingDetails.endDate.getTime() - this.bookingDetails.startDate.getTime()) / (60 * 1000);
 
-        var bookingStartDateTest = new Date (this.bookingDetails.startdate);
+        var bookingStartDateTest = new Date (this.bookingDetails.startDate);
         var searchDateTest = new Date(this.searchDate);
 
         if (searchDateTest.setHours(0,0,0,0) !== bookingStartDateTest.setHours(0,0,0,0))
@@ -347,7 +343,6 @@ Element providing a form for booking a room.
           if (that.bookingDetails && that.bookingDetails.startDate &&
                   timeslotStartTime.getTime() >= that.bookingDetails.startDate.getTime() &&
                   timeslotEndTime.getTime() <= that.bookingDetails.endDate.getTime()) {
-            console.log("can select this timeslot");
             return true;
           }
 
