@@ -195,8 +195,6 @@
         accountBookingsLoaded: function(e) {
           var that = document.querySelector('uqlibrary-booking');
 
-          console.log('uqlibrary-api-account-bookings-loaded');
-
           var bookings = Array.isArray(e.detail) ? e.detail : [];
           if (bookings.length > 0) {
             var events = [];
@@ -444,8 +442,8 @@
           }
 
           if (data && data.id) {
-            this.$.bookingForm.roomDetails = this.rooms[data.machid];
             this.$.bookingForm.bookingDetails = data;
+            this.$.bookingForm.roomDetails = this.rooms[data.machid];
 
             this.$.bookingForm.searchDate = data.startDate;
             this.$.bookingForm.searchDuration = (data.endDate.getTime() - data.startDate.getTime()) / (60*1000);
