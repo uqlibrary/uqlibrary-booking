@@ -137,14 +137,6 @@ Element providing a form for booking a room.
      *
      */
     setData: function(args) {
-      //reset data
-//      this.roomDetails = {};
-//      this.bookingDetails = {};
-//      this.searchDate = new Date();
-//      this.searchDuration = 90;
-//      this.maxBookingDate = new Date();
-//      this.bookingTimeslots = [];
-
       if (args && args.roomDetails)
         this.roomDetails = args.roomDetails;
 
@@ -152,6 +144,8 @@ Element providing a form for booking a room.
         this.bookingDetails = args.bookingDetails;
         this.searchDate = this.bookingDetails.startDate;
         this.searchDuration = (this.bookingDetails.endDate.getTime() - this.bookingDetails.startDate.getTime()) / (60*1000);
+      } else {
+        this.bookingDetails = null;
       }
 
       if (args && args.searchDate)
