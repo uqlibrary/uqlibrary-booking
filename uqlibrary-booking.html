@@ -169,7 +169,7 @@
                 that.showMyBookings();
                 break;
               case 'bookingFormSection':
-                this.$.bookingForm.setData({
+                that.$.bookingForm.setData({
                   roomDetails: that.rooms[that.$.bookingForm.roomDetails.id]
                 });
 
@@ -583,6 +583,9 @@
         },
 
         buildFilterFormDataFacilitiesArray: function() {
+
+          console.log("buildFilterFormDataFacilitiesArray");
+
           var _facilities = {};
 
           for(var i = 0; i < this.facilities.length; i++) {
