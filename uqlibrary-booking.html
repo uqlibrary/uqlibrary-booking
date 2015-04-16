@@ -447,7 +447,7 @@
             this.$.bookingForm.setData({
               bookingDetails: data,
               roomDetails: this.rooms[data.machid],
-              maxBookingDate: maxDate.getTime() > data.startDate.getTime() ? maxDate : data.startDate
+              maxBookingDate: maxDate.getTime() > data.startDate.getTime() ? maxDate.setHours(23, 59, 0, 0) : data.startDate.setHours(23, 59, 0, 0)
             });
           }
         },
@@ -517,6 +517,7 @@
           }
 
           var searchDate = this.formData.searchDate ? this.formData.searchDate : new Date();
+          var maxDate = new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000);
 
           //setup booking form properties
           this.$.bookingForm.setData({
@@ -524,7 +525,7 @@
             bookingDetails: null,
             searchDate: searchDate,
             searchDuration: this.formData.duration,
-            maxBookingDate: new Date((new Date().getTime()) + 7 * 24 * 60 * 60 * 1000)
+            maxBookingDate: maxDate.setHours(23, 59, 0, 0)
           });
         },
 
@@ -580,8 +581,6 @@
         },
 
         buildFilterFormDataFacilitiesArray: function() {
-
-          console.log("buildFilterFormDataFacilitiesArray");
 
           var _facilities = {};
 

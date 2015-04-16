@@ -239,6 +239,32 @@
           }, 2000);
         });
 
+      test('can edit a room booking and transition to my bookings page', function(done) {
+        setTimeout(function () {
+          var bookingDisplay = parent.shadowRoot.querySelector('uqlibrary-fbs-booking-display');
+
+          //select top action button and emulate delete booking button click
+          var editButton = bookingDisplay.shadowRoot.querySelector('#editBookingButton');
+          editButton.fire('tap');
+
+          setTimeout(function() {
+            var bookingDisplay = parent.shadowRoot.querySelector('uqlibrary-fbs-booking-form');
+
+            //check page title is set
+            var pageTitle = parent.shadowRoot.querySelector('#toolbar-page-title').innerHTML;
+            expect(pageTitle).not.to.be.null;
+            expect(pageTitle).to.be.equal('Edit my booking');
+
+            //go back to booking details page
+            var backButton = parent.shadowRoot.querySelector('#toolBarLeftButton');
+            backButton.fire('tap');
+
+            done();
+
+            }, 1200);
+          }, 1200);
+      });
+
         test('can delete a room booking and transition to my bookings page', function(done) {
           setTimeout(function () {
             var bookingDisplay = parent.shadowRoot.querySelector('uqlibrary-fbs-booking-display');
