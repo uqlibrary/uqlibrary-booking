@@ -26,7 +26,7 @@ Element providing a form for booking a room.
 @homepage https://github.com/uqlibrary/uqlibrary-fbs-booking-form
 -->
 
-<polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails bookingDetails">
+<polymer-element name="uqlibrary-fbs-booking-form" attributes="roomDetails">
 
 <template>
   <link rel="stylesheet" href="../uqlibrary-elements/resources/theme/element.css">
@@ -137,8 +137,6 @@ Element providing a form for booking a room.
      *
      */
     setData: function(args) {
-      if (args && args.roomDetails)
-        this.roomDetails = args.roomDetails;
 
       if (args && args.bookingDetails) {
         this.bookingDetails = args.bookingDetails;
@@ -157,6 +155,11 @@ Element providing a form for booking a room.
       if (args && args.maxBookingDate)
         this.maxBookingDate = args.maxBookingDate;
 
+      if (args && args.roomDetails)
+        this.roomDetails = args.roomDetails;
+    },
+
+    roomDetailsChanged: function() {
       this.bookingTimeslots = this.createTimeslots();
       this.selectTimeslots();
 

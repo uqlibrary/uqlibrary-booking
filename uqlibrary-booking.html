@@ -169,11 +169,7 @@
                 that.showMyBookings();
                 break;
               case 'bookingFormSection':
-                that.$.bookingForm.setData({
-                  roomDetails: that.rooms[that.$.bookingForm.roomDetails.id],
-                  bookingDetails: that.$.bookingForm.bookingDetails
-                });
-
+                that.$.bookingForm.roomDetails = that.rooms[that.$.bookingForm.roomDetails.id];
                 break;
             }
           }
