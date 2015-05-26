@@ -181,11 +181,13 @@
           if (e.detail.hasSession) {
             that.user = e.detail;
 
-            that.$.facilities.get(
-                    {
-                      "id" : that.user.id,
-                      "ptype" : that.user.type
-                    });
+            var _args = {id: that.user.id};
+            // FBS has special user group(LoansDeskStaff) for ptypes 17 and 18, so we must allow all rooms for these groups
+            if(that.user.type != 17 && that.user.type != 18) {
+              _args.ptype = that.user.type;
+            }
+
+            that.$.facilities.get(_args);
 
           } else {
             that.$.account.login(window.location.href);
