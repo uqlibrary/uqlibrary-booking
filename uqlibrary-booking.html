@@ -44,12 +44,12 @@
                              icon="{{pageToolbar.rightButton.icon ? pageToolbar.rightButton.icon : ''}}"></paper-icon-button>
         </core-toolbar>
 
-        <div id="content">
+        <div id="content" fit>
 
           <core-animated-pages id="pages"
                                transitions="{{transition}}"
                                on-core-animated-pages-transition-prepare="{{transitionPrepareHandler}}"
-                               on-core-animated-pages-transition-end="{{transitionEndHandler}}">
+                               on-core-animated-pages-transition-end="{{transitionEndHandler}}" fit>
 
             <section id="myBookings">
               <uqlibrary-timeline events="{{events}}" on-event-selected="{{bookingSelected}}"></uqlibrary-timeline>
@@ -85,7 +85,7 @@
             </section>
 
             <section id="bookingFormSection">
-              <uqlibrary-fbs-booking-form id="bookingForm" on-booking-date-changed="{{searchDateChanged}}" on-booking-created="{{bookingCreated}}"></uqlibrary-fbs-booking-form>
+                <uqlibrary-fbs-booking-form id="bookingForm" on-booking-date-changed="{{searchDateChanged}}" on-booking-created="{{bookingCreated}}"></uqlibrary-fbs-booking-form>
             </section>
 
             <section id="bookingDetailsSection">
