@@ -17,12 +17,13 @@
     <uqlibrary-api-facilities-availability id="facilities"></uqlibrary-api-facilities-availability>
 
     <core-drawer-panel id="drawerPanel" class="drawer" drawerWidth="256px" responsiveWidth="768px">
-      <core-header-panel drawer>
-        <uqlibrary-menu account="{{user}}"></uqlibrary-menu>
-      </core-header-panel>
+      <div drawer class="left-drawer" fit style="overflow: scroll;">
+      <uqlibrary-menu account="{{user}}"></uqlibrary-menu>
+      </div>
 
-      <core-header-panel main class="main">
-        <core-toolbar>
+      <div main layout vertical class="main">
+
+      <core-toolbar>
 
           <core-a11y-keys id="a11yToolBarLeftButton" target="{{$.toolBarLeftButton}}" keys="{{keyboardNavigationKeys}}"
                           on-keys-pressed="{{ a11yKeyPressed }}"></core-a11y-keys>
@@ -44,7 +45,8 @@
                              icon="{{pageToolbar.rightButton.icon ? pageToolbar.rightButton.icon : ''}}"></paper-icon-button>
         </core-toolbar>
 
-        <div id="content" fit>
+        <div main layout vertical fit relative style="margin-top: 64px;">
+        <div id="content" fit style="overflow: scroll;">
 
           <core-animated-pages id="pages"
                                transitions="{{transition}}"
@@ -97,8 +99,9 @@
           </core-animated-pages>
 
         </div>
+        </div>
 
-      </core-header-panel>
+      </div>
 
     </core-drawer-panel>
 
