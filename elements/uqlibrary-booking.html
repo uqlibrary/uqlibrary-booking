@@ -1,0 +1,60 @@
+<link rel="import" href="elements.html">
+
+<!--
+Element providing the library main booking component
+
+##### Example
+
+    <uqlibrary-booking></uqlibrary-booking>
+
+@element uqlibrary-booking
+@blurb Element providing the library booking ability for staff to diagnose end user issues
+@homepage http://uqlibrary.github.io/uqlibrary-booking
+-->
+<dom-module id="uqlibrary-booking">
+  <!-- All element styles -->
+  <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
+    :host {
+      @apply(--uql-app-host);
+    }
+
+    neon-animated-pages {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  </style>
+
+  <!-- Template -->
+  <template>
+    <uqlibrary-api-contacts id="contactsApi"></uqlibrary-api-contacts>
+    <uqlibrary-ga id="ga" appName="contacts"></uqlibrary-ga>
+
+    <div class="fit layout vertical">
+      <paper-header-panel class="flex">
+        <!-- Header -->
+        <paper-toolbar>
+          <!-- Required -->
+          <template is="dom-if" if="{{!standAlone}}">
+            <paper-icon-button icon="menu" on-tap="_toggleDrawerPanel" paper-drawer-toggle></paper-icon-button>
+          </template>
+          <div class="title uqlibrary-app-title">[[headerTitle]]</div>
+        </paper-toolbar>
+        <!-- Content -->
+        <div class="fit">
+          <neon-animated-pages id="pages" selected="{{_selectedPage}}">
+            <section id="mybookings">
+              <uqlibrary-booking-mybookings></uqlibrary-booking-mybookings>
+            </section>
+          </neon-animated-pages>
+        </div>
+      </paper-header-panel>
+    </div>
+
+  </template>
+
+  <!-- Location of the script -->
+  <script src="uqlibrary-booking.js"></script>
+</dom-module>

@@ -1,0 +1,29 @@
+<link rel="import" href="elements.html">
+
+<dom-module id="uqlibrary-booking-mybookings">
+  <!-- Template -->
+  <template>
+    <!-- All element styles -->
+    <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
+      :host {
+        @apply(--uql-app-host);
+      }
+      
+      paper-fab {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+      }
+    </style>
+
+    <!-- API -->
+    <uqlibrary-api-account-bookings id="bookings"></uqlibrary-api-account-bookings>
+
+    <uqlibrary-timeline events="{{events}}" on-event-selected="_bookingSelected"></uqlibrary-timeline>
+
+    <paper-fab class="create-booking" icon="add"></paper-fab>
+  </template>
+
+  <!-- Location of the script -->
+  <script src="uqlibrary-booking-mybookings.js"></script>
+</dom-module>

@@ -1,18 +1,31 @@
 {
   "name": "uqlibrary-booking",
-  "description": "A simple booking app.",
-  "main": "uqlibrary-booking.html",
-  "license": "MIT",
-  "private": true,
-  "homepage": "https://github.com/uqlibrary/uqlibrary-booking/",
-  "ignore": [
-    "/.*",
-    "/tests/"
+  "version": "1.0.0",
+  "keywords": [
+    "seed",
+    "polymer",
+    "web-components"
   ],
+  "private": true,
+  "main": "elements/uqlibrary-booking.html",
   "dependencies": {
-    "uqlibrary-elements": "uqlibrary/uqlibrary-elements#master"
+    "iron-elements": "PolymerElements/iron-elements#*",
+    "paper-elements": "PolymerElements/paper-elements#*",
+    "neon-elements": "PolymerElements/neon-animation#*",
+    "iron-component-page": "PolymerElements/iron-component-page#*",
+    "polymer": "Polymer/polymer#^1.4.0",
+    "uqlibrary-styles": "uqlibrary/uqlibrary-styles#master",
+    "uqlibrary-api": "uqlibrary/uqlibrary-api#polymer1.0",
+    "uqlibrary-ga": "uqlibrary/uqlibrary-ga#v1.0.0",
+    "uqlibrary-timeline": "uqlibrary/uqlibrary-timeline#v1.0.0"
   },
   "devDependencies": {
-    "web-component-tester": "Polymer/web-component-tester#1.6.1"
+    "web-component-tester": "^4.2.2",
+    "test-fixture": "PolymerElements/test-fixture#^1.1.0"
+  },
+  "resolutions": {
+    "polymer": "1.4.0",
+    "webcomponentsjs": "0.7.21",
+    "uqlibrary-styles": "master"
   }
 }
