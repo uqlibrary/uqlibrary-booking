@@ -1,0 +1,190 @@
+<link rel="import" href="elements.html">
+
+<dom-module id="uqlibrary-booking-findroom">
+  <!-- Template -->
+  <template>
+    <!-- All element styles -->
+    <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
+      :host {
+        font-size: var(--body-font-size);
+        @apply(--uql-app-host);
+        @apply(--loayout-vertical);
+      }
+
+      .page {
+        @apply(--layout-flex);
+      }
+
+      .footer-content {
+        width: 100%;
+
+        @apply(--layout-horizontal);
+        @apply(--layout-justified);
+      }
+
+      .footer-content div {
+        line-height: 36px;
+      }
+
+      .input-container {
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+        @apply(--layout-horizontal);
+      }
+
+      .input-container iron-icon {
+        width: 100px;
+        color: var(--secondary-color);
+      }
+
+      .input-container .content {
+        @apply(--layout-flex);
+      }
+
+      paper-dropdown-menu {
+        width: 100%;
+      }
+
+      #duration-select, #capacity-select {
+        padding-top: 36px;
+        @apply(--layout-horizontal);
+      }
+
+      #duration-select div {
+        color: var(--secondary-color);
+        line-height: 30px;
+        font-size: 14px;
+      }
+
+      #capacity-select div {
+        color: var(--secondary-color);
+        line-height: 52px;
+        font-size: 14px;
+      }
+
+      paper-slider {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <paper-toast id="toast" text="[[_errorMessage]]"></paper-toast>
+
+    <div class="page">
+      <!-- Location -->
+      <div class="input-container">
+        <iron-icon icon="communication:location-on"></iron-icon>
+        <div class="content subhead">
+          Where do you need to book a resource?
+          <!-- Campus select -->
+          <div id="campus-select">
+            <paper-dropdown-menu label="Campus" on-iron-select="_selectCampus" required="true">
+              <paper-menu class="dropdown-content">
+                <template is="dom-repeat" items="{{_roomData}}">
+                  <paper-item label="{{item.title}}" data-id$="{{item.id}}">
+                    {{item.title}}
+                  </paper-item>
+                </template>
+              </paper-menu>
+            </paper-dropdown-menu>
+          </div>
+
+          <!-- Building select -->
+          <div id="building-select">
+            <template is="dom-if" if="{{_buildingDropdown}}">
+              <paper-dropdown-menu label="Building" on-iron-select="_selectBuilding">
+                <paper-menu class="dropdown-content" selected="0">
+                  <paper-item label="Any Building" data-id$="0">Any building</paper-item>
+                  <template is="dom-repeat" items="{{_buildingDropdown}}">
+                    <paper-item label="{{item.title}}" data-id$="{{item.id}}">
+                      {{item.title}}
+                    </paper-item>
+                  </template>
+                </paper-menu>
+              </paper-dropdown-menu>
+            </template>
+          </div>
+
+          <!-- Room select -->
+          <div id="room-select">
+            <template is="dom-if" if="{{_selectedBuilding}}">
+              <paper-dropdown-menu label="Room" on-iron-select="_selectRoom">
+                <paper-menu class="dropdown-content">
+                  <template is="dom-repeat" items="{{_roomDropdown}}">
+                    <paper-item label="{{item.title}}" data-id$="{{item.id}}">
+                      {{item.title}}
+                    </paper-item>
+                  </template>
+                </paper-menu>
+              </paper-dropdown-menu>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Time -->
+      <div class="input-container">
+        <iron-icon icon="device:access-time"></iron-icon>
+        <div class="content subhead">
+          When you do need to book this?
+
+          <!-- Date select -->
+          <div id="date-select">
+            <paper-dropdown-menu label="Day" on-iron-select="_selectDate">
+              <paper-menu class="dropdown-content" selected="0">
+                <template is="dom-repeat" items="{{_dayDropdown}}">
+                  <paper-item label="{{item.label}}" data-date$="{{item.date}}">
+                    {{item.label}}
+                  </paper-item>
+                </template>
+              </paper-menu>
+            </paper-dropdown-menu>
+          </div>
+
+          <!-- Time select -->
+          <div id="time-select">
+            <paper-input id="time" readonly value="{{_selectedTime}}" on-down="_showTimePicker"></paper-input>
+
+            <!-- Time picker dialog -->
+            <paper-dialog id="dialog" modal class="paper-time-picker-dialog">
+              <paper-time-picker id="timePicker" time="{{_selectedTime}}"></paper-time-picker>
+              <div class="buttons">
+                <paper-button dialog-confirm>OK</paper-button>
+              </div>
+            </paper-dialog>
+          </div>
+
+          <!-- Duration -->
+          <div id="duration-select">
+            <div>Duration</div>
+            <paper-slider aria-label="booking duration" flex id="timePeriod" pin snaps step="30" aria-valuetext="{{_selectedDuration}} minutes" min="30" max="120" immediateValue="{{_selectedDuration}}" value="{{_selectedDuration}}"></paper-slider>
+            <div>{{_selectedDuration}} minutes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How many people -->
+      <div class="input-container">
+        <iron-icon icon="social:people"></iron-icon>
+        <div class="content subhead">
+          How many people are you expecting?
+
+          <div id="capacity-select">
+            <div>Capacity</div>
+            <paper-slider aria-label="room capacity" editable pin snaps step="1" aria-valuetext="{{_selectedCapacity}} people" min="1" max="25" value="{{_selectedCapacity}}"></paper-slider>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom footer -->
+    <paper-toolbar class="uqlibrary-app-footer">
+      <div class="footer-content">
+        <div>{{searchResults.length}} room(s) found</div>
+        <paper-button class="button-colored-accent" on-tap="_search">Search</paper-button>
+      </div>
+    </paper-toolbar>
+  </template>
+
+  <!-- Location of the script -->
+  <script src="uqlibrary-booking-findroom.js"></script>
+</dom-module>

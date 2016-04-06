@@ -72,6 +72,14 @@
      */
     _bookingSelected: function (e) {
       alert("You clicked on item with ID: " + e.detail.id);
+    },
+    /**
+     * Fires of an event to navigate to the "Add Booking" page
+     * @param e
+     * @private
+     */
+    _addBooking: function (e) {
+      this.fire("uqlibrary-booking-navigate", 1);
     }
   })
 })();

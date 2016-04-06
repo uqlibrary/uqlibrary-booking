@@ -17,7 +17,9 @@
     "uqlibrary-styles": "uqlibrary/uqlibrary-styles#master",
     "uqlibrary-api": "uqlibrary/uqlibrary-api#polymer1.0",
     "uqlibrary-ga": "uqlibrary/uqlibrary-ga#v1.0.0",
-    "uqlibrary-timeline": "uqlibrary/uqlibrary-timeline#v1.0.0"
+    "uqlibrary-timeline": "uqlibrary/uqlibrary-timeline#v1.0.0",
+    "lodash": "^4.8.2",
+    "paper-time-picker": "jasongardnerlv/paper-time-picker#master"
   },
   "devDependencies": {
     "web-component-tester": "^4.2.2",
@@ -26,6 +28,7 @@
   "resolutions": {
     "polymer": "1.4.0",
     "webcomponentsjs": "0.7.21",
-    "uqlibrary-styles": "master"
+    "uqlibrary-styles": "master",
+    "lodash": "^4.8.2"
   }
 }

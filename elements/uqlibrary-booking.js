@@ -27,6 +27,22 @@
         type: String,
         value: "My bookings"
       },
+      /**
+       * Holds the complete room list for all booking pages
+       */
+      _roomList: {
+        type: Object,
+        value: {},
+        notify: true
+      },
+      /**
+       * Holds the latest search results
+       */
+      _searchResults: {
+        type: Array,
+        value: [],
+        notify: true
+      },
 			/**
 			 * Holds the user account
 			 */
@@ -44,13 +60,82 @@
 				value: 0
 			}
 		},
+    listeners: {
+      'uqlibrary-booking-navigate': '_doTransition'
+    },
 		ready: function () {
-			var self = this;
+      var self = this;
 
-			if (this.autoLoad){
-
-			}
+      this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function (e) {
+        self._facilitiesUpdated(e);
+      });
+      this.$.facilities.get();
 		},
+    /**
+     * Transitions to the selected page
+     * @param page
+     * @private
+     */
+    _transitionToPage: function (page) {
+      this._selectedPage = page;
+    },
+    /**
+     * Moves to the given page number
+     * @param e
+     * @private
+     */
+		_doTransition: function (e) {
+			this._transitionToPage(e.detail);
+		},
+    /**
+     * Moves back one page
+     */
+    _goBack: function () {
+      this._transitionToPage(this._selectedPage - 1);
+    },
+    /**
+     * Called when the facilities are returned from the API. Creates a master "room list"
+     * @param e
+     * @private
+     */
+    _facilitiesUpdated: function (e) {
+      var self = this;
+      var roomList = {};
+
+      _.forEach(e.detail, function (facility) {
+        _.forEach(facility.resources, function (resource) {
+          _.forEach(resource.facilities, function (room) {
+            // Add room to general Rooms array
+            var buildingImageName = room.building.replace(/\s/g, '_').replace(/\W/g, '').toLowerCase();
+            var campusImageName = room.campus.replace(/\s/g, '_').replace(/\W/g, '').toLowerCase();
+
+            roomList[room.id] = {
+              id: room.id,
+              scheduleid: room.scheduleid,
+              title: room.title,
+              campus: room.campus,
+              building: room.building,
+              location: room.location,
+              capacity: room.capacity,
+              maxtime: room.maxtime,
+              mintime: room.mintime,
+              bookings: room.bookings,
+              available_from: resource.schedule.available_from,
+              available_to: resource.schedule.available_to,
+              url: room.url,
+              notes: room.notes,
+              next_available_time: null,
+              next_available_time_text: '',
+              time_span: resource.schedule['time_span'],
+              image : campusImageName + '/' + buildingImageName + '_thumb' + '.jpg',
+              imageLarge : campusImageName + '/' + buildingImageName + '.jpg'
+            };
+          });
+        });
+      });
+
+      this._roomList = roomList;
+    },
 		/**
 		 * Toggles the drawer panel of the main UQL app
 		 * @private

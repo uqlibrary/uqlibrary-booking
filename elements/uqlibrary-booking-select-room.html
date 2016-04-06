@@ -1,0 +1,20 @@
+<link rel="import" href="elements.html">
+
+<dom-module id="uqlibrary-bookings-select-room">
+  <!-- All element styles -->
+  <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
+    :host {
+      @apply(--uql-app-host);
+    }
+  </style>
+
+  <!-- Template -->
+  <template>
+    <template is="dom-repeat" items="{{searchResults}}">
+      <div>{{item.id}}</div>
+    </template>
+  </template>
+
+  <!-- Location of the script -->
+  <script src="uqlibrary-booking-select-room.js"></script>
+</dom-module>

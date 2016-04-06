@@ -25,12 +25,17 @@ Element providing the library main booking component
       left: 0;
       right: 0;
     }
+
+    .back-arrow {
+      margin-right: 20px;
+    }
   </style>
 
   <!-- Template -->
   <template>
     <uqlibrary-api-contacts id="contactsApi"></uqlibrary-api-contacts>
     <uqlibrary-ga id="ga" appName="contacts"></uqlibrary-ga>
+    <uqlibrary-api-facilities-availability id="facilities"></uqlibrary-api-facilities-availability>
 
     <div class="fit layout vertical">
       <paper-header-panel class="flex">
@@ -40,13 +45,21 @@ Element providing the library main booking component
           <template is="dom-if" if="{{!standAlone}}">
             <paper-icon-button icon="menu" on-tap="_toggleDrawerPanel" paper-drawer-toggle></paper-icon-button>
           </template>
+          <template is="dom-if" if="{{_selectedPage}}">
+            <paper-icon-button class="back-arrow" icon="icons:arrow-back" on-tap="_goBack"></paper-icon-button>
+          </template>
           <div class="title uqlibrary-app-title">[[headerTitle]]</div>
         </paper-toolbar>
         <!-- Content -->
         <div class="fit">
           <neon-animated-pages id="pages" selected="{{_selectedPage}}">
+            <!-- My Bookings view -->
             <section id="mybookings">
               <uqlibrary-booking-mybookings></uqlibrary-booking-mybookings>
+            </section>
+            <!-- Find Room Filter -->
+            <section id="findroom">
+              <uqlibrary-booking-findroom room-list="{{_roomList}}" search-results="{{_searchResults}}"></uqlibrary-booking-findroom>
             </section>
           </neon-animated-pages>
         </div>
