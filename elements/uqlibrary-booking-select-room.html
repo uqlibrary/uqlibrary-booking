@@ -1,17 +1,42 @@
 <link rel="import" href="elements.html">
 
-<dom-module id="uqlibrary-bookings-select-room">
+<dom-module id="uqlibrary-booking-select-room">
   <!-- All element styles -->
   <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
     :host {
       @apply(--uql-app-host);
     }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
   </style>
 
   <!-- Template -->
   <template>
+    Hi There!
+
     <template is="dom-repeat" items="{{searchResults}}">
-      <div>{{item.id}}</div>
+      <paper-item>
+        <div class="avatar" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{item.image}}');"></div>
+        <div class="content">
+          <paper-ripple fit></paper-ripple>
+
+          <div class="line1">
+            [[item.title]]
+          </div>
+
+          <div class="line2">
+            <span>{{ item.location }}, </span>
+            <span>{{ item.building }}, </span>
+            <span>{{ item.campus }}</span>
+          </div>
+          <div class="line3" hidden?={{!item.next_available_time_text}}>Available time: {{item.next_available_time_text}}</div>
+
+        </div>
+      </paper-item>
     </template>
   </template>
 

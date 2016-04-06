@@ -10,7 +10,8 @@
        */
       searchResults: {
         type: Array,
-        value: []
+        value: [],
+        observer: 'sChanged'
       }
     },
     behaviors: [
@@ -18,6 +19,9 @@
     ],
     ready: function () {
       var self = this;
+    },
+    sChanged: function () {
+      console.log(this.searchResults);
     }
   })
 })();

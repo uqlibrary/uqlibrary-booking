@@ -18,7 +18,8 @@
        */
       searchResults: {
         type: Object,
-        value: {}
+        value: {},
+        notify: true
       },
       /**
        * Holds the structured room data
