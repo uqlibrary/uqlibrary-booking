@@ -116,6 +116,8 @@
         }
         room.nextAvailable = self._getNextAvailable(room, startTimestamp);
         if (room.nextAvailable === false) return;
+        var _time = moment.unix(room.nextAvailable);
+        room.nextAvailableTimeText = _time.format("h:mm a") + ' - ' + _time.add(self._selectedDuration, 'minutes').format("h:mm a") + ', ' + _time.format("DD/MM/YYYY");
 
         // Add the room to the search results if we got this far
         roomsFound.push(room);
@@ -160,7 +162,7 @@
 
         if (startTimestamp >= slot.from && end <= slot.to) {
           firstAvailable = startTimestamp;
-        } else if (end <= slot.to && slot.to >= (slot.from + duration * 60)) {
+        } else if (end <= slot.to && slot.to >= (slot.from + self._selectedDuration * 60)) {
           firstAvailable = slot.from;
         }
       });
@@ -172,7 +174,6 @@
      * @private
      */
     _showTimePicker: function () {
-      console.log("SHOW TIME PICKER!");
       this.$.dialog.toggle();
     },
     /**

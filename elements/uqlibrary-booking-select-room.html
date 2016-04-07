@@ -7,33 +7,56 @@
       @apply(--uql-app-host);
     }
 
+    paper-item {
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    paper-item .content div {
+      line-height: 1.4em;
+    }
+
+    .content {
+      padding-left: 20px;
+    }
+
     .avatar {
       width: 40px;
       height: 40px;
       border-radius: 50%;
     }
+
+    .room-name {
+      color: var(--accent-color);
+    }
+
+    .time {
+      color: var(--secondary-color);
+    }
   </style>
 
   <!-- Template -->
   <template>
-    Hi There!
-
     <template is="dom-repeat" items="{{searchResults}}">
       <paper-item>
         <div class="avatar" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{item.image}}');"></div>
         <div class="content">
-          <paper-ripple fit></paper-ripple>
+          <paper-ripple></paper-ripple>
 
-          <div class="line1">
-            [[item.title]]
+          <!-- Room Name -->
+          <div class="body1 room-name">[[item.title]]</div>
+          <!-- Location details -->
+          <div class="location caption">
+            <template is="dom-if" if="{{item.location}}">
+              <span>[[ item.location ]], </span>
+            </template>
+            <span>[[ item.building ]], </span>
+            <span class="body1">[[ item.campus ]]</span>
           </div>
-
-          <div class="line2">
-            <span>{{ item.location }}, </span>
-            <span>{{ item.building }}, </span>
-            <span>{{ item.campus }}</span>
+          <!-- Time details -->
+          <div class="time caption">
+            Available time: [[ item.nextAvailableTimeText ]]
           </div>
-          <div class="line3" hidden?={{!item.next_available_time_text}}>Available time: {{item.next_available_time_text}}</div>
 
         </div>
       </paper-item>
