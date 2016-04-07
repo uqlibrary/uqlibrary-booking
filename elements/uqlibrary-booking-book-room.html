@@ -1,0 +1,46 @@
+<link rel="import" href="elements.html">
+
+<dom-module id="uqlibrary-booking-book-room">
+  <!-- All element styles -->
+  <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
+    :host {
+      @apply(--uql-app-host);
+    }
+
+    .image-header {
+      background-color: var(--theme-color);
+      background-size: cover;
+      background-position: 50% 50%;
+      padding-top: 150px;
+    }
+
+    .image-header .title-container {
+      background-color: var(--theme-color-lighter);
+      padding: 16px;
+    }
+
+    p.text-container {
+      padding: 16px;
+    }
+  </style>
+
+  <!-- Template -->
+  <template>
+    <!-- Header -->
+    <div class="image-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ selectedRoom.imageLarge }}')">
+      <div class="title-container">
+        <div class="title inverse">{{selectedRoom.title}}</div>
+        <div class="subhead inverse">{{_formatLocation(selectedRoom)}}</div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <p class="body1 text-container">[[ selectedRoom.notes ]]</p>
+
+    <!-- Date Selector -->
+
+  </template>
+
+  <!-- Location of the script -->
+  <script src="uqlibrary-booking-book-room.js"></script>
+</dom-module>

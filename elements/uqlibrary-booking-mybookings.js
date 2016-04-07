@@ -65,6 +65,9 @@
 
       this.$.bookings.get();
     },
+    activate: function () {
+      this.fire('uqlibrary-booking-change-title', 'My bookings');
+    },
     /**
      * Called when an event item is clicked on
      * @param e

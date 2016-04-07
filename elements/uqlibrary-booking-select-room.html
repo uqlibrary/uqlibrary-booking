@@ -38,11 +38,10 @@
   <!-- Template -->
   <template>
     <template is="dom-repeat" items="{{searchResults}}">
-      <paper-item>
+      <paper-item on-tap="_selectRoom">
+        <paper-ripple></paper-ripple>
         <div class="avatar" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{item.image}}');"></div>
         <div class="content">
-          <paper-ripple></paper-ripple>
-
           <!-- Room Name -->
           <div class="body1 room-name">[[item.title]]</div>
           <!-- Location details -->

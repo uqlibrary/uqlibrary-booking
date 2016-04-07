@@ -10,8 +10,15 @@
        */
       searchResults: {
         type: Array,
-        value: [],
-        observer: 'sChanged'
+        value: []
+      },
+      /**
+       * Set when a room is selected
+       */
+      selectedRoom: {
+        type: Object,
+        value: {},
+        notify: true
       }
     },
     behaviors: [
@@ -20,8 +27,17 @@
     ready: function () {
       var self = this;
     },
-    sChanged: function () {
-      console.log(this.searchResults);
+    activate: function () {
+      this.fire('uqlibrary-booking-change-title', 'Select a room');
+    },
+    /**
+     * Called when the user clicks on a room
+     * @param e
+     * @private
+     */
+    _selectRoom: function (e) {
+      this.selectedRoom = e.model.item;
+      this.fire("uqlibrary-booking-navigate", 3);
     }
   })
 })();

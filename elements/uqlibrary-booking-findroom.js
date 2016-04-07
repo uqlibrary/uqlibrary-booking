@@ -50,6 +50,9 @@
       this._generateDays();
       this._selectedTime = moment().format("H:mm a");
     },
+    activate: function () {
+      this.fire('uqlibrary-booking-change-title', 'Find a room');
+    },
     /**
      * Takes the full room list and parses it for use in the Filter Form
      * @private

@@ -52,7 +52,7 @@ Element providing the library main booking component
         </paper-toolbar>
         <!-- Content -->
         <div class="fit">
-          <neon-animated-pages id="pages" selected="{{_selectedPage}}">
+          <neon-animated-pages id="pages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
             <!-- My Bookings view -->
             <section id="mybookings">
               <uqlibrary-booking-mybookings></uqlibrary-booking-mybookings>
@@ -62,7 +62,10 @@ Element providing the library main booking component
               <uqlibrary-booking-findroom room-list="{{_roomList}}" search-results="{{_searchResults}}"></uqlibrary-booking-findroom>
             </section>
             <section id="selectroom">
-              <uqlibrary-booking-select-room search-results="{{_searchResults}}"></uqlibrary-booking-select-room>
+              <uqlibrary-booking-select-room search-results="{{_searchResults}}" selected-room="{{_selectedRoom}}"></uqlibrary-booking-select-room>
+            </section>
+            <section id="bookroom">
+              <uqlibrary-booking-book-room selected-room="{{_selectedRoom}}"></uqlibrary-booking-book-room>
             </section>
           </neon-animated-pages>
         </div>

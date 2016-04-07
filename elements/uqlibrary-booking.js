@@ -58,10 +58,19 @@
 			_selectedPage: {
 				type: Number,
 				value: 0
-			}
+			},
+      /**
+       * Holds the currently selected room
+       */
+      _selectedRoom: {
+        type: Object,
+        value: {},
+        notify: true
+      }
 		},
     listeners: {
-      'uqlibrary-booking-navigate': '_doTransition'
+      'uqlibrary-booking-navigate': '_doTransition',
+      'uqlibrary-booking-change-title': '_changeTitle'
     },
 		ready: function () {
       var self = this;
@@ -71,6 +80,14 @@
       });
       this.$.facilities.get();
 		},
+    /**
+     * Changes the header title when an event is received from a child page
+     * @param e
+     * @private
+     */
+    _changeTitle: function (e) {
+      this.headerTitle = e.detail;
+    },
     /**
      * Transitions to the selected page
      * @param page
@@ -92,6 +109,16 @@
      */
     _goBack: function () {
       this._transitionToPage(this._selectedPage - 1);
+    },
+    /**
+     * Called whenever a iron-select event is fired on neon-animated-pages
+     * @param e
+     * @private
+     */
+    _pageChanged: function (e) {
+      if (e.detail.item.localName == "section") {
+        e.detail.item.children[0].activate();
+      }
     },
     /**
      * Called when the facilities are returned from the API. Creates a master "room list"
