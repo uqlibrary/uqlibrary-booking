@@ -17,7 +17,7 @@
     "uqlibrary-styles": "uqlibrary/uqlibrary-styles#master",
     "uqlibrary-api": "uqlibrary/uqlibrary-api#polymer1.0",
     "uqlibrary-ga": "uqlibrary/uqlibrary-ga#v1.0.0",
-    "uqlibrary-timeline": "uqlibrary/uqlibrary-timeline#v1.0.0",
+    "uqlibrary-timeline": "uqlibrary/uqlibrary-timeline#v1.0.2",
     "lodash": "^4.8.2",
     "paper-time-picker": "jasongardnerlv/paper-time-picker#master"
   },
