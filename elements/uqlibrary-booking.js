@@ -43,6 +43,13 @@
         value: [],
         notify: true
       },
+      /**
+       * Holds the date currently being searched for
+       */
+      _searchDate: {
+        type: Date,
+        notify: true
+      },
 			/**
 			 * Holds the user account
 			 */

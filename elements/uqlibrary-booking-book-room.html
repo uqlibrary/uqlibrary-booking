@@ -38,7 +38,12 @@
     <p class="body1 text-container">[[ selectedRoom.notes ]]</p>
 
     <!-- Date Selector -->
-
+    <uqlibrary-date-selector id="dateSelector"
+                             search-date="{{ searchDate }}"
+                             max-booking-date="{{ _maximumBookingDate }}"
+                             booking-time-slots = "{{ _bookingTimeSlots }}"
+                             max-booking-length="{{ selectedRoom.maxtime / selectedRoom.time_span }}">
+    </uqlibrary-date-selector>
   </template>
 
   <!-- Location of the script -->

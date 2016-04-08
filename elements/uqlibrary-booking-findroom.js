@@ -22,6 +22,14 @@
         notify: true
       },
       /**
+       * Holds the currently selected date
+       */
+      searchDate: {
+        type: Date,
+        notify: true,
+        observer: '_searchDateChanged'
+      },
+      /**
        * Holds the structured room data
        */
       _roomData: {
@@ -40,7 +48,8 @@
       _selectedCapacity: { type: Number, observer: '_getSearchResults' },
       _buildingDropdown: { type: Array },
       _roomDropdown: { type: Array },
-      _dayDropdown: {type: Array }
+      _dayDropdown: {type: Array, value: [] },
+      _selectedDateIndex: { type: Number, value: 0 }
     },
     behaviors: [
       Polymer.NeonSharedElementAnimatableBehavior
@@ -50,6 +59,9 @@
       this._generateDays();
       this._selectedTime = moment().format("H:mm a");
     },
+    /**
+     * Called when this page is opened
+     */
     activate: function () {
       this.fire('uqlibrary-booking-change-title', 'Find a room');
     },
@@ -99,7 +111,10 @@
      * @private
      */
     _getSearchResults: function () {
+      if (this._dayDropdown.length == 0) return;
+
       var self = this;
+      var selectedDate = moment(self._dayDropdown[self._selectedDateIndex].dateObj);
       var roomsFound = [];
 
       _.forEach(this.roomList, function (room) {
@@ -114,8 +129,8 @@
         // Date and time check
         // Get the nearest "slot"
         var startTimestamp = self._roundTimestamp('down', moment().unix(), room.time_span);
-        if (self._selectedDay.dateObj.toDate() > new Date()) {
-          startTimestamp = self._roundTimestamp('up', self._selectedDay.dateObj.unix(), room.time_span);
+        if (selectedDate.toDate() > new Date()) {
+          startTimestamp = self._roundTimestamp('up', selectedDate.unix(), room.time_span);
         }
         room.nextAvailable = self._getNextAvailable(room, startTimestamp);
         if (room.nextAvailable === false) return;
@@ -154,6 +169,8 @@
         slots.push({from: time, to: room.available_to});
       }
 
+      console.log(moment(startTimestamp * 1000).toDate());
+
       // Go through each slot and set the "firstAvailable" variable
       firstAvailable = 0;
       _.forEach(slots, function (slot) {
@@ -188,17 +205,16 @@
       var days = [{
         date: date.format("MM/DD/YYYY"),
         label: "Today",
-        dateObj: date.clone()
+        dateObj: date.clone().toDate()
       }];
       for (var i = 1; i < 7; i++) {
-        date.add(i, "days");
+        date.add(1, "day");
         days.push({
           date: date.format("MM/DD/YYYY"),
-          label: date.format("dddd, MMMM d"),
-          dateObj: date.clone()
+          label: date.format("dddd, MMMM D"),
+          dateObj: date.clone().toDate()
         });
       }
-
       this._dayDropdown = days;
     },
     /**
@@ -261,21 +277,25 @@
       this._getSearchResults();
     },
     /**
+     * Called when the selected date has changed
+     * @private
+     */
+    _searchDateChanged: function () {
+      _.forEach(self._dayDropdown, function (value, key) {
+        if (value.date == e.detail.item.getAttribute('data-date')) {
+          self._selectedDay = value;
+          self._selectedDateIndex = key;
+        }
+      });
+      this._getSearchResults();
+    },
+    /**
      * Called when the date has been selected
      * @param e
      * @private
      */
     _selectDate: function (e) {
-      var self = this;
-
-      self._selectedDay = null; // Reset
-      _.forEach(self._dayDropdown, function (value) {
-        if (value.date == e.detail.item.getAttribute('data-date')) {
-          self._selectedDay = value;
-        }
-      });
-
-      this._getSearchResults();
+      this.searchDate = this._dayDropdown[this._selectedDateIndex].dateObj;
     },
     /**
      * Rounds a timestamp up or down

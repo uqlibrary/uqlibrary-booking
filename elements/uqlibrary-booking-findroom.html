@@ -121,7 +121,7 @@
         </div>
       </div>
 
-      <!-- Time -->
+      <!-- Date and Time -->
       <div class="input-container">
         <iron-icon icon="device:access-time"></iron-icon>
         <div class="content subhead">
@@ -130,7 +130,7 @@
           <!-- Date select -->
           <div id="date-select">
             <paper-dropdown-menu label="Day" on-iron-select="_selectDate">
-              <paper-menu class="dropdown-content" selected="0">
+              <paper-menu class="dropdown-content" selected="{{_selectedDateIndex}}">
                 <template is="dom-repeat" items="{{_dayDropdown}}">
                   <paper-item label="{{item.label}}" data-date$="{{item.date}}">
                     {{item.label}}
