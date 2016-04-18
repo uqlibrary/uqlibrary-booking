@@ -169,8 +169,6 @@
         slots.push({from: time, to: room.available_to});
       }
 
-      console.log(moment(startTimestamp * 1000).toDate());
-
       // Go through each slot and set the "firstAvailable" variable
       firstAvailable = 0;
       _.forEach(slots, function (slot) {

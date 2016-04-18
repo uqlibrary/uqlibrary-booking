@@ -36,6 +36,13 @@
         type: Array,
         value: [],
         notify: true
+      },
+			/**
+       * Holds the computed max booking length
+       */
+      _maxBookingLength: {
+        type: Number,
+        value: 0
       }
     },
     behaviors: [
@@ -55,6 +62,7 @@
      * @private
      */
     _searchDataChanged: function () {
+      this._maxBookingLength = (!this.selectedRoom ? 0 : this.selectedRoom.maxtime / this.selectedRoom.time_span);
       this._bookingTimeSlots = this._createTimeslots();
       this._maximumBookingDate = moment(this.searchDate).add(7, "day").toDate();
     },

@@ -22,6 +22,27 @@
     p.text-container {
       padding: 16px;
     }
+
+    .hint-box {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--border-color);
+      vertical-align: middle;
+      margin: 0 5px;
+    }
+
+    .hint-box.selected {
+      background-color: var(--accent-color);
+    }
+
+    .hint-box.available {
+      background-color: var(--secondary-color-light);
+    }
+
+    .hint-box.unavailable {
+      background-color: var(--secondary-color-dark);
+    }
   </style>
 
   <!-- Template -->
@@ -42,8 +63,21 @@
                              search-date="{{ searchDate }}"
                              max-booking-date="{{ _maximumBookingDate }}"
                              booking-time-slots = "{{ _bookingTimeSlots }}"
-                             max-booking-length="{{ selectedRoom.maxtime / selectedRoom.time_span }}">
+                             max-booking-length="[[ _maxBookingLength ]]">
     </uqlibrary-date-selector>
+
+    <!-- Summary -->
+    <p class="body1 text-container">
+      Maximum booking duration is [[selectedRoom.maxtime]] min, minimum booking duration is [[selectedRoom.time_span]] min
+    </p>
+
+    <!-- Legend -->
+    <p class="text-container body">
+      <span class="hint-box selected"></span> - your current selection
+      <span class="hint-box available"></span> - available time slot
+      <span class="hint-box unavailable"></span> - unavailable time slot
+    </p>
+
   </template>
 
   <!-- Location of the script -->
