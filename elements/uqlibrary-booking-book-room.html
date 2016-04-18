@@ -5,6 +5,11 @@
   <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
     :host {
       @apply(--uql-app-host);
+      @apply(--loayout-vertical);
+    }
+
+    .page {
+      @apply(--layout-flex);
     }
 
     .image-header {
@@ -47,36 +52,49 @@
 
   <!-- Template -->
   <template>
-    <!-- Header -->
-    <div class="image-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ selectedRoom.imageLarge }}')">
-      <div class="title-container">
-        <div class="title inverse">{{selectedRoom.title}}</div>
-        <div class="subhead inverse">{{_formatLocation(selectedRoom)}}</div>
+    <uqlibrary-api-facilities-booking id="createBookingRequest"
+                                      on-uqlibrary-api-facilities-booking-executed="{{ _createBookingComplete }}">
+    </uqlibrary-api-facilities-booking>
+
+    <paper-toast id="toast" text="[[_errorMessage]]"></paper-toast>
+
+    <div class="page">
+      <!-- Header -->
+      <div class="image-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ selectedRoom.imageLarge }}')">
+        <div class="title-container">
+          <div class="title inverse">{{selectedRoom.title}}</div>
+          <div class="subhead inverse">{{_formatLocation(selectedRoom)}}</div>
+        </div>
       </div>
+
+      <!-- Description -->
+      <p class="body1 text-container">[[ selectedRoom.notes ]]</p>
+
+      <!-- Date Selector -->
+      <uqlibrary-date-selector id="dateSelector"
+                               search-date="{{ searchDate }}"
+                               max-booking-date="{{ _maximumBookingDate }}"
+                               booking-time-slots = "{{ _bookingTimeSlots }}"
+                               max-booking-length="[[ _maxBookingLength ]]">
+      </uqlibrary-date-selector>
+
+      <!-- Summary -->
+      <p class="body1 text-container">
+        Maximum booking duration is [[selectedRoom.maxtime]] min, minimum booking duration is [[selectedRoom.time_span]] min
+      </p>
+
+      <!-- Legend -->
+      <p class="text-container body">
+        <span class="hint-box selected"></span> - your current selection
+        <span class="hint-box available"></span> - available time slot
+        <span class="hint-box unavailable"></span> - unavailable time slot
+      </p>
     </div>
 
-    <!-- Description -->
-    <p class="body1 text-container">[[ selectedRoom.notes ]]</p>
-
-    <!-- Date Selector -->
-    <uqlibrary-date-selector id="dateSelector"
-                             search-date="{{ searchDate }}"
-                             max-booking-date="{{ _maximumBookingDate }}"
-                             booking-time-slots = "{{ _bookingTimeSlots }}"
-                             max-booking-length="[[ _maxBookingLength ]]">
-    </uqlibrary-date-selector>
-
-    <!-- Summary -->
-    <p class="body1 text-container">
-      Maximum booking duration is [[selectedRoom.maxtime]] min, minimum booking duration is [[selectedRoom.time_span]] min
-    </p>
-
-    <!-- Legend -->
-    <p class="text-container body">
-      <span class="hint-box selected"></span> - your current selection
-      <span class="hint-box available"></span> - available time slot
-      <span class="hint-box unavailable"></span> - unavailable time slot
-    </p>
+    <!-- Bottom footer -->
+    <paper-toolbar class="uqlibrary-app-footer right">
+      <paper-button class="button-colored-accent" on-tap="_createRoomBooking">Save Booking</paper-button>ß
+    </paper-toolbar>
 
   </template>
 

@@ -48,9 +48,6 @@
     behaviors: [
       Polymer.NeonSharedElementAnimatableBehavior
     ],
-    ready: function () {
-      var self = this;
-    },
     /**
      * Called when this element receives focus
      */
@@ -135,6 +132,69 @@
       }
 
       return timeslots;
+    },
+		/**
+     * Creates a room booking
+     * @private
+     */
+    _createRoomBooking: function () {
+      // get currently selected elements
+      var selectedTimeslots = this._bookingTimeSlots.filter(function(item) { return item.selected; });
+      var validation = this._validateSelection(selectedTimeslots);
+
+      if (!validation.valid){
+        this.$.toast.text = validation.message;
+        this.$.toast.open();
+      } else {
+
+        var midnight = new Date(selectedTimeslots[0].startTime.getFullYear(), selectedTimeslots[0].startTime.getMonth(), selectedTimeslots[0].startTime.getDate(), 0, 0, 0);
+        var startTime = (selectedTimeslots[0].startTime - midnight) / (1000 * 60);
+        var endTime = (selectedTimeslots[selectedTimeslots.length-1].endTime - midnight) / (1000 * 60);
+
+        var newBooking = {
+          booking : {
+            machid: this.selectedRoom.id,
+            scheduleid: this.selectedRoom.scheduleid,
+            date: moment(selectedTimeslots[0].startTime).format("MM/DD/YYYY"),
+            starttime: startTime,
+            endtime: endTime
+          }
+        };
+
+        if (this.bookingDetails && this.bookingDetails.id) {
+          newBooking.booking.resid = this.bookingDetails.id;
+        }
+
+        this.$.createBookingRequest.post(newBooking);
+      }
+    },
+		/**
+     * Validates a given time slot selection
+     * @param selectedTimeslots
+     * @returns {{valid: boolean, message: string}}
+     * @private
+     */
+    _validateSelection : function(selectedTimeslots) {
+      var validation = {
+        valid : true,
+        message: ''
+      };
+
+      if (selectedTimeslots.length == 0) {
+        validation.valid = false;
+        validation.message = "Please, make a valid selection.";
+      } else if (selectedTimeslots.length > this.selectedRoom.maxtime / this.selectedRoom.time_span) {
+        validation.valid = false;
+        validation.message = "Current selection exceeds maximum booking duration. Please, make a valid selection.";
+      }
+      else if (!selectedTimeslots.every(function(element, index) {
+          return !(index < selectedTimeslots.length - 1 && element.endTime.valueOf() !== selectedTimeslots[index+1].startTime.valueOf());
+        })) {
+        validation.valid = false;
+        validation.message = "Current selection is not available. Please, make another selection.";
+      }
+
+      return validation;
     }
   })
 })();
