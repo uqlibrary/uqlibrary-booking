@@ -50,6 +50,13 @@
         type: Date,
         notify: true
       },
+      /**
+       * Search duration
+       */
+      _searchDuration: {
+        type: Number,
+        notify: true
+      },
 			/**
 			 * Holds the user account
 			 */

@@ -62,6 +62,15 @@
         font-size: 14px;
       }
 
+      paper-item.time-item {
+        width: 200px;
+        overflow-x: hidden;
+      }
+
+      #time-select .dropdown-content {
+        overflow-x: hidden;
+      }
+
       paper-slider {
         @apply(--layout-flex);
       }
@@ -142,22 +151,22 @@
 
           <!-- Time select -->
           <div id="time-select">
-            <paper-input id="time" readonly value="{{_selectedTime}}" on-down="_showTimePicker"></paper-input>
-
-            <!-- Time picker dialog -->
-            <paper-dialog id="dialog" modal class="paper-time-picker-dialog">
-              <paper-time-picker id="timePicker" time="{{_selectedTime}}"></paper-time-picker>
-              <div class="buttons">
-                <paper-button dialog-confirm>OK</paper-button>
-              </div>
-            </paper-dialog>
+            <paper-dropdown-menu label="Time" on-iron-select="_selectTime">
+              <paper-menu class="dropdown-content" selected="{{_selectedTimeIndex}}">
+                <template is="dom-repeat" items="{{_timeDropdown}}">
+                  <paper-item class="time-item" label="{{item.label}}">
+                    {{item.label}}
+                  </paper-item>
+                </template>
+              </paper-menu>
+            </paper-dropdown-menu>
           </div>
 
           <!-- Duration -->
           <div id="duration-select">
             <div>Duration</div>
-            <paper-slider aria-label="booking duration" flex id="timePeriod" pin snaps step="30" aria-valuetext="{{_selectedDuration}} minutes" min="30" max="120" immediateValue="{{_selectedDuration}}" value="{{_selectedDuration}}"></paper-slider>
-            <div>{{_selectedDuration}} minutes</div>
+            <paper-slider aria-label="booking duration" flex id="timePeriod" pin snaps step="30" aria-valuetext="{{searchDuration}} minutes" min="30" max="120" immediateValue="{{searchDuration}}" value="{{searchDuration}}"></paper-slider>
+            <div>{{searchDuration}} minutes</div>
           </div>
         </div>
       </div>

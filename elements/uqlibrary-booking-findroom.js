@@ -30,6 +30,14 @@
         observer: '_searchDateChanged'
       },
       /**
+       * Duration
+       */
+      searchDuration: {
+        type: Number,
+        notify: true,
+        observer: '_getSearchResults'
+      },
+      /**
        * Holds the structured room data
        */
       _roomData: {
@@ -44,12 +52,13 @@
       _selectedRoom: { type: Object, value: null },
       _selectedDay: { type: Object, value: null },
       _selectedTime: { type: String, observer: '_getSearchResults' },
-      _selectedDuration: { type: Number, observer: '_getSearchResults' },
       _selectedCapacity: { type: Number, observer: '_getSearchResults' },
       _buildingDropdown: { type: Array },
       _roomDropdown: { type: Array },
       _dayDropdown: {type: Array, value: [] },
-      _selectedDateIndex: { type: Number, value: 0 }
+      _timeDropdown: {type: Array, value: [] },
+      _selectedDateIndex: { type: Number, value: 0 },
+      _selectedTimeIndex: { type: Number, value: 0 }
     },
     behaviors: [
       Polymer.NeonSharedElementAnimatableBehavior
@@ -57,7 +66,7 @@
     ready: function () {
       // Select dates and times
       this._generateDays();
-      this._selectedTime = moment().format("H:mm a");
+      this._generateTimes();
     },
     /**
      * Called when this page is opened
@@ -81,7 +90,6 @@
         }
 
         // Add the building if required
-        // TODO: Normalize building name
         if (!campuses[room.campus].buildings[room.building]) {
           campuses[room.campus].buildings[room.building] = {
             id: room.building,
@@ -114,7 +122,7 @@
       if (this._dayDropdown.length == 0) return;
 
       var self = this;
-      var selectedDate = moment(self._dayDropdown[self._selectedDateIndex].dateObj);
+      var selectedDate = moment(this.searchDate);
       var roomsFound = [];
 
       _.forEach(this.roomList, function (room) {
@@ -135,7 +143,7 @@
         room.nextAvailable = self._getNextAvailable(room, startTimestamp);
         if (room.nextAvailable === false) return;
         var _time = moment.unix(room.nextAvailable);
-        room.nextAvailableTimeText = _time.format("h:mm a") + ' - ' + _time.add(self._selectedDuration, 'minutes').format("h:mm a") + ', ' + _time.format("DD/MM/YYYY");
+        room.nextAvailableTimeText = _time.format("h:mm a") + ' - ' + _time.add(self.searchDuration, 'minutes').format("h:mm a") + ', ' + _time.format("DD/MM/YYYY");
 
         // Add the room to the search results if we got this far
         roomsFound.push(room);
@@ -175,24 +183,17 @@
         if (firstAvailable !== 0) return;
 
         // Check end timestamp
-        var end = startTimestamp + self._selectedDuration * 60;
+        var end = startTimestamp + self.searchDuration * 60;
         if (slot.to < end) return;
 
         if (startTimestamp >= slot.from && end <= slot.to) {
           firstAvailable = startTimestamp;
-        } else if (end <= slot.to && slot.to >= (slot.from + self._selectedDuration * 60)) {
+        } else if (end <= slot.to && slot.to >= (slot.from + self.searchDuration * 60)) {
           firstAvailable = slot.from;
         }
       });
 
       return (firstAvailable == 0 ? false : firstAvailable);
-    },
-    /**
-     * Opens the uqlibrary-timepicker
-     * @private
-     */
-    _showTimePicker: function () {
-      this.$.dialog.toggle();
     },
     /**
      * Generates 7 days ahead
@@ -214,6 +215,29 @@
         });
       }
       this._dayDropdown = days;
+    },
+    /**
+     * Generates all times in the current day, in 30 minute blocks
+     * @private
+     */
+    _generateTimes: function () {
+      var timeStart = moment().startOf('day');
+      var times = [];
+      var selected = false;
+
+      for (var i = 0; i < 48; i++) {
+        if (!selected && timeStart.isAfter(moment())) selected = i;
+
+        times.push({
+          label: timeStart.format("hh:mm A"),
+          hours: timeStart.format("H"),
+          minutes: timeStart.format("m")
+        });
+        timeStart.add(30, "m");
+      }
+
+      this._timeDropdown = times;
+      this._selectedTimeIndex = selected;
     },
     /**
      * Called when a campus is selected
@@ -294,6 +318,16 @@
      */
     _selectDate: function (e) {
       this.searchDate = this._dayDropdown[this._selectedDateIndex].dateObj;
+    },
+    /**
+     * Called when a time has been selected
+     * @param e
+     * @private
+     */
+    _selectTime: function (e) {
+      this._selectedTime = this._timeDropdown[this._selectedTimeIndex];
+      this.searchDate.setHours(this._selectedTime.hours);
+      this.searchDate.setMinutes(this._selectedTime.minutes);
     },
     /**
      * Rounds a timestamp up or down

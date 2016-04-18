@@ -23,6 +23,14 @@
         notify: true
       },
       /**
+       * Set when the duration is changed
+       */
+      searchDuration: {
+        type: Number,
+        observer: '_searchDataChanged',
+        notify: true
+      },
+      /**
        * Changed whenever the searchDate is updated
        */
       _maximumBookingDate: {
@@ -62,6 +70,7 @@
       this._maxBookingLength = (!this.selectedRoom ? 0 : this.selectedRoom.maxtime / this.selectedRoom.time_span);
       this._bookingTimeSlots = this._createTimeslots();
       this._maximumBookingDate = moment(this.searchDate).add(7, "day").toDate();
+      this._selectTimeSlots();
     },
     /**
      * Formats the room location
@@ -84,8 +93,6 @@
      * @private
      */
     _createTimeslots : function() {
-      var that = this;
-
       var openingHours = moment(this.selectedRoom.available_from, "X");
       var closingHours = moment(this.selectedRoom.available_to, "X");
       var workingTimeslots = (closingHours - openingHours) / this.selectedRoom.time_span / 60 / 1000;
@@ -122,16 +129,48 @@
           }
         });
 
-        timeslots.push(
-            {
-              startTime: timeslotStartTime,
-              endTime: timeslotEndTime,
-              selected: false,
-              selectable: selectable
-            });
+        timeslots.push({
+          startTime: timeslotStartTime,
+          endTime: timeslotEndTime,
+          selected: false,
+          selectable: selectable
+        });
       }
 
       return timeslots;
+    },
+    /**
+     * Selects time slots
+     * @private
+     */
+    _selectTimeSlots : function() {
+      //for booking editing, only set time on the date of the booking
+      if (this.bookingDetails && this.bookingDetails.startDate) {
+        //search duration is always the existing booking duration
+        this.searchDuration = (this.bookingDetails.endDate.getTime() - this.bookingDetails.startDate.getTime()) / (60 * 1000);
+
+        var bookingStartDateTest = new Date (this.bookingDetails.startDate);
+        var searchDateTest = new Date(this.searchDate);
+
+        if (searchDateTest.setHours(0,0,0,0) !== bookingStartDateTest.setHours(0,0,0,0))
+          return;
+      }
+
+      var duration = parseInt(Math.min(this.selectedRoom.maxtime, this.searchDuration) / this.selectedRoom.time_span);
+      var remainingDuration = duration;
+      var searchDate = this.searchDate;
+
+      this._bookingTimeSlots.every(function(element, index) {
+        if (element.selectable
+            && ((searchDate >= element.startTime && searchDate < element.endTime) || remainingDuration < duration)) {
+          element.selected = true;
+          remainingDuration--;
+        }
+
+        // cannot break selection if there's an unavailable time slot
+        return remainingDuration === duration
+            || (remainingDuration > 0 && remainingDuration < duration && element.selectable);
+      });
     },
 		/**
      * Creates a room booking

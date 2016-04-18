@@ -59,13 +59,25 @@ Element providing the library main booking component
             </section>
             <!-- Find Room Filter -->
             <section id="findroom">
-              <uqlibrary-booking-findroom room-list="{{_roomList}}" search-results="{{_searchResults}}" search-date="{{_searchDate}}"></uqlibrary-booking-findroom>
+              <uqlibrary-booking-findroom
+                  room-list="{{_roomList}}"
+                  search-results="{{_searchResults}}"
+                  search-date="{{_searchDate}}"
+                  search-duration="{{_searchDuration}}">
+              </uqlibrary-booking-findroom>
             </section>
             <section id="selectroom">
-              <uqlibrary-booking-select-room search-results="{{_searchResults}}" selected-room="{{_selectedRoom}}"></uqlibrary-booking-select-room>
+              <uqlibrary-booking-select-room
+                  search-results="{{_searchResults}}"
+                  selected-room="{{_selectedRoom}}">
+              </uqlibrary-booking-select-room>
             </section>
             <section id="bookroom">
-              <uqlibrary-booking-book-room selected-room="{{_selectedRoom}}" search-date="{{_searchDate}}"></uqlibrary-booking-book-room>
+              <uqlibrary-booking-book-room
+                  selected-room="{{_selectedRoom}}"
+                  search-date="{{_searchDate}}"
+                  search-duration="{{_searchDuration}}">
+              </uqlibrary-booking-book-room>
             </section>
           </neon-animated-pages>
         </div>
