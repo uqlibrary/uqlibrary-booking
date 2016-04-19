@@ -86,8 +86,9 @@
           Where do you need to book a resource?
           <!-- Campus select -->
           <div id="campus-select">
+            {{_selectedCampusIndex}}
             <paper-dropdown-menu label="Campus" on-iron-select="_selectCampus" required="true">
-              <paper-menu class="dropdown-content">
+              <paper-menu class="dropdown-content" selected="{{_selectedCampusIndex}}">
                 <template is="dom-repeat" items="{{_roomData}}">
                   <paper-item label="{{item.title}}" data-id$="{{item.id}}">
                     {{item.title}}
@@ -141,7 +142,7 @@
             <paper-dropdown-menu label="Day" on-iron-select="_selectDate">
               <paper-menu class="dropdown-content" selected="{{_selectedDateIndex}}">
                 <template is="dom-repeat" items="{{_dayDropdown}}">
-                  <paper-item label="{{item.label}}" data-date$="{{item.date}}">
+                  <paper-item label="{{item.label}}">
                     {{item.label}}
                   </paper-item>
                 </template>

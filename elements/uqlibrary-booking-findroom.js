@@ -58,12 +58,13 @@
       _dayDropdown: {type: Array, value: [] },
       _timeDropdown: {type: Array, value: [] },
       _selectedDateIndex: { type: Number, value: 0 },
-      _selectedTimeIndex: { type: Number, value: 0 }
+      _selectedTimeIndex: { type: Number, value: 0 },
+      _selectedCampusIndex: { type: Number, value: 0}
     },
     behaviors: [
       Polymer.NeonSharedElementAnimatableBehavior
     ],
-    ready: function () {
+    attached: function () {
       // Select dates and times
       this._generateDays();
       this._generateTimes();
@@ -113,13 +114,31 @@
         campus.buildings = _.values(campus.buildings);
         return campus;
       }));
+
+      this._reselectItems();
+      this._getSearchResults();
+    },
+    /**
+     * Re-selects all items after a data reload
+     * @private
+     */
+    _reselectItems: function () {
+      var self = this;
+
+      if (this._selectedCampus) {
+        _.forEach(this._roomData, function (value, key) {
+          if (value.id === self._selectedCampus.id) {
+            self._selectedCampusIndex = key;
+          }
+        });
+      }
     },
     /**
      * Filters the room list based on the input of the user
      * @private
      */
     _getSearchResults: function () {
-      if (this._dayDropdown.length == 0) return;
+      if (this._dayDropdown && this._dayDropdown.length == 0) return;
 
       var self = this;
       var selectedDate = moment(this.searchDate);
@@ -303,8 +322,9 @@
      * @private
      */
     _searchDateChanged: function () {
+      var self = this;
       _.forEach(self._dayDropdown, function (value, key) {
-        if (value.date == e.detail.item.getAttribute('data-date')) {
+        if (moment(value.dateObj).format("YYYY-MM-DD") == moment(self.searchDate).format("YYYY-MM-DD")) {
           self._selectedDay = value;
           self._selectedDateIndex = key;
         }

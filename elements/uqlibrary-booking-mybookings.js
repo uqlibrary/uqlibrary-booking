@@ -11,6 +11,14 @@
       events: {
         type: Array,
         value: []
+      },
+      /**
+       * Whether the data from my bookings should refreshed
+       */
+      useCached: {
+        type: Boolean,
+        value: false,
+        notify: true
       }
     },
     behaviors: [
@@ -20,52 +28,64 @@
       var self = this;
 
       this.$.bookings.addEventListener("uqlibrary-api-account-bookings-loaded", function (e) {
-        var bookings = Array.isArray(e.detail) ? e.detail : [];
-        if (bookings.length > 0) {
-          var events = [];
+        self._processData(e);
+      });
+    },
+    /**
+     * Processes data
+     * @param e
+     * @private
+     */
+    _processData: function (e) {
+      var self = this;
 
-          for (var i = bookings.length-1; i >= 0; i--) {
+      var bookings = Array.isArray(e.detail) ? e.detail : [];
+      if (bookings.length > 0) {
+        var events = [];
 
-            var title = [];
-            var subtitle = [];
-            var b = bookings[i];
+        for (var i = bookings.length-1; i >= 0; i--) {
 
-            if (b.resource.title)
-              title.push(b.resource.title);
-            if (b.resource.location)
-              title.push(b.resource.location);
-            if (self.rooms && self.rooms[b.resource.machid]) {
-              subtitle.push(self.rooms[b.resource.machid].building);
-              subtitle.push(self.rooms[b.resource.machid].campus);
-            }
+          var title = [];
+          var subtitle = [];
+          var b = bookings[i];
 
-            events.push({
-              id: b.id,
-              startDate: new Date(b.from * 1000),
-              endDate: new Date(b.to * 1000),
-              title: title.join(", "),
-              subtitle: subtitle.join(", "),
-              scheduleid: b.resource.id,
-              machid: b.resource.machid
-            });
+          if (b.resource.title)
+            title.push(b.resource.title);
+          if (b.resource.location)
+            title.push(b.resource.location);
+          if (self.rooms && self.rooms[b.resource.machid]) {
+            subtitle.push(self.rooms[b.resource.machid].building);
+            subtitle.push(self.rooms[b.resource.machid].campus);
+          }
 
-            //display up to first 20 bookings
-            if (events.length == 20 || i == 0) {
-              self.events = events;
-              break;
-            }
+          events.push({
+            id: b.id,
+            startDate: new Date(b.from * 1000),
+            endDate: new Date(b.to * 1000),
+            title: title.join(", "),
+            subtitle: subtitle.join(", "),
+            scheduleid: b.resource.id,
+            machid: b.resource.machid
+          });
+
+          //display up to first 20 bookings
+          if (events.length == 20 || i == 0) {
+            self.events = events;
+            break;
           }
         }
-        else {
-          self.events = [];
-        }
+      }
+      else {
+        self.events = [];
+      }
 
-        self.bookingsUseCache = true;
-      });
-
-      this.$.bookings.get();
+      self.useCached = true;
     },
+    /**
+     * Called when the My Bookings page is activated
+     */
     activate: function () {
+      this.$.bookings.get({nocache : !this.useCached} );
       this.fire('uqlibrary-booking-change-title', 'My bookings');
     },
     /**

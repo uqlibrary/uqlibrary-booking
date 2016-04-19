@@ -52,8 +52,9 @@
 
   <!-- Template -->
   <template>
-    <uqlibrary-api-facilities-booking id="createBookingRequest"
-                                      on-uqlibrary-api-facilities-booking-executed="{{ _createBookingComplete }}">
+    <uqlibrary-api-facilities-booking
+        id="createBookingRequest"
+        on-uqlibrary-api-facilities-booking-executed="_createBookingComplete">
     </uqlibrary-api-facilities-booking>
 
     <paper-toast id="toast" text="[[_errorMessage]]"></paper-toast>

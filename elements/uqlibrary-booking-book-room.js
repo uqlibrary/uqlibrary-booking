@@ -51,6 +51,14 @@
       _maxBookingLength: {
         type: Number,
         value: 0
+      },
+      /**
+       * Holds the currently selected date in the uqlibrary-date-selector
+       */
+      _selectedDate: {
+        type: Date,
+        notify: true,
+        observer: '_selectedDateChanged'
       }
     },
     behaviors: [
@@ -69,7 +77,7 @@
     _searchDataChanged: function () {
       this._maxBookingLength = (!this.selectedRoom ? 0 : this.selectedRoom.maxtime / this.selectedRoom.time_span);
       this._bookingTimeSlots = this._createTimeslots();
-      this._maximumBookingDate = moment(this.searchDate).add(7, "day").toDate();
+      this._maximumBookingDate = moment().add(7, "day").toDate();
       this._selectTimeSlots();
     },
     /**
@@ -158,7 +166,7 @@
 
       var duration = parseInt(Math.min(this.selectedRoom.maxtime, this.searchDuration) / this.selectedRoom.time_span);
       var remainingDuration = duration;
-      var searchDate = this.searchDate;
+      var searchDate = this._selectedDate;
 
       this._bookingTimeSlots.every(function(element, index) {
         if (element.selectable
@@ -205,6 +213,21 @@
         }
 
         this.$.createBookingRequest.post(newBooking);
+      }
+    },
+    /**
+     * Called when a booking was created by the API
+     * @param e
+     * @private
+     */
+    _createBookingComplete: function (e) {
+      if (e.detail.response) {
+        //display error returned by the server
+        this.$.toast.text = "Error creating a booking: " + e.detail.responseText;
+        this.$.toast.open();
+      } else {
+        //if booking is successful, fire event to indicate booking is done and move on to other page
+        this.fire('uqlibrary-booking-booking-created');
       }
     },
 		/**

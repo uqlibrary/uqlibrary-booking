@@ -48,7 +48,8 @@
        */
       _searchDate: {
         type: Date,
-        notify: true
+        notify: true,
+        observer: '_searchDateChanged'
       },
       /**
        * Search duration
@@ -80,6 +81,14 @@
         type: Object,
         value: {},
         notify: true
+      },
+      /**
+       * Whether the Bookings api should fetch cached values
+       */
+      _bookingsUseCache: {
+        type: Boolean,
+        value: false,
+        notify: true
       }
 		},
     listeners: {
@@ -92,8 +101,47 @@
       this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function (e) {
         self._facilitiesUpdated(e);
       });
-      this.$.facilities.get();
+
+      this.$.account.addEventListener('uqlibrary-api-account-loaded', function (e) {
+        self._accountLoaded(e);
+      });
+
+      this.$.account.get();
 		},
+    /**
+     * Called when the account was loaded
+     * @param e
+     * @private
+     */
+    _accountLoaded: function (e) {
+      var that = this;
+
+      if (e.detail.hasSession) {
+        that._account = e.detail;
+        var _args = {id: that._account.id, date: moment(this.searchDate).format('DD-MM-YYYY'), nocache: true };
+        // FBS has special user group(LoansDeskStaff) for ptypes 17 and 18, so we must allow all rooms for these groups
+        if(that._account.type != 17 && that._account.type != 18) {
+          _args.ptype = that._account.type;
+        }
+        that.$.facilities.get(_args);
+      } else {
+        that.$.account.login(window.location.href);
+      }
+    },
+    /**
+     * Called when the search date changes
+     * @private
+     */
+    _searchDateChanged: function (oldValue, newValue) {
+      if (!newValue || oldValue.toString() == newValue.toString()) { return; }
+
+      this.$.facilities.get({
+        date: moment(this._searchDate).format('DD-MM-YYYY'),
+        "id" : this._account.id,
+        "ptype" : this._account.type,
+        nocache : true
+      });
+    },
     /**
      * Changes the header title when an event is received from a child page
      * @param e
@@ -101,6 +149,27 @@
      */
     _changeTitle: function (e) {
       this.headerTitle = e.detail;
+    },
+    /**
+     * Called when a booking is created
+     * @param e
+     * @private
+     */
+    _bookingCreated: function(e) {
+      this.$.ga.addEvent('bookingCreated');
+
+      // add new booking details to events on timeline
+      this._bookingsUseCache = false;
+
+      // transition to timeline
+      this._transitionToPage(0);
+
+      //Show toast that event was deleted after the transition is done
+      var that = this;
+      setTimeout(function(){
+        that.$.toast.text = "Your booking was saved.";
+        that.$.toast.open();
+      }, 2000, that);
     },
     /**
      * Transitions to the selected page
@@ -155,8 +224,8 @@
               id: room.id,
               scheduleid: room.scheduleid,
               title: room.title,
-              campus: room.campus,
-              building: room.building,
+              campus: self._fixCampusName(room),
+              building: self._fixBuildingName(room),
               location: room.location,
               capacity: room.capacity,
               maxtime: room.maxtime,
@@ -177,6 +246,48 @@
       });
 
       this._roomList = roomList;
+
+      // Set selectedRoom again
+      if (this._selectedRoom && this._selectedRoom.id) {
+        this._selectedRoom = this._roomList[this._selectedRoom.id];
+      }
+    },
+    /**
+     * Fixes bad data from the API
+     */
+    _fixCampusName: function (room) {
+      var campusReplacements = {
+        "ST LUCIA": "St Lucia"
+      };
+
+      if (campusReplacements[room.campus]) {
+        return campusReplacements[room.campus];
+      } else {
+        return room.campus;
+      }
+    },
+    /**
+     * Fixes bad data from the API
+     */
+    _fixBuildingName: function (room) {
+      var buildingReplacements = {
+        "94": "Biological Sciences Library (#94)",
+        "Hawken Building 50": "Hawken Building (#50)",
+        "Hawken Bldg (#50)": "Hawken Building (#50)",
+        "2, Duhig Tower": "Duhig Bldg (#2)",
+        "Duhig North (12)": "Duhig North Bldg (#12)",
+        "Duhig North 12": "Duhig North Bldg (#12)",
+        "Duhig North": "Duhig North Bldg (#12)",
+        "Duhig North12": "Duhig North Bldg (#12)",
+        "Duhig Bldg (#12)": "Duhig North Bldg (#12)",
+        "": "Duhig North Bldg (#12)"
+      };
+
+      if (buildingReplacements[room.building]) {
+        return buildingReplacements[room.building];
+      } else {
+        return room.building;
+      }
     },
 		/**
 		 * Toggles the drawer panel of the main UQL app

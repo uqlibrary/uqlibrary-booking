@@ -1,0 +1,33 @@
+{
+  "name": "uqlibrary-booking",
+  "version": "1.0.0",
+  "description": "Web component to display bookings",
+  "main": "index.html",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "wct"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uqlibrary/uqlibrary-booking.git"
+  },
+  "keywords": [
+    "courses",
+    "uq",
+    "library"
+  ],
+  "author": "j.wisgerhof@library.uq.edu.au",
+  "bugs": {
+    "url": "https://github.com/uqlibrary/uqlibrary-booking/issues"
+  },
+  "devDependencies": {
+    "web-component-tester": "~4.2.2",
+    "gulp": "~3.9.1",
+    "browser-sync": "~2.12.3"
+  },
+  "dependencies": {
+    "bower": "~1.7.7"
+  }
+}

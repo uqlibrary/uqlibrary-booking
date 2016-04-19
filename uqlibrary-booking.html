@@ -559,20 +559,29 @@
             that.showInfoToast(that.$.myBookingsInfoToast, "Your booking was deleted.");
           }, 2000, that);
         },
-
-        bookingCreated: function(e, data, sender) {
+        /**
+         * Called when a booking is created
+         * @param e
+         * @param data
+         * @private
+         */
+        _bookingCreated: function(e, data) {
           this.$.ga.addEvent('bookingCreated');
 
+          console.log(e);
+          console.log(data);
+
           // add new booking details to events on timeline
-          this.bookingsUseCache = false;
+          //this.bookingsUseCache = false;
 
           // transition to timeline
-          this.doTransition(e, data, {id: 'bookingForm'});
+          //this.doTransition(e, data, {id: 'bookingForm'});
 
           //Show toast that event was deleted after the transition is done
           var that = this;
           setTimeout(function(){
-            that.showInfoToast(that.$.myBookingsInfoToast, "Your booking was saved.");
+            that.$.toast.text = "Your booking was saved.";
+            that.$.toast.open();
           }, 2000, that);
         },
 

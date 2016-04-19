@@ -33,9 +33,12 @@ Element providing the library main booking component
 
   <!-- Template -->
   <template>
+    <uqlibrary-api-account id="account"></uqlibrary-api-account>
     <uqlibrary-api-contacts id="contactsApi"></uqlibrary-api-contacts>
-    <uqlibrary-ga id="ga" appName="contacts"></uqlibrary-ga>
+    <uqlibrary-ga id="ga" appName="FBS"></uqlibrary-ga>
     <uqlibrary-api-facilities-availability id="facilities"></uqlibrary-api-facilities-availability>
+
+    <paper-toast id="toast" text="[[_errorMessage]]"></paper-toast>
 
     <div class="fit layout vertical">
       <paper-header-panel class="flex">
@@ -55,7 +58,7 @@ Element providing the library main booking component
           <neon-animated-pages id="pages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
             <!-- My Bookings view -->
             <section id="mybookings">
-              <uqlibrary-booking-mybookings></uqlibrary-booking-mybookings>
+              <uqlibrary-booking-mybookings use-cached="{{_bookingsUseCache}}"></uqlibrary-booking-mybookings>
             </section>
             <!-- Find Room Filter -->
             <section id="findroom">
@@ -76,7 +79,8 @@ Element providing the library main booking component
               <uqlibrary-booking-book-room
                   selected-room="{{_selectedRoom}}"
                   search-date="{{_searchDate}}"
-                  search-duration="{{_searchDuration}}">
+                  search-duration="{{_searchDuration}}"
+                  on-uqlibrary-booking-booking-created="_bookingCreated">
               </uqlibrary-booking-book-room>
             </section>
           </neon-animated-pages>
