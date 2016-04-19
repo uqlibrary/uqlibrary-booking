@@ -146,6 +146,7 @@
       _.forEach(e.detail, function (facility) {
         _.forEach(facility.resources, function (resource) {
           _.forEach(resource.facilities, function (room) {
+            if (room.status == "u") { return; }
             // Add room to general Rooms array
             var buildingImageName = room.building.replace(/\s/g, '_').replace(/\W/g, '').toLowerCase();
             var campusImageName = room.campus.replace(/\s/g, '_').replace(/\W/g, '').toLowerCase();
