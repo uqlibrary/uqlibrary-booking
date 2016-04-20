@@ -51,14 +51,6 @@
       _maxBookingLength: {
         type: Number,
         value: 0
-      },
-      /**
-       * Holds the currently selected date in the uqlibrary-date-selector
-       */
-      _selectedDate: {
-        type: Date,
-        notify: true,
-        observer: '_selectedDateChanged'
       }
     },
     behaviors: [
@@ -166,7 +158,7 @@
 
       var duration = parseInt(Math.min(this.selectedRoom.maxtime, this.searchDuration) / this.selectedRoom.time_span);
       var remainingDuration = duration;
-      var searchDate = this._selectedDate;
+      var searchDate = this.searchDate;
 
       this._bookingTimeSlots.every(function(element, index) {
         if (element.selectable

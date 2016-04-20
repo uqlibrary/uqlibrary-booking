@@ -51,7 +51,7 @@
       _selectedBuilding: { type: Object, value: null },
       _selectedRoom: { type: Object, value: null },
       _selectedDay: { type: Object, value: null },
-      _selectedTime: { type: String, observer: '_getSearchResults' },
+      _selectedTime: { type: String },
       _selectedCapacity: { type: Number, observer: '_getSearchResults' },
       _buildingDropdown: { type: Array },
       _roomDropdown: { type: Array },
@@ -369,7 +369,13 @@
      * @private
      */
     _selectDate: function (e) {
-      this.searchDate = this._dayDropdown[this._selectedDateIndex].dateObj;
+      var date = this._dayDropdown[this._selectedDateIndex].dateObj;
+      if (this._selectedTime) {
+        date.setHours(this._selectedTime.hours);
+        date.setMinutes(this._selectedTime.minutes);
+        date.setSeconds(0);
+      }
+      this.searchDate = date;
     },
     /**
      * Called when a time has been selected
@@ -378,8 +384,13 @@
      */
     _selectTime: function (e) {
       this._selectedTime = this._timeDropdown[this._selectedTimeIndex];
-      this.searchDate.setHours(this._selectedTime.hours);
-      this.searchDate.setMinutes(this._selectedTime.minutes);
+
+      // We need to force the date to change to make sure other pages pick up on the change
+      var date = moment(this.searchDate).clone().toDate();
+      date.setHours(this._selectedTime.hours);
+      date.setMinutes(this._selectedTime.minutes);
+      date.setSeconds(0);
+      this.searchDate = date;
     },
     /**
      * Rounds a timestamp up or down

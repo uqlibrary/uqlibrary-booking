@@ -135,7 +135,7 @@
      * @private
      */
     _loadFacilities: function (noCache) {
-      if (!this._account) return;
+      if (!this._account.hasSession) return;
 
       var args = {
         date: moment(this._searchDate).format("DD-MM-YYYY"),
@@ -143,8 +143,8 @@
       };
 
       if (this._account.type != 17 && this._account.type != 18) {
-        args.id = that._account.id;
-        args.ptype = that._account.type;
+        args.id = this._account.id;
+        args.ptype = this._account.type;
       }
 
       this.$.facilities.get(args);
