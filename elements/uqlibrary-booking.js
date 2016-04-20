@@ -83,6 +83,14 @@
         notify: true
       },
       /**
+       * Holds the selected booking, if any
+       */
+      _selectedBooking: {
+        type: Object,
+        value: null,
+        notify: true
+      },
+      /**
        * Whether the Bookings api should fetch cached values
        */
       _bookingsUseCache: {
@@ -199,7 +207,11 @@
      * Moves back one page
      */
     _goBack: function () {
-      this._transitionToPage(this._selectedPage - 1);
+      var newPage = this._selectedPage - 1;
+      if (this._selectedPage == 4) {
+        newPage = 0;
+      }
+      this._transitionToPage(newPage);
     },
     /**
      * Called whenever a iron-select event is fired on neon-animated-pages

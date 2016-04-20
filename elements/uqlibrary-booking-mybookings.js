@@ -13,6 +13,13 @@
         value: []
       },
       /**
+       * Holds the selected booking
+       */
+      selectedBooking: {
+        type: Object,
+        notify: true
+      },
+      /**
        * Whether the data from my bookings should refreshed
        */
       useCached: {
@@ -94,7 +101,8 @@
      * @private
      */
     _bookingSelected: function (e) {
-      alert("You clicked on item with ID: " + e.detail.id);
+      this.selectedBooking = e.detail;
+      this.fire('uqlibrary-booking-navigate', 4);
     },
     /**
      * Fires of an event to navigate to the "Add Booking" page

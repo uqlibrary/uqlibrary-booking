@@ -58,7 +58,10 @@ Element providing the library main booking component
           <neon-animated-pages id="pages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
             <!-- My Bookings view -->
             <section id="mybookings">
-              <uqlibrary-booking-mybookings use-cached="{{_bookingsUseCache}}"></uqlibrary-booking-mybookings>
+              <uqlibrary-booking-mybookings
+                  selected-booking="{{_selectedBooking}}"
+                  use-cached="{{_bookingsUseCache}}">
+              </uqlibrary-booking-mybookings>
             </section>
             <!-- Find Room Filter -->
             <section id="findroom">
@@ -82,6 +85,14 @@ Element providing the library main booking component
                   search-duration="{{_searchDuration}}"
                   on-uqlibrary-booking-booking-created="_bookingCreated">
               </uqlibrary-booking-book-room>
+            </section>
+            <section id="displaybooking">
+              <uqlibrary-booking-display
+                  booking-details="{{_selectedBooking}}"
+                  room-list="[[_roomList]]"
+                  on-booking-deleted="{{bookingDeleted}}"
+                  on-edit-booking-started="{{bookingEditingStarted}}">
+              </uqlibrary-booking-display>
             </section>
           </neon-animated-pages>
         </div>
