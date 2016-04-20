@@ -86,11 +86,10 @@
           Where do you need to book a resource?
           <!-- Campus select -->
           <div id="campus-select">
-            {{_selectedCampusIndex}}
-            <paper-dropdown-menu label="Campus" on-iron-select="_selectCampus" required="true">
+            <paper-dropdown-menu label="Campus" required="true">
               <paper-menu class="dropdown-content" selected="{{_selectedCampusIndex}}">
                 <template is="dom-repeat" items="{{_roomData}}">
-                  <paper-item label="{{item.title}}" data-id$="{{item.id}}">
+                  <paper-item label="{{item.title}}">
                     {{item.title}}
                   </paper-item>
                 </template>
@@ -101,11 +100,11 @@
           <!-- Building select -->
           <div id="building-select">
             <template is="dom-if" if="{{_buildingDropdown}}">
-              <paper-dropdown-menu label="Building" on-iron-select="_selectBuilding">
-                <paper-menu class="dropdown-content" selected="0">
+              <paper-dropdown-menu label="Building">
+                <paper-menu class="dropdown-content" selected="{{_selectedBuildingIndex}}">
                   <paper-item label="Any Building" data-id$="0">Any building</paper-item>
                   <template is="dom-repeat" items="{{_buildingDropdown}}">
-                    <paper-item label="{{item.title}}" data-id$="{{item.id}}">
+                    <paper-item label="{{item.title}}">
                       {{item.title}}
                     </paper-item>
                   </template>
@@ -116,8 +115,8 @@
 
           <!-- Room select -->
           <div id="room-select">
-            <template is="dom-if" if="{{_selectedBuilding}}">
-              <paper-dropdown-menu label="Room" on-iron-select="_selectRoom">
+            <template is="dom-if" if="{{_selectedBuildingIndex}}">
+              <paper-dropdown-menu label="Room">
                 <paper-menu class="dropdown-content">
                   <template is="dom-repeat" items="{{_roomDropdown}}">
                     <paper-item label="{{item.title}}" data-id$="{{item.id}}">

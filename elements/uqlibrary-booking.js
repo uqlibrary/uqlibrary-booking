@@ -114,33 +114,41 @@
      * @private
      */
     _accountLoaded: function (e) {
-      var that = this;
-
       if (e.detail.hasSession) {
-        that._account = e.detail;
-        var _args = {id: that._account.id, date: moment(this.searchDate).format('DD-MM-YYYY'), nocache: true };
-        // FBS has special user group(LoansDeskStaff) for ptypes 17 and 18, so we must allow all rooms for these groups
-        if(that._account.type != 17 && that._account.type != 18) {
-          _args.ptype = that._account.type;
-        }
-        that.$.facilities.get(_args);
+        this._account = e.detail;
+        this._loadFacilities(true);
       } else {
-        that.$.account.login(window.location.href);
+        this.$.account.login(window.location.href);
       }
+    },
+    /**
+     * Loads facilities from the API
+     * @param noCache
+     * @private
+     */
+    _loadFacilities: function (noCache) {
+      if (!this._account) return;
+
+      var args = {
+        date: moment(this._searchDate).format("DD-MM-YYYY"),
+        nocache: noCache
+      };
+
+      if (this._account.type != 17 && this._account.type != 18) {
+        args.id = that._account.id;
+        args.ptype = that._account.type;
+      }
+
+      this.$.facilities.get(args);
     },
     /**
      * Called when the search date changes
      * @private
      */
     _searchDateChanged: function (oldValue, newValue) {
-      if (!newValue || oldValue.toString() == newValue.toString()) { return; }
+      if (!newValue || oldValue.toString() == newValue.toString() || !this._account) { return; }
 
-      this.$.facilities.get({
-        date: moment(this._searchDate).format('DD-MM-YYYY'),
-        "id" : this._account.id,
-        "ptype" : this._account.type,
-        nocache : true
-      });
+      this._loadFacilities(true);
     },
     /**
      * Changes the header title when an event is received from a child page

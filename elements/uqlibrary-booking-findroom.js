@@ -59,7 +59,32 @@
       _timeDropdown: {type: Array, value: [] },
       _selectedDateIndex: { type: Number, value: 0 },
       _selectedTimeIndex: { type: Number, value: 0 },
-      _selectedCampusIndex: { type: Number, value: 0}
+      /**
+       * Holds the selected campus index
+       */
+      _selectedCampusIndex: {
+        type: Number,
+        notify: true,
+        observer: '_selectCampus'
+      },
+      /**
+       * Holds the selected building index
+       */
+      _selectedBuildingIndex: {
+        type: Number,
+        value: 0,
+        notify: true,
+        observer: '_selectBuilding'
+      },
+      /**
+       * Holds the selected room index
+       */
+      _selectedRoomIndex: {
+        type: Number,
+        value: 0,
+        notify: true,
+        observer: '_selectRoom'
+      }
     },
     behaviors: [
       Polymer.NeonSharedElementAnimatableBehavior
@@ -79,8 +104,10 @@
      * Takes the full room list and parses it for use in the Filter Form
      * @private
      */
-    _buildRoomStructure: function () {
+    _buildRoomStructure: function (newVal, oldval) {
       var campuses = {};
+      var self = this;
+
       _.forEach(this.roomList, function (room) {
         if (!campuses[room.campus]) {
           campuses[room.campus] = {
@@ -115,23 +142,22 @@
         return campus;
       }));
 
-      this._reselectItems();
-      this._getSearchResults();
-    },
-    /**
-     * Re-selects all items after a data reload
-     * @private
-     */
-    _reselectItems: function () {
-      var self = this;
+      // Re-select the campus. Everything else will flow from there
+      setTimeout(function () {
+        if (self._selectedCampus) {
+          var newCampusIndex = -1;
+          // Find the same campus in the new results
+          _.forEach(self._roomData, function (value, key) {
+            if (value.id == self._selectedCampus.id) {
+              newCampusIndex = key;
+            }
+          });
 
-      if (this._selectedCampus) {
-        _.forEach(this._roomData, function (value, key) {
-          if (value.id === self._selectedCampus.id) {
-            self._selectedCampusIndex = key;
-          }
-        });
-      }
+          if (newCampusIndex > -1) self._selectedCampusIndex = newCampusIndex;
+        }
+      }, 10);
+
+      this._getSearchResults();
     },
     /**
      * Filters the room list based on the input of the user
@@ -260,60 +286,66 @@
     },
     /**
      * Called when a campus is selected
+     * @param newVal
      * @private
      */
-    _selectCampus: function (e) {
+    _selectCampus: function (newVal) {
+      if (!newVal) return;
+
       var self = this;
-
-      _.forEach(this._roomData, function (value) {
-        if (value.id == e.detail.item.getAttribute('data-id')) {
-          self._selectedCampus = value;
-        }
-      });
-
+      var oldCampus = this._selectedCampus;
+      this._selectedCampus = this._roomData[newVal];
       this._buildingDropdown = this._selectedCampus.buildings;
-      this._selectedBuilding = 0;
-      this._selectedRoom = 0;
+
+      if (oldCampus && this._selectedBuildingIndex != 0) {
+        // Check if the same building exists in the new campus
+        var newBuildingIndex = 0;
+        _.forEach(this._buildingDropdown, function (val, key) {
+          if (val.id == self._selectedBuilding.id) newBuildingIndex = key;
+        });
+        this._selectedBuildingIndex = newBuildingIndex;
+      } else {
+        this._selectedBuildingIndex = 0;
+      }
 
       this._getSearchResults();
     },
     /**
      * Called when a building is selected
+     * @param newVal
      * @private
      */
-    _selectBuilding: function (e) {
+    _selectBuilding: function (newVal) {
+      if (!newVal) return;
+
       var self = this;
+      var oldBuilding = this._selectedBuilding;
+      this._selectedBuilding = this._selectedCampus.buildings[newVal];
+      this._roomDropdown = this._selectedBuilding.rooms;
 
-      self._selectedBuilding = null; // Reset
-      _.forEach(self._selectedCampus.buildings, function (value, key) {
-        if (value.id == e.detail.item.getAttribute('data-id')) {
-          self._selectedBuilding = value;
-        }
-      });
-
-      this._selectedRoom = null;
-      if (self._selectedBuilding !== null) {
-        this._roomDropdown = self._selectedBuilding.rooms;
+      if (oldBuilding && this._selectedRoomIndex != 0) {
+        var newRoomIndex = 0;
+        _.forEach(this._roomDropdown, function (val, key) {
+          if (val.id == self._selectedRoom.id) newRoomIndex = key;
+        });
+        this._selectedRoomIndex = newRoomIndex;
       } else {
-        this._roomDropdown = [];
+        this._selectedRoomIndex = 0;
       }
 
       this._getSearchResults();
     },
     /**
      * Called when a room is selected
-     * @param e
+     * @param newVal
      * @private
      */
-    _selectRoom: function (e) {
-      var self = this;
-
-      self._selectedRoom = null;
-      _.forEach(self._selectedBuilding.rooms, function (value, key) {
-        if (value.id == e.detail.item.getAttribute('data-id')) {
-          self._selectedRoom = value;
-        }
-      });
+    _selectRoom: function (newVal) {
+      if (newVal == 0) {
+        this._selectedRoom = null;
+      } else {
+        this._selectedRoom = this._selectedBuilding.rooms[newVal];
+      }
 
       this._getSearchResults();
     },
