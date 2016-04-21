@@ -74,6 +74,12 @@
       paper-slider {
         @apply(--layout-flex);
       }
+
+      @media all and (max-width: 700px) {
+        .input-container iron-icon {
+          display: none;
+        }
+      }
     </style>
 
     <paper-toast id="toast" text="[[_errorMessage]]"></paper-toast>
