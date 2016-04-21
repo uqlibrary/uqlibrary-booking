@@ -92,11 +92,11 @@
           Where do you need to book a resource?
           <!-- Campus select -->
           <div id="campus-select">
-            <paper-dropdown-menu label="Campus" required="true">
+            <paper-dropdown-menu label="Campus" required="true" aria-label="Select a campus">
               <paper-menu class="dropdown-content" selected="{{_selectedCampusIndex}}">
-                <template is="dom-repeat" items="{{_roomData}}">
-                  <paper-item label="{{item.title}}">
-                    {{item.title}}
+                <template is="dom-repeat" items="[[_roomData]]">
+                  <paper-item label="[[item.title]]" aria-label="[[item.title]]" role="option">
+                    [[item.title]]
                   </paper-item>
                 </template>
               </paper-menu>
@@ -105,13 +105,13 @@
 
           <!-- Building select -->
           <div id="building-select">
-            <template is="dom-if" if="{{_buildingDropdown}}">
-              <paper-dropdown-menu label="Building">
+            <template is="dom-if" if="[[_buildingDropdown]]">
+              <paper-dropdown-menu label="Building" aria-label="Select a building">
                 <paper-menu class="dropdown-content" selected="{{_selectedBuildingIndex}}">
-                  <paper-item label="Any Building" data-id$="0">Any building</paper-item>
+                  <paper-item label="Any Building" aria-label="Any building" role="option">Any building</paper-item>
                   <template is="dom-repeat" items="{{_buildingDropdown}}">
-                    <paper-item label="{{item.title}}">
-                      {{item.title}}
+                    <paper-item label="[[item.title]]" aria-label="[[item.title]]" role="option">
+                      [[item.title]]
                     </paper-item>
                   </template>
                 </paper-menu>
@@ -122,11 +122,11 @@
           <!-- Room select -->
           <div id="room-select">
             <template is="dom-if" if="{{_selectedBuildingIndex}}">
-              <paper-dropdown-menu label="Room">
+              <paper-dropdown-menu label="Room" aria-label="Select a room">
                 <paper-menu class="dropdown-content">
-                  <template is="dom-repeat" items="{{_roomDropdown}}">
-                    <paper-item label="{{item.title}}" data-id$="{{item.id}}">
-                      {{item.title}}
+                  <template is="dom-repeat" items="[[_roomDropdown]]">
+                    <paper-item label="[[item.title]]" aria-label="[[item.title]]" role="option">
+                      [[item.title]]
                     </paper-item>
                   </template>
                 </paper-menu>
@@ -144,11 +144,11 @@
 
           <!-- Date select -->
           <div id="date-select">
-            <paper-dropdown-menu label="Day" on-iron-select="_selectDate">
+            <paper-dropdown-menu label="Day" on-iron-select="_selectDate" aria-label="Select a date">
               <paper-menu class="dropdown-content" selected="{{_selectedDateIndex}}">
-                <template is="dom-repeat" items="{{_dayDropdown}}">
-                  <paper-item label="{{item.label}}">
-                    {{item.label}}
+                <template is="dom-repeat" items="[[_dayDropdown]]">
+                  <paper-item label="[[item.label]]" aria-label="[[item.label]]" role="option">
+                    [[item.label]]
                   </paper-item>
                 </template>
               </paper-menu>
@@ -157,11 +157,11 @@
 
           <!-- Time select -->
           <div id="time-select">
-            <paper-dropdown-menu label="Time" on-iron-select="_selectTime">
+            <paper-dropdown-menu label="Time" on-iron-select="_selectTime" aria-label="Select a start time">
               <paper-menu class="dropdown-content" selected="{{_selectedTimeIndex}}">
-                <template is="dom-repeat" items="{{_timeDropdown}}">
-                  <paper-item class="time-item" label="{{item.label}}">
-                    {{item.label}}
+                <template is="dom-repeat" items="[[_timeDropdown]]">
+                  <paper-item class="time-item" label="[[item.label]]" aria-label="[[item.label]]">
+                    [[item.label]]
                   </paper-item>
                 </template>
               </paper-menu>
@@ -171,7 +171,17 @@
           <!-- Duration -->
           <div id="duration-select">
             <div>Duration</div>
-            <paper-slider aria-label="booking duration" flex id="timePeriod" pin snaps step="30" aria-valuetext="{{_searchDuration}} minutes" min="30" max="120" immediateValue="{{_searchDuration}}" value="{{_searchDuration}}"></paper-slider>
+            <paper-slider
+                aria-label="booking duration"
+                pin
+                snaps
+                step="30"
+                aria-valuetext="[[_searchDuration]] minutes"
+                min="30"
+                max="120"
+                immediateValue="{{_searchDuration}}"
+                value="{{_searchDuration}}">
+            </paper-slider>
             <div>{{_searchDuration}} minutes</div>
           </div>
         </div>
@@ -185,7 +195,17 @@
 
           <div id="capacity-select">
             <div>Capacity</div>
-            <paper-slider aria-label="room capacity" editable pin snaps step="1" aria-valuetext="{{_selectedCapacity}} people" min="1" max="25" value="{{_selectedCapacity}}"></paper-slider>
+            <paper-slider
+                aria-label="room capacity"
+                editable
+                pin
+                snaps
+                step="1"
+                aria-valuetext="{{_selectedCapacity}} people"
+                min="1"
+                max="25"
+                value="{{_selectedCapacity}}">
+            </paper-slider>
           </div>
         </div>
       </div>
@@ -194,8 +214,8 @@
     <!-- Bottom footer -->
     <paper-toolbar class="uqlibrary-app-footer">
       <div class="footer-content">
-        <div>{{_searchResults.length}} room(s) found</div>
-        <paper-button class="button-colored-accent" on-tap="_search">Search</paper-button>
+        <div>[[_searchResults.length]] room(s) found</div>
+        <paper-button class="button-colored-accent" on-tap="_search" aria-label="Search">Search</paper-button>
       </div>
     </paper-toolbar>
   </template>

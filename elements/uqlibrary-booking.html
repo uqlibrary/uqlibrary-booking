@@ -30,7 +30,9 @@ Element providing the library main booking component
       --paper-icon-button-hover: {
         background-color: rgba(255, 255, 255, 0.2);
         border-radius: 50%;
-      }
+      };
+
+      --paper-icon-button-ink-color: #FFF;
     }
 
     .back-arrow {
@@ -56,7 +58,13 @@ Element providing the library main booking component
             <paper-icon-button icon="menu" on-tap="_toggleDrawerPanel" paper-drawer-toggle></paper-icon-button>
           </template>
           <template is="dom-if" if="{{_selectedPage}}">
-            <paper-icon-button class="back-arrow" icon="icons:arrow-back" on-tap="_goBack"></paper-icon-button>
+            <paper-icon-button
+                class="back-arrow"
+                icon="icons:arrow-back"
+                on-tap="_goBack"
+                role="button"
+                aria-label="Go back one page">
+            </paper-icon-button>
           </template>
           <div class="title uqlibrary-app-title">[[headerTitle]]</div>
         </paper-toolbar>
