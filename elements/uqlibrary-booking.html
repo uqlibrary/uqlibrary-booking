@@ -56,42 +56,41 @@ Element providing the library main booking component
         <!-- Content -->
         <div class="fit">
           <neon-animated-pages id="pages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
-            <!-- My Bookings view -->
-            <section id="mybookings">
+            <section>
               <uqlibrary-booking-mybookings
-                  selected-booking="{{_selectedBooking}}"
+                  id="mybookings"
+                  on-add-booking="_addBooking"
+                  on-select-booking="_selectBooking"
                   use-cached="{{_bookingsUseCache}}">
               </uqlibrary-booking-mybookings>
             </section>
-            <!-- Find Room Filter -->
-            <section id="findroom">
+            <section>
               <uqlibrary-booking-findroom
+                  id="findroom"
                   room-list="{{_roomList}}"
-                  search-results="{{_searchResults}}"
-                  search-date="{{_searchDate}}"
-                  search-duration="{{_searchDuration}}">
+                  on-search="_searchRoom">
               </uqlibrary-booking-findroom>
             </section>
-            <section id="selectroom">
+            <section>
               <uqlibrary-booking-select-room
+                  id="selectroom"
                   search-results="{{_searchResults}}"
-                  selected-room="{{_selectedRoom}}">
+                  on-book-room="_bookRoom">
               </uqlibrary-booking-select-room>
             </section>
-            <section id="bookroom">
+            <section>
               <uqlibrary-booking-book-room
-                  selected-room="{{_selectedRoom}}"
-                  search-date="{{_searchDate}}"
-                  search-duration="{{_searchDuration}}"
+                  id="bookroom"
                   on-uqlibrary-booking-booking-created="_bookingCreated">
               </uqlibrary-booking-book-room>
             </section>
-            <section id="displaybooking">
+            <section>
               <uqlibrary-booking-display
+                  id="displaybooking"
                   booking-details="{{_selectedBooking}}"
                   room-list="[[_roomList]]"
-                  on-booking-deleted="{{bookingDeleted}}"
-                  on-edit-booking-started="{{bookingEditingStarted}}">
+                  on-booking-deleted="_bookingDeleted"
+                  on-edit-booking-started="_bookingEditingStarted">
               </uqlibrary-booking-display>
             </section>
           </neon-animated-pages>

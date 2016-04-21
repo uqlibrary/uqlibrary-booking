@@ -165,8 +165,8 @@
           <!-- Duration -->
           <div id="duration-select">
             <div>Duration</div>
-            <paper-slider aria-label="booking duration" flex id="timePeriod" pin snaps step="30" aria-valuetext="{{searchDuration}} minutes" min="30" max="120" immediateValue="{{searchDuration}}" value="{{searchDuration}}"></paper-slider>
-            <div>{{searchDuration}} minutes</div>
+            <paper-slider aria-label="booking duration" flex id="timePeriod" pin snaps step="30" aria-valuetext="{{_searchDuration}} minutes" min="30" max="120" immediateValue="{{_searchDuration}}" value="{{_searchDuration}}"></paper-slider>
+            <div>{{_searchDuration}} minutes</div>
           </div>
         </div>
       </div>
@@ -188,7 +188,7 @@
     <!-- Bottom footer -->
     <paper-toolbar class="uqlibrary-app-footer">
       <div class="footer-content">
-        <div>{{searchResults.length}} room(s) found</div>
+        <div>{{_searchResults.length}} room(s) found</div>
         <paper-button class="button-colored-accent" on-tap="_search">Search</paper-button>
       </div>
     </paper-toolbar>

@@ -16,7 +16,7 @@
       /**
        * Search data shared across booking applications
        */
-      searchResults: {
+      _searchResults: {
         type: Object,
         value: {},
         notify: true
@@ -24,7 +24,7 @@
       /**
        * Holds the currently selected date
        */
-      searchDate: {
+      _searchDate: {
         type: Date,
         notify: true,
         observer: '_searchDateChanged'
@@ -32,7 +32,7 @@
       /**
        * Duration
        */
-      searchDuration: {
+      _searchDuration: {
         type: Number,
         notify: true,
         observer: '_getSearchResults'
@@ -97,8 +97,14 @@
     /**
      * Called when this page is opened
      */
-    activate: function () {
+    initialize: function () {
       this.fire('uqlibrary-booking-change-title', 'Find a room');
+    },
+    /**
+     * Called when the back button is pressed
+     */
+    back: function () {
+      this.fire('uqlibrary-booking-navigate', 0);
     },
     /**
      * Takes the full room list and parses it for use in the Filter Form
@@ -167,7 +173,7 @@
       if (this._dayDropdown && this._dayDropdown.length == 0) return;
 
       var self = this;
-      var selectedDate = moment(this.searchDate);
+      var selectedDate = moment(this._searchDate);
       var roomsFound = [];
 
       _.forEach(this.roomList, function (room) {
@@ -188,13 +194,13 @@
         room.nextAvailable = self._getNextAvailable(room, startTimestamp);
         if (room.nextAvailable === false) return;
         var _time = moment.unix(room.nextAvailable);
-        room.nextAvailableTimeText = _time.format("h:mm a") + ' - ' + _time.add(self.searchDuration, 'minutes').format("h:mm a") + ', ' + _time.format("DD/MM/YYYY");
+        room.nextAvailableTimeText = _time.format("h:mm a") + ' - ' + _time.add(self._searchDuration, 'minutes').format("h:mm a") + ', ' + _time.format("DD/MM/YYYY");
 
         // Add the room to the search results if we got this far
         roomsFound.push(room);
       });
 
-      this.searchResults = _.sortBy(roomsFound, 'nextAvailable');
+      this._searchResults = _.sortBy(roomsFound, 'nextAvailable');
     },
     /**
      * Gets the next available time for a room
@@ -228,12 +234,12 @@
         if (firstAvailable !== 0) return;
 
         // Check end timestamp
-        var end = startTimestamp + self.searchDuration * 60;
+        var end = startTimestamp + self._searchDuration * 60;
         if (slot.to < end) return;
 
         if (startTimestamp >= slot.from && end <= slot.to) {
           firstAvailable = startTimestamp;
-        } else if (end <= slot.to && slot.to >= (slot.from + self.searchDuration * 60)) {
+        } else if (end <= slot.to && slot.to >= (slot.from + self._searchDuration * 60)) {
           firstAvailable = slot.from;
         }
       });
@@ -355,12 +361,18 @@
      */
     _searchDateChanged: function () {
       var self = this;
+      
       _.forEach(self._dayDropdown, function (value, key) {
-        if (moment(value.dateObj).format("YYYY-MM-DD") == moment(self.searchDate).format("YYYY-MM-DD")) {
+        if (moment(value.dateObj).format("YYYY-MM-DD") == moment(self._searchDate).format("YYYY-MM-DD")) {
           self._selectedDay = value;
           self._selectedDateIndex = key;
         }
       });
+      this.fire('uqlibrary-booking-update-rooms', {
+        nocache: false,
+        date: self._selectedDay.dateObj
+      });
+
       this._getSearchResults();
     },
     /**
@@ -375,7 +387,7 @@
         date.setMinutes(this._selectedTime.minutes);
         date.setSeconds(0);
       }
-      this.searchDate = date;
+      this._searchDate = date;
     },
     /**
      * Called when a time has been selected
@@ -386,11 +398,11 @@
       this._selectedTime = this._timeDropdown[this._selectedTimeIndex];
 
       // We need to force the date to change to make sure other pages pick up on the change
-      var date = moment(this.searchDate).clone().toDate();
+      var date = moment(this._searchDate).clone().toDate();
       date.setHours(this._selectedTime.hours);
       date.setMinutes(this._selectedTime.minutes);
       date.setSeconds(0);
-      this.searchDate = date;
+      this._searchDate = date;
     },
     /**
      * Rounds a timestamp up or down
@@ -419,11 +431,17 @@
       if (this._selectedCampus === null) {
         this.$.toast.text = "No campus selected";
         this.$.toast.open();
-      } else if (this.searchResults.length == 0) {
+      } else if (this._searchResults.length == 0) {
         this.$.toast.text = "No rooms found";
         this.$.toast.open();
       } else {
-        this.fire("uqlibrary-booking-navigate", 2);
+        this.fire("search", {
+          searchData: {
+            date: this._searchDate,
+            duration: this._searchDuration
+          },
+          searchResults: this._searchResults
+        });
       }
     }
   });

@@ -61,19 +61,19 @@
 
     <div class="page">
       <!-- Header -->
-      <div class="image-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ selectedRoom.imageLarge }}')">
+      <div class="image-header" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ _selectedRoom.imageLarge }}')">
         <div class="title-container">
-          <div class="title inverse">{{selectedRoom.title}}</div>
-          <div class="subhead inverse">{{_formatLocation(selectedRoom)}}</div>
+          <div class="title inverse">{{_selectedRoom.title}}</div>
+          <div class="subhead inverse">{{_formatLocation(_selectedRoom)}}</div>
         </div>
       </div>
 
       <!-- Description -->
-      <p class="body1 text-container">[[ selectedRoom.notes ]]</p>
+      <p class="body1 text-container">[[ _selectedRoom.notes ]]</p>
 
       <!-- Date Selector -->
       <uqlibrary-date-selector id="dateSelector"
-                               search-date="{{ searchDate }}"
+                               search-date="{{ _searchDate }}"
                                max-booking-date="{{ _maximumBookingDate }}"
                                booking-time-slots = "{{ _bookingTimeSlots }}"
                                max-booking-length="[[ _maxBookingLength ]]">
@@ -81,7 +81,7 @@
 
       <!-- Summary -->
       <p class="body1 text-container">
-        Maximum booking duration is [[selectedRoom.maxtime]] min, minimum booking duration is [[selectedRoom.time_span]] min
+        Maximum booking duration is [[_selectedRoom.maxtime]] min, minimum booking duration is [[_selectedRoom.time_span]] min
       </p>
 
       <!-- Legend -->

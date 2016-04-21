@@ -12,9 +12,9 @@
         type: Object
       },
       /**
-       * The `bookingDetails` attribute object represents booking details, eg resid, start date, end date, etc
+       * The `_bookingDetails` attribute object represents booking details, eg resid, start date, end date, etc
        */
-      bookingDetails: {
+      _bookingDetails: {
         type: Object,
         notify: true,
         value: {}
@@ -59,15 +59,23 @@
       this.addEventListener('delete-booking', this.toggleDeleteDialog);
     },
     /**
-     * Called when the My bookings page is opened
+     * Called when this element is opened
+     * @param bookingDetails
      */
-    activate: function () {
-      this._roomDetails = this.roomList[this.bookingDetails.machid];
+    initialize: function (bookingDetails) {
+      this._bookingDetails = bookingDetails;
+      this._roomDetails = this.roomList[this._bookingDetails.machid];
       this._location = this._formatLocation();
       this._bookingTime = this._formatBookingTime();
       this._bookingDate = this._formatBookingDate();
       this._url = this._roomDetails.url + '}';
       this._backgroundUrl = 'background-image: url(\'https://app.library.uq.edu.au/assets/images/uq-buildings/' + this._roomDetails.imageLarge + '\')';
+    },
+    /**
+     * Called when the back button is clicked
+     */
+    back: function () {
+      this.fire('uqlibrary-booking-navigate', 0);
     },
     /**
      * Formats the location string
@@ -89,8 +97,8 @@
      * @private
      */
     _formatBookingTime: function () {
-      var startFormat = moment(this.bookingDetails.startDate).format('a') == moment(this.bookingDetails.endDate).format('a') ? 'h:mm' : 'h:mm a';
-      return moment(this.bookingDetails.startDate).format(startFormat) + ' - ' + moment(this.bookingDetails.endDate).format('h:mm a');
+      var startFormat = moment(this._bookingDetails.startDate).format('a') == moment(this._bookingDetails.endDate).format('a') ? 'h:mm' : 'h:mm a';
+      return moment(this._bookingDetails.startDate).format(startFormat) + ' - ' + moment(this._bookingDetails.endDate).format('h:mm a');
     },
     /**
      * Formats the booking date string
@@ -98,7 +106,7 @@
      * @private
      */
     _formatBookingDate: function () {
-      return moment(this.bookingDetails.startDate).format('dddd MMMM D, YYYY');
+      return moment(this._bookingDetails.startDate).format('dddd MMMM D, YYYY');
     },
     /**
      * Opens / Closes the information dialog
@@ -122,8 +130,8 @@
         this.fire('booking-deleted');
       }
     },
-    editBooking: function () {
-      this.fire('edit-booking-started', this.bookingDetails);
+    _editBooking: function () {
+      this.fire('edit-booking-started', this._bookingDetails);
     },
     /**
      * Deletes the given booking
@@ -131,12 +139,11 @@
      */
     _deleteBooking: function () {
       this._toggleDeleteDialog();
-      var deleteBooking = {
+      this.$.deleteBookingRequest.delete({
         booking: {
-          resid: this.bookingDetails.id
+          resid: this._bookingDetails.id
         }
-      };
-      this.$.deleteBookingRequest.delete(deleteBooking);
+      });
     }
   });
 }());

@@ -35,29 +35,6 @@
         value: {},
         notify: true
       },
-      /**
-       * Holds the latest search results
-       */
-      _searchResults: {
-        type: Array,
-        value: [],
-        notify: true
-      },
-      /**
-       * Holds the date currently being searched for
-       */
-      _searchDate: {
-        type: Date,
-        notify: true,
-        observer: '_searchDateChanged'
-      },
-      /**
-       * Search duration
-       */
-      _searchDuration: {
-        type: Number,
-        notify: true
-      },
 			/**
 			 * Holds the user account
 			 */
@@ -75,33 +52,16 @@
 				value: 0
 			},
       /**
-       * Holds the currently selected room
+       * Holds a reference to the current page object
        */
-      _selectedRoom: {
-        type: Object,
-        value: {},
-        notify: true
-      },
-      /**
-       * Holds the selected booking, if any
-       */
-      _selectedBooking: {
-        type: Object,
-        value: null,
-        notify: true
-      },
-      /**
-       * Whether the Bookings api should fetch cached values
-       */
-      _bookingsUseCache: {
-        type: Boolean,
-        value: false,
-        notify: true
+      _pageObject: {
+        type: Object
       }
 		},
     listeners: {
       'uqlibrary-booking-navigate': '_doTransition',
-      'uqlibrary-booking-change-title': '_changeTitle'
+      'uqlibrary-booking-change-title': '_changeTitle',
+      'uqlibrary-booking-update-rooms': '_fetchRooms'
     },
 		ready: function () {
       var self = this;
@@ -124,21 +84,29 @@
     _accountLoaded: function (e) {
       if (e.detail.hasSession) {
         this._account = e.detail;
-        this._loadFacilities(true);
+        this._loadFacilities(true, new Date());
       } else {
         this.$.account.login(window.location.href);
       }
+    },
+    /**
+     * Called whenever a child page wants a room list
+     * @param e
+     * @private
+     */
+    _fetchRooms: function (e) {
+      this._loadFacilities(e.detail.nocache, e.detail.date);
     },
     /**
      * Loads facilities from the API
      * @param noCache
      * @private
      */
-    _loadFacilities: function (noCache) {
+    _loadFacilities: function (noCache, date) {
       if (!this._account.hasSession) return;
 
       var args = {
-        date: moment(this._searchDate).format("DD-MM-YYYY"),
+        date: moment(date).format("DD-MM-YYYY"),
         nocache: noCache
       };
 
@@ -148,15 +116,6 @@
       }
 
       this.$.facilities.get(args);
-    },
-    /**
-     * Called when the search date changes
-     * @private
-     */
-    _searchDateChanged: function (oldValue, newValue) {
-      if (!newValue || oldValue.toString() == newValue.toString() || !this._account) { return; }
-
-      this._loadFacilities(true);
     },
     /**
      * Changes the header title when an event is received from a child page
@@ -207,11 +166,7 @@
      * Moves back one page
      */
     _goBack: function () {
-      var newPage = this._selectedPage - 1;
-      if (this._selectedPage == 4) {
-        newPage = 0;
-      }
-      this._transitionToPage(newPage);
+      this._pageObject.back();
     },
     /**
      * Called whenever a iron-select event is fired on neon-animated-pages
@@ -220,8 +175,64 @@
      */
     _pageChanged: function (e) {
       if (e.detail.item.localName == "section") {
-        e.detail.item.children[0].activate();
+        this._pageObject = e.detail.item.firstElementChild;
+
+        // My bookings is a special case
+        if (this._selectedPage == 0) {
+          this.$.mybookings.initialize();
+        }
       }
+    },
+    /**
+     * Starts the Edit booking process
+     * @param e
+     * @private
+     */
+    _bookingEditingStarted: function (e) {
+      this.$.bookroom.initialize(e.detail.startDate, this._roomList[e.detail.machid], null, e.detail);
+      this._transitionToPage(3);
+    },
+    /**
+     * Called when we should start booking a room (new booking)
+     * @param e
+     * @private
+     */
+    _bookRoom: function (e) {
+      this.$.bookroom.initialize(e.detail.searchData.date, e.detail.room, e.detail.searchData.duration, null);
+      this._transitionToPage(3);
+    },
+    /**
+     * Called when the "add booking process" is started. Shows the search page
+     * @param e
+     * @private
+     */
+    _addBooking: function (e) {
+      this.$.findroom.initialize(this._roomList);
+      this._transitionToPage(1);
+    },
+    /**
+     * Called when an existing booking is selected
+     * @param e
+     * @private
+     */
+    _selectBooking: function (e) {
+      this.headerTitle = "Booking details";
+
+      // Fetch room data for this date
+      this._loadFacilities(false, e.detail.startDate);
+      this.$.displaybooking.initialize(e.detail);
+      this._transitionToPage(4);
+    },
+    /**
+     * Called when the user presses "Search" on the Find Room page
+     * @param e
+     * @private
+     */
+    _searchRoom: function (e) {
+      // searchData
+      // searchResults
+      this.$.selectroom.initialize(e.detail.searchData, e.detail.searchResults);
+      this._transitionToPage(2);
     },
     /**
      * Called when the facilities are returned from the API. Creates a master "room list"
@@ -266,11 +277,6 @@
       });
 
       this._roomList = roomList;
-
-      // Set selectedRoom again
-      if (this._selectedRoom && this._selectedRoom.id) {
-        this._selectedRoom = this._roomList[this._selectedRoom.id];
-      }
     },
     /**
      * Fixes bad data from the API

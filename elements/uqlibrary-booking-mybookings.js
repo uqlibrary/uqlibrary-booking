@@ -91,7 +91,7 @@
     /**
      * Called when the My Bookings page is activated
      */
-    activate: function () {
+    initialize: function () {
       this.$.bookings.get({nocache : !this.useCached} );
       this.fire('uqlibrary-booking-change-title', 'My bookings');
     },
@@ -101,8 +101,7 @@
      * @private
      */
     _bookingSelected: function (e) {
-      this.selectedBooking = e.detail;
-      this.fire('uqlibrary-booking-navigate', 4);
+      this.fire('select-booking', e.detail);
     },
     /**
      * Fires of an event to navigate to the "Add Booking" page
@@ -110,7 +109,7 @@
      * @private
      */
     _addBooking: function (e) {
-      this.fire("uqlibrary-booking-navigate", 1);
+      this.fire("add-booking");
     }
   })
 })();
