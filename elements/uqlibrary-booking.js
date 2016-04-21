@@ -133,18 +133,16 @@
     _bookingCreated: function(e) {
       this.$.ga.addEvent('bookingCreated');
 
-      // add new booking details to events on timeline
-      this._bookingsUseCache = false;
-
       // transition to timeline
+      this.$.mybookings.initialize(true);
       this._transitionToPage(0);
 
-      //Show toast that event was deleted after the transition is done
-      var that = this;
+      //Show toast that event was created after the transition is done
+      var self = this;
       setTimeout(function(){
-        that.$.toast.text = "Your booking was saved.";
-        that.$.toast.open();
-      }, 2000, that);
+        self.$.toast.text = "Your booking was saved.";
+        self.$.toast.open();
+      }, 500, self);
     },
     /**
      * Transitions to the selected page
@@ -191,6 +189,18 @@
     _bookingEditingStarted: function (e) {
       this.$.bookroom.initialize(e.detail.startDate, this._roomList[e.detail.machid], null, e.detail);
       this._transitionToPage(3);
+    },
+    /**
+     * 
+     * @param e
+     * @private
+     */
+    _bookingDeleted: function (e) {
+      this.$.mybookings.initialize(true);
+      this._transitionToPage(0);
+
+      this.$.toast.text = "Your booking was deleted.";
+      this.$.toast.open();
     },
     /**
      * Called when we should start booking a room (new booking)

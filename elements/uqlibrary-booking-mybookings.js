@@ -18,14 +18,6 @@
       selectedBooking: {
         type: Object,
         notify: true
-      },
-      /**
-       * Whether the data from my bookings should refreshed
-       */
-      useCached: {
-        type: Boolean,
-        value: false,
-        notify: true
       }
     },
     behaviors: [
@@ -85,14 +77,14 @@
       else {
         self.events = [];
       }
-
-      self.useCached = true;
     },
     /**
      * Called when the My Bookings page is activated
      */
-    initialize: function () {
-      this.$.bookings.get({nocache : !this.useCached} );
+    initialize: function (noCache) {
+      if (noCache == null) noCache = false;
+
+      this.$.bookings.get({ nocache : noCache });
       this.fire('uqlibrary-booking-change-title', 'My bookings');
     },
     /**

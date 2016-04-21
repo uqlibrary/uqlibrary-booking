@@ -2,9 +2,6 @@
   Polymer({
     is: 'uqlibrary-booking-display',
     properties: {
-      authTokenValue: {
-        notify: true
-      },
       /**
        * Full room list given by uqlibrary-booking
        */
@@ -123,10 +120,9 @@
     _deleteBookingComplete: function (event) {
       if (event.detail.response) {
         //display error returned by the server
-        this.$.toast.message = 'Error deleting this booking: ' + event.detail.responseText;
+        this.$.toast.text = 'Error deleting this booking: ' + event.detail.responseText;
         this.$.toast.show();
       } else {
-        // if booking delete is successful, fire event to indicate booking delete is done and move on to other page
         this.fire('booking-deleted');
       }
     },
