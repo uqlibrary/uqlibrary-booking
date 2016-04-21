@@ -12,16 +12,13 @@
       border-bottom: 1px solid var(--border-color);
     }
 
-    paper-item .container {
-      @apply(--layout-horizontal);
-    }
-
     paper-item .content div {
       line-height: 1.4em;
     }
 
     .content {
       padding-left: 20px;
+      min-width: 0; /* Flex Ellipsis needs this */
       @apply(--layout-flex);
     }
 
@@ -53,25 +50,22 @@
     <template is="dom-repeat" items="[[_searchResults]]">
       <paper-item on-tap="_selectRoom">
         <paper-ripple></paper-ripple>
-        <div class="container">
-          <div class="avatar" style="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{item.image}}');">&nbsp;</div>
-          <div class="content">
-            <!-- Room Name -->
-            <div class="body1 room-name">[[item.title]]</div>
-            <!-- Location details -->
-            <div class="location caption">
-              <template is="dom-if" if="{{item.location}}">
-                <span>[[ item.location ]],</span>
-              </template>
-              <span>[[ item.building ]],</span>
-              <span>[[ item.campus ]]</span>
+        <div class="avatar" style$="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{item.image}}');">&nbsp;</div>
+        <div class="content">
+          <!-- Room Name -->
+          <div class="body1 room-name">[[item.title]]</div>
+          <!-- Location details -->
+          <div class="location caption">
+            <template is="dom-if" if="{{item.location}}">
+              <span>[[ item.location ]],</span>
+            </template>
+            <span>[[ item.building ]],</span>
+            <span>[[ item.campus ]]</span>
 
-            </div>
-            <!-- Time details -->
-            <div class="time caption">
-              Available time: [[ item.nextAvailableTimeText ]]
-            </div>
-
+          </div>
+          <!-- Time details -->
+          <div class="time caption">
+            Available time: [[ item.nextAvailableTimeText ]]
           </div>
         </div>
       </paper-item>
