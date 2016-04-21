@@ -92,11 +92,11 @@
       <paper-button on-tap="_toggleDeleteDialog" class="button-colored-secondary">Delete this booking</paper-button>
     </div>
 
-    <paper-dialog with-backdrop heading="Delete Booking" id="infoDialog" role="dialog">
+    <paper-dialog with-backdrop heading="Delete Booking" id="infoDialog" role="dialog" aria-label="Are you sure you want to delete this booking?">
       <p class="body2">Are you sure you want to delete this booking?</p>
       <div class="dialog-buttons">
-        <paper-button on-tap="_toggleDeleteDialog" class="button-colored-secondary">Cancel</paper-button>
-        <paper-button autofocus on-tap="_deleteBooking" class="button-colored-theme">Delete</paper-button>
+        <paper-button on-tap="_toggleDeleteDialog" class="button-colored-secondary" aria-label="Back to booking details">Cancel</paper-button>
+        <paper-button on-tap="_deleteBooking" class="button-colored-theme" aria-label="Delete booking">Delete</paper-button>
       </div>
     </paper-dialog>
 
