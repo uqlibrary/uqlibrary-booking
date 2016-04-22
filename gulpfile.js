@@ -20,7 +20,15 @@ gulp.task("serve", [], function() {
     open: "external",
     startPath: "/uqlibrary-booking/demo/index-live.html",
     host: "dev-app.library.uq.edu.au",
-    port: 9999,
+    port: 5000,
+    snippetOptions: {
+      rule: {
+        match: '<span id="browser-sync-binding"></span>',
+        fn: function(snippet) {
+          return snippet;
+        }
+      }
+    },
     server: {
       baseDir: ["../"]
     },
