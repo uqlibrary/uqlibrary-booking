@@ -88,15 +88,15 @@
     </div>
 
     <div class="details-row">
-      <paper-button on-tap="_editBooking" class="button-colored-accent edit-button">Edit this booking</paper-button>
-      <paper-button on-tap="_toggleDeleteDialog" class="button-colored-secondary">Delete this booking</paper-button>
+      <paper-button id="edit" on-tap="_editBooking" class="button-colored-accent edit-button">Edit this booking</paper-button>
+      <paper-button id="delete" on-tap="_toggleDeleteDialog" class="button-colored-secondary">Delete this booking</paper-button>
     </div>
 
     <paper-dialog with-backdrop heading="Delete Booking" id="infoDialog" role="dialog" aria-label="Are you sure you want to delete this booking?">
       <p class="body2">Are you sure you want to delete this booking?</p>
       <div class="dialog-buttons">
-        <paper-button on-tap="_toggleDeleteDialog" class="button-colored-secondary" aria-label="Back to booking details">Cancel</paper-button>
-        <paper-button on-tap="_deleteBooking" class="button-colored-theme" aria-label="Delete booking">Delete</paper-button>
+        <paper-button id="cancel" on-tap="_toggleDeleteDialog" class="button-colored-secondary" aria-label="Back to booking details">Cancel</paper-button>
+        <paper-button id="confirm" on-tap="_deleteBooking" class="button-colored-theme" aria-label="Delete booking">Delete</paper-button>
       </div>
     </paper-dialog>
 

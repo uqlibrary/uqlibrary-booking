@@ -1,24 +1,21 @@
 <!doctype html>
 <html>
-
 <head>
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=no">
-  <title>Test Runner</title>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=no">
+  <title>uqlibrary-booking tests</title>
 
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
 </head>
 
 <body>
-
-  <script>
-    document.cookie="UQLMockData=enabled";
-
-    WCT.loadSuites([
-      'uqlibrary-booking-test.html'
-    ]);
-
-  </script>
-
+<script>
+  document.cookie="UQLMockData=enabled";
+  // Load and run all tests (.html, .js) as one suite:
+  WCT.loadSuites([
+    'uqlibrary-booking-test-unit.html'
+  ]);
+</script>
 </body>
 </html>

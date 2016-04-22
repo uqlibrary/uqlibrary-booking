@@ -18,7 +18,7 @@ gulp.task("serve", [], function() {
   console.log("serving...");
   browsersync({
     open: "external",
-    startPath: "/uqlibrary-booking/demo",
+    startPath: "/uqlibrary-booking/demo/index-live.html",
     host: "dev-app.library.uq.edu.au",
     port: 9999,
     server: {

@@ -72,7 +72,6 @@
        */
       _selectedBuildingIndex: {
         type: Number,
-        value: 0,
         notify: true,
         observer: '_selectBuilding'
       },
@@ -296,8 +295,6 @@
      * @private
      */
     _selectCampus: function (newVal) {
-      if (!newVal) return;
-
       var self = this;
       var oldCampus = this._selectedCampus;
       this._selectedCampus = this._roomData[newVal];
@@ -322,11 +319,14 @@
      * @private
      */
     _selectBuilding: function (newVal) {
-      if (!newVal) return;
+      if (newVal == 0) {
+        this._selectedBuilding = null;
+        return;
+      }
 
       var self = this;
       var oldBuilding = this._selectedBuilding;
-      this._selectedBuilding = this._selectedCampus.buildings[newVal];
+      this._selectedBuilding = this._selectedCampus.buildings[newVal - 1];
       this._roomDropdown = this._selectedBuilding.rooms;
 
       if (oldBuilding && this._selectedRoomIndex != 0) {
