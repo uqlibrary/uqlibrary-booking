@@ -78,9 +78,16 @@
     },
     /**
      * Called when the back button is pressed
+     * TODO: Refactor once we rewrite
      */
     back: function () {
-      this.fire('uqlibrary-booking-navigate', (this._bookingDetails ? 4 : 2));
+      if (this._bookingDetails) {
+        this.fire('uqlibrary-booking-navigate', 4);
+        this.fire('uqlibrary-booking-change-title', 'Booking details');
+      } else {
+        this.fire('uqlibrary-booking-navigate', 2);
+        this.fire('uqlibrary-booking-change-title', 'Select a room');
+      }
     },
     /**
      * Called when the search date has changed
