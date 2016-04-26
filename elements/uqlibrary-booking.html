@@ -19,11 +19,7 @@ Element providing the library main booking component
     }
 
     neon-animated-pages {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      @apply(--uql-app-host);
     }
 
     paper-icon-button {
@@ -45,9 +41,7 @@ Element providing the library main booking component
     <uqlibrary-api-account id="account"></uqlibrary-api-account>
     <uqlibrary-api-contacts id="contactsApi"></uqlibrary-api-contacts>
     <uqlibrary-ga id="ga" app-name="FBS"></uqlibrary-ga>
-    <uqlibrary-api-facilities-availability id="facilities"></uqlibrary-api-facilities-availability>
-
-    <paper-toast id="toast" text="[[_errorMessage]]"></paper-toast>
+    <uqlibrary-api-facilities-availability id="facilities" processed="true"></uqlibrary-api-facilities-availability>
 
     <div class="fit layout vertical">
       <paper-header-panel class="flex">
@@ -57,7 +51,7 @@ Element providing the library main booking component
           <template is="dom-if" if="{{!standAlone}}">
             <paper-icon-button icon="menu" on-tap="_toggleDrawerPanel" paper-drawer-toggle></paper-icon-button>
           </template>
-          <template is="dom-if" if="{{_selectedPage}}">
+          <template is="dom-if" if="{{_backEnabled}}">
             <paper-icon-button
                 class="back-arrow"
                 icon="icons:arrow-back"
@@ -73,11 +67,16 @@ Element providing the library main booking component
           <neon-animated-pages id="pages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
             <section>
               <uqlibrary-booking-mybookings
-                  id="mybookings"
+                  id="myBookings"
+                  account="{{_account}}"
                   on-add-booking="_addBooking"
                   on-select-booking="_selectBooking">
               </uqlibrary-booking-mybookings>
             </section>
+            <section>
+              <!--<uqlibrary-booking-new-booking id="newbooking"></uqlibrary-booking-new-booking>-->
+            </section>
+            <!--
             <section>
               <uqlibrary-booking-findroom
                   id="findroom"
@@ -107,6 +106,7 @@ Element providing the library main booking component
                   on-edit-booking-started="_bookingEditingStarted">
               </uqlibrary-booking-display>
             </section>
+            -->
           </neon-animated-pages>
         </div>
       </paper-header-panel>

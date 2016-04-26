@@ -57,19 +57,21 @@
         on-uqlibrary-api-facilities-booking-executed="_createBookingComplete">
     </uqlibrary-api-facilities-booking>
 
+    <uqlibrary-api-facilities-availability id="facilities" processed="true"></uqlibrary-api-facilities-availability>
+
     <paper-toast id="toast" text="[[_errorMessage]]"></paper-toast>
 
     <div class="page">
       <!-- Header -->
-      <div class="image-header" style$="background-image: url('https://app.library.uq.edu.au/assets/images/uq-buildings/{{ _selectedRoom.imageLarge }}')">
+      <div class="image-header" style$="{{_backgroundUrl}}">
         <div class="title-container">
-          <div class="title inverse">{{_selectedRoom.title}}</div>
-          <div class="subhead inverse">{{_formatLocation(_selectedRoom)}}</div>
+          <div class="title inverse">{{selectedRoom.title}}</div>
+          <div class="subhead inverse">{{_formatLocation(selectedRoom)}}</div>
         </div>
       </div>
 
       <!-- Description -->
-      <p class="body1 text-container">[[ _selectedRoom.notes ]]</p>
+      <p class="body1 text-container">[[ selectedRoom.notes ]]</p>
 
       <!-- Date Selector -->
       <uqlibrary-date-selector id="dateSelector"
@@ -81,7 +83,7 @@
 
       <!-- Summary -->
       <p class="body1 text-container">
-        Maximum booking duration is [[_selectedRoom.maxtime]] min, minimum booking duration is [[_selectedRoom.time_span]] min
+        Maximum booking duration is [[selectedRoom.maxtime]] min, minimum booking duration is [[selectedRoom.time_span]] min
       </p>
 
       <!-- Legend -->

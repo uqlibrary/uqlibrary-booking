@@ -15,7 +15,23 @@
       /**
        * Holds the selected booking
        */
-      selectedBooking: {
+      _selectedBooking: {
+        type: Object,
+        value: {},
+        notify: true
+      },
+      /**
+       * Holds the selected page of the My Bookings process
+       */
+      _selectedPage: {
+        type: Number,
+        notify: true,
+        value: 0
+      },
+      /**
+       * Holds the user account
+       */
+      account: {
         type: Object,
         notify: true
       }
@@ -29,6 +45,40 @@
       this.$.bookings.addEventListener("uqlibrary-api-account-bookings-loaded", function (e) {
         self._processData(e);
       });
+
+      this.$.bookings.get({ nocache : true });
+    },
+    /**
+     * Function called from uqlibrary-booking when the back button is clicked
+     */
+    back: function () {
+      this._selectedPage--;
+    },
+    /**
+     * Called whenever a iron-select event is fired on neon-animated-pages
+     * @private
+     */
+    _pageChanged: function (e) {
+      if (e.target.id != "mybookingsPages") return;
+
+      var headerData = {};
+
+      if (this._selectedPage == 0) {
+        // My Bookings page
+        headerData.title = 'My bookings';
+        headerData.backEnabled = false;
+      } else if (this._selectedPage == 1) {
+        // Booking details page
+        headerData.title = 'Booking details';
+        headerData.backEnabled = true;
+      } else if (this._selectedPage == 2) {
+        // Update booking page
+        headerData.title = 'Update booking';
+        headerData.backEnabled = true;
+        this.$.bookingEdit.activate();
+      }
+
+      this.fire('uqlibrary-booking-update-header', headerData);
     },
     /**
      * Processes data
@@ -79,28 +129,37 @@
       }
     },
     /**
-     * Called when the My Bookings page is activated
-     */
-    initialize: function (noCache) {
-      if (noCache == null) noCache = false;
-
-      this.$.bookings.get({ nocache : noCache });
-      this.fire('uqlibrary-booking-change-title', 'My bookings');
-    },
-    /**
      * Called when an event item is clicked on
      * @param e
      * @private
      */
     _bookingSelected: function (e) {
-      this.fire('select-booking', e.detail);
+      this._selectedBooking = e.detail;
+      this._selectedPage = 1;
+    },
+    /**
+     * Called when the user wants to edit a booking
+     * @private
+     */
+    _editBooking: function () {
+      this._selectedPage = 2;
+    },
+    /**
+     * Called when a booking is deleted by uqlibrary-booking-display
+     * @private
+     */
+    _bookingDeleted: function () {
+      this.$.bookings.get({ nocache : true });
+      this.back();
+
+      this.$.toast.text = "Your booking was deleted.";
+      this.$.toast.open();
     },
     /**
      * Fires of an event to navigate to the "Add Booking" page
-     * @param e
      * @private
      */
-    _addBooking: function (e) {
+    _addBooking: function () {
       this.fire("add-booking");
     }
   })

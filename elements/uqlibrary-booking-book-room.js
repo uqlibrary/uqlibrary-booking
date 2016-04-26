@@ -6,30 +6,35 @@
     is: 'uqlibrary-booking-book-room',
     properties: {
       /**
-       * Set when a room is selected
+       * The selected room
        */
-      _selectedRoom: {
+      selectedRoom: {
         type: Object,
-        value: {},
         notify: true
       },
       /**
-       * Set when a search date is selected
+       * Outside search date. Does not propagate automatically though the page
+       */
+      searchDate: {
+        type: Date
+      },
+      /**
+       * Internal search date. This date is ONLY set by .activate(). This sets the page in motion
        */
       _searchDate: {
         type: Date,
         notify: true,
-        observer: '_searchDataChanged'
+        observer: '_loadFacilities'
       },
       /**
        * Set when the duration is changed
        */
-      _searchDuration: {
+      searchDuration: {
         type: Number,
         notify: true
       },
       /**
-       * Changed whenever the _searchDate is updated
+       * Changed whenever the searchDate is updated
        */
       _maximumBookingDate: {
         type: Date,
@@ -51,53 +56,77 @@
         value: 0
       },
       /**
-       * Holds booking details. Set by uqlibrary-booking (not passed through)
+       * Holds the user account
        */
-      _bookingDetails: {
+      account: {
+        type: Object,
+        notify: true
+      },
+      /**
+       * Holds the booking details.
+       */
+      bookingDetails: {
         type: Object,
         value: null
+      },
+      /**
+       * Holds the background URL for the selected room
+       */
+      _backgroundUrl: {
+        type: String,
+        value: ''
       }
     },
     behaviors: [
       Polymer.NeonSharedElementAnimatableBehavior
     ],
-    /**
-     * Initializes the Book Room page (add or edit)
-     * @param searchDate
-     * @param room
-     * @param duration
-     * @param bookingDetails
-     */
-    initialize: function (searchDate, room, duration, bookingDetails) {
-      this.fire('uqlibrary-booking-change-title', 'Book a room');
+    attached: function () {
+      var self = this;
 
-      this._selectedRoom = room;
-      this._searchDuration = duration;
-      this._bookingDetails = bookingDetails;
-      this._searchDate = searchDate; // Triggers timeslot creation
+      this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function (e) {
+        if (self.bookingDetails) {
+          self.selectedRoom = e.detail[self.bookingDetails.machid];
+        } else if (self.selectedRoom.id) {
+          // Selected room should already be set
+          self.selectedRoom = e.detail[self.selectedRoom.id];
+        }
+
+        self._maxBookingLength = (!self.selectedRoom ? 0 : self.selectedRoom.maxtime / self.selectedRoom.time_span);
+        self._bookingTimeSlots = self._createTimeslots();
+        self._maximumBookingDate = moment().add(7, "day").toDate();
+        self._selectTimeSlots();
+        self._backgroundUrl = 'background-image: url(\'https://app.library.uq.edu.au/assets/images/uq-buildings/' + self.selectedRoom.imageLarge + '\')';
+      });
     },
     /**
-     * Called when the back button is pressed
-     * TODO: Refactor once we rewrite
+     * Called when this element receives focus. Sets up the element either for editing or adding a booking
      */
-    back: function () {
-      if (this._bookingDetails) {
-        this.fire('uqlibrary-booking-navigate', 4);
-        this.fire('uqlibrary-booking-change-title', 'Booking details');
+    activate: function () {
+      if (this.bookingDetails && this.bookingDetails.machid) {
+        // Edit booking. Setting search date will trigger load facilities
+        this._searchDate = this.bookingDetails.startDate;
       } else {
-        this.fire('uqlibrary-booking-navigate', 2);
-        this.fire('uqlibrary-booking-change-title', 'Select a room');
+        this._searchDate = moment(this.searchDate).clone().toDate();
       }
     },
     /**
-     * Called when the search date has changed
+     * Loads facilities from the API
      * @private
      */
-    _searchDataChanged: function () {
-      this._maxBookingLength = (!this._selectedRoom ? 0 : this._selectedRoom.maxtime / this._selectedRoom.time_span);
-      this._bookingTimeSlots = this._createTimeslots();
-      this._maximumBookingDate = moment().add(7, "day").toDate();
-      this._selectTimeSlots();
+    _loadFacilities: function () {
+      if (!this.bookingDetails && !this.selectedRoom) return;
+
+      var args = {
+        date: moment(this._searchDate).format("DD-MM-YYYY"),
+        nocache: true
+      };
+
+      if (this.account.type != 17 && this.account.type != 18) {
+        args.id = this.account.id;
+        args.ptype = this.account.type;
+      }
+
+      this.$.facilities.get(args);
     },
     /**
      * Formats the room location
@@ -122,27 +151,27 @@
     _createTimeslots : function() {
       var self = this;
 
-      var openingHours = moment(this._selectedRoom.available_from, "X");
-      var closingHours = moment(this._selectedRoom.available_to, "X");
+      var openingHours = moment(this.selectedRoom.available_from, "X");
+      var closingHours = moment(this.selectedRoom.available_to, "X");
 
-      var workingTimeslots = (closingHours - openingHours) / this._selectedRoom.time_span / 60 / 1000;
-      var bookingDetails = this._selectedRoom.bookings;
+      var workingTimeslots = (closingHours - openingHours) / this.selectedRoom.time_span / 60 / 1000;
+      var bookingDetails = this.selectedRoom.bookings;
 
       var currentDate = moment(new Date(openingHours.toDate()));
       var timeslots = [];
 
       for (var index = 0; index < workingTimeslots; index++){
         var timeslotStartTime = new Date(currentDate.toDate());
-        var timeslotEndTime = new Date(currentDate.add(this._selectedRoom.time_span, "m").toDate());
+        var timeslotEndTime = new Date(currentDate.add(this.selectedRoom.time_span, "m").toDate());
 
-        var selectable = this._selectedRoom.bookings.every(function(element, index, array){
+        var selectable = this.selectedRoom.bookings.every(function(element, index, array){
           var bookingStartTime = moment(element.from, "X");
           var bookingEndTime = moment(element.to, "X");
 
           //timeslot is selectable if it belongs to a current booking in editing form
-          if (self._bookingDetails && self._bookingDetails.startDate &&
-              timeslotStartTime.getTime() >= self._bookingDetails.startDate.getTime() &&
-              timeslotEndTime.getTime() <= self._bookingDetails.endDate.getTime()) {
+          if (self.bookingDetails && self.bookingDetails.startDate &&
+              timeslotStartTime.getTime() >= self.bookingDetails.startDate.getTime() &&
+              timeslotEndTime.getTime() <= self.bookingDetails.endDate.getTime()) {
             return true;
           }
 
@@ -175,18 +204,18 @@
      */
     _selectTimeSlots : function() {
       //for booking editing, only set time on the date of the booking
-      if (this._bookingDetails && this._bookingDetails.startDate) {
+      if (this.bookingDetails && this.bookingDetails.startDate) {
         //search duration is always the existing booking duration
-        this._searchDuration = (this._bookingDetails.endDate.getTime() - this._bookingDetails.startDate.getTime()) / (60 * 1000);
+        this.searchDuration = (this.bookingDetails.endDate.getTime() - this.bookingDetails.startDate.getTime()) / (60 * 1000);
 
-        var bookingStartDateTest = new Date (this._bookingDetails.startDate);
+        var bookingStartDateTest = new Date (this.bookingDetails.startDate);
         var _searchDateTest = new Date(this._searchDate);
 
         if (_searchDateTest.setHours(0,0,0,0) !== bookingStartDateTest.setHours(0,0,0,0))
           return;
       }
 
-      var duration = parseInt(Math.min(this._selectedRoom.maxtime, this._searchDuration) / this._selectedRoom.time_span);
+      var duration = parseInt(Math.min(this.selectedRoom.maxtime, this.searchDuration) / this.selectedRoom.time_span);
       var remainingDuration = duration;
       var _searchDate = this._searchDate;
 
@@ -222,8 +251,8 @@
 
         var newBooking = {
           booking : {
-            machid: this._selectedRoom.id,
-            scheduleid: this._selectedRoom.scheduleid,
+            machid: this.selectedRoom.id,
+            scheduleid: this.selectedRoom.scheduleid,
             date: moment(selectedTimeslots[0].startTime).format("MM/DD/YYYY"),
             starttime: startTime,
             endtime: endTime
@@ -267,7 +296,7 @@
       if (selectedTimeslots.length == 0) {
         validation.valid = false;
         validation.message = "Please, make a valid selection.";
-      } else if (selectedTimeslots.length > this._selectedRoom.maxtime / this._selectedRoom.time_span) {
+      } else if (selectedTimeslots.length > this.selectedRoom.maxtime / this.selectedRoom.time_span) {
         validation.valid = false;
         validation.message = "Current selection exceeds maximum booking duration. Please, make a valid selection.";
       }

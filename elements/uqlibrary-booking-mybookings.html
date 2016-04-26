@@ -1,11 +1,13 @@
 <link rel="import" href="elements.html">
 
 <dom-module id="uqlibrary-booking-mybookings">
-  <!-- Template -->
   <template>
-    <!-- All element styles -->
     <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
       :host {
+        @apply(--uql-app-host);
+      }
+
+      neon-animated-pages {
         @apply(--uql-app-host);
       }
       
@@ -19,9 +21,30 @@
     <!-- API -->
     <uqlibrary-api-account-bookings id="bookings"></uqlibrary-api-account-bookings>
 
-    <uqlibrary-timeline id="timeline" events="{{events}}" on-event-selected="_bookingSelected"></uqlibrary-timeline>
+    <paper-toast id="toast"></paper-toast>
 
-    <paper-fab class="create-booking" icon="add" on-click="_addBooking" aria-label="Add new booking"></paper-fab>
+    <neon-animated-pages id="mybookingsPages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
+      <section id="booking-list">
+        <uqlibrary-timeline id="timeline" events="{{events}}" on-event-selected="_bookingSelected"></uqlibrary-timeline>
+        <paper-fab class="create-booking" icon="add" on-click="_addBooking" aria-label="Add new booking"></paper-fab>
+      </section>
+      <section>
+        <uqlibrary-booking-display
+            id="booking-display"
+            account="{{account}}"
+            booking-details="{{_selectedBooking}}"
+            on-booking-deleted="_bookingDeleted"
+            on-edit-booking-started="_editBooking">
+        </uqlibrary-booking-display>
+      </section>
+      <section>
+        <uqlibrary-booking-book-room
+            id="bookingEdit"
+            booking-details="{{_selectedBooking}}"
+            account="{{account}}">
+        </uqlibrary-booking-book-room>
+      </section>
+    </neon-animated-pages>
   </template>
 
   <!-- Location of the script -->

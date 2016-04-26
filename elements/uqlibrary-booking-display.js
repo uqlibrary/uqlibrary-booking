@@ -3,18 +3,19 @@
     is: 'uqlibrary-booking-display',
     properties: {
       /**
-       * Full room list given by uqlibrary-booking
+       * The `bookingDetails` attribute object represents booking details, eg resid, start date, end date, etc
        */
-      roomList: {
-        type: Object
-      },
-      /**
-       * The `_bookingDetails` attribute object represents booking details, eg resid, start date, end date, etc
-       */
-      _bookingDetails: {
+      bookingDetails: {
         type: Object,
         notify: true,
-        value: {}
+        observer: 'bookingDetailsChanged'
+      },
+      /**
+       * Holds the user account
+       */
+      account: {
+        type: Object,
+        notify: true
       },
       /**
        * The `roomDetails` attribute object contains properties of the room
@@ -52,27 +53,44 @@
         type: String
       }
     },
-    ready: function () {
+    attached: function () {
+      var self = this;
+
       this.addEventListener('delete-booking', this.toggleDeleteDialog);
+
+      this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function (e) {
+        self._roomDetails = e.detail[self.bookingDetails.machid];
+        self._location = self._formatLocation();
+        self._bookingDate = self._formatBookingDate();
+        self._bookingTime = self._formatBookingTime();
+        self._url = self._roomDetails.url + '}';
+        self._backgroundUrl = 'background-image: url(\'https://app.library.uq.edu.au/assets/images/uq-buildings/' + self._roomDetails.imageLarge + '\')';
+      });
     },
     /**
-     * Called when this element is opened
-     * @param bookingDetails
+     * Loads facilities from the API
+     * @private
      */
-    initialize: function (bookingDetails) {
-      this._bookingDetails = bookingDetails;
-      this._roomDetails = this.roomList[this._bookingDetails.machid];
-      this._location = this._formatLocation();
-      this._bookingTime = this._formatBookingTime();
-      this._bookingDate = this._formatBookingDate();
-      this._url = this._roomDetails.url + '}';
-      this._backgroundUrl = 'background-image: url(\'https://app.library.uq.edu.au/assets/images/uq-buildings/' + this._roomDetails.imageLarge + '\')';
+    _loadFacilities: function () {
+      var args = {
+        date: moment(this.bookingDetails.startDate).format("DD-MM-YYYY"),
+        nocache: true
+      };
+
+      if (this.account.type != 17 && this.account.type != 18) {
+        args.id = this.account.id;
+        args.ptype = this.account.type;
+      }
+
+      this.$.facilities.get(args);
     },
     /**
-     * Called when the back button is clicked
+     * Called when the selectedBooking is changed
+     * @private
      */
-    back: function () {
-      this.fire('uqlibrary-booking-navigate', 0);
+    bookingDetailsChanged: function () {
+      if (!this.bookingDetails || !this.bookingDetails.machid) return;
+      this._loadFacilities();
     },
     /**
      * Formats the location string
@@ -94,8 +112,8 @@
      * @private
      */
     _formatBookingTime: function () {
-      var startFormat = moment(this._bookingDetails.startDate).format('a') == moment(this._bookingDetails.endDate).format('a') ? 'h:mm' : 'h:mm a';
-      return moment(this._bookingDetails.startDate).format(startFormat) + ' - ' + moment(this._bookingDetails.endDate).format('h:mm a');
+      var startFormat = moment(this.bookingDetails.startDate).format('a') == moment(this.bookingDetails.endDate).format('a') ? 'h:mm' : 'h:mm a';
+      return moment(this.bookingDetails.startDate).format(startFormat) + ' - ' + moment(this.bookingDetails.endDate).format('h:mm a');
     },
     /**
      * Formats the booking date string
@@ -103,7 +121,7 @@
      * @private
      */
     _formatBookingDate: function () {
-      return moment(this._bookingDetails.startDate).format('dddd MMMM D, YYYY');
+      return moment(this.bookingDetails.startDate).format('dddd MMMM D, YYYY');
     },
     /**
      * Opens / Closes the information dialog
@@ -127,7 +145,7 @@
       }
     },
     _editBooking: function () {
-      this.fire('edit-booking-started', this._bookingDetails);
+      this.fire('edit-booking-started', this.bookingDetails);
     },
     /**
      * Deletes the given booking
@@ -137,7 +155,7 @@
       this._toggleDeleteDialog();
       this.$.deleteBookingRequest.delete({
         booking: {
-          resid: this._bookingDetails.id
+          resid: this.bookingDetails.id
         }
       });
     }

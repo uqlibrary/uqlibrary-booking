@@ -1,0 +1,26 @@
+<link rel="import" href="elements.html">
+
+<dom-module id="uqlibrary-booking-new-booking">
+  <!-- Template -->
+  <template>
+    <!-- All element styles -->
+    <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
+      :host {
+        @apply(--uql-app-host);
+      }
+    </style>
+
+    <neon-animated-pages id="pages" selected="{{_selectedPage}}">
+      <section>
+        <uqlibrary-booking-mybookings
+            id="mybookings"
+            on-add-booking="_addBooking"
+            on-select-booking="_selectBooking">
+        </uqlibrary-booking-mybookings>
+      </section>
+    </neon-animated-pages>
+  </template>
+
+  <!-- Location of the script -->
+  <script src="uqlibrary-booking-mybookings.js"></script>
+</dom-module>
