@@ -121,7 +121,7 @@
       if (this._selectedPage == 0) {
         this.$.myBookings.back();
       } else {
-        this.$.findRoom.back();
+        this.$.createBooking.back();
       }
     },
     /**
@@ -135,23 +135,19 @@
     },
     /**
      * Called when the "add booking process" is started. Shows the search page
-     * @param e
      * @private
      */
-    _addBooking: function (e) {
+    _addBooking: function () {
       this._selectedPage = 1;
-      this.$.findRoom.activate();
+      this.$.createBooking.activate();
     },
     /**
-     * Called when the user presses "Search" on the Find Room page
-     * @param e
+     * Navigates to the my bookings page
      * @private
      */
-    _searchRoom: function (e) {
-      // searchData
-      // searchResults
-      this.$.selectroom.initialize(e.detail.searchData, e.detail.searchResults);
-      this._selectedPage = 2;
+    _myBookings: function () {
+      this._selectedPage = 0;
+      this.$.myBookings.activate();
     },
 		/**
 		 * Toggles the drawer panel of the main UQL app

@@ -1,7 +1,7 @@
 <link rel="import" href="elements.html">
 
 <!--
-Element providing the library main booking component
+Element providing the library main booking component. Booking has 2 main paths; My Bookings and Create Booking
 
 ##### Example
 
@@ -64,7 +64,7 @@ Element providing the library main booking component
         </paper-toolbar>
         <!-- Content -->
         <div class="fit">
-          <neon-animated-pages id="pages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
+          <neon-animated-pages id="pages" selected="{{_selectedPage}}">
             <section>
               <uqlibrary-booking-mybookings
                   id="myBookings"
@@ -74,7 +74,11 @@ Element providing the library main booking component
               </uqlibrary-booking-mybookings>
             </section>
             <section>
-              <!--<uqlibrary-booking-new-booking id="newbooking"></uqlibrary-booking-new-booking>-->
+              <uqlibrary-booking-create
+                  id="createBooking"
+                  account="{{_account}}"
+                  on-my-bookings="_myBookings">
+              </uqlibrary-booking-create>
             </section>
             <!--
             <section>
@@ -84,13 +88,7 @@ Element providing the library main booking component
                   on-search="_searchRoom">
               </uqlibrary-booking-findroom>
             </section>
-            <section>
-              <uqlibrary-booking-select-room
-                  id="selectroom"
-                  search-results="{{_searchResults}}"
-                  on-book-room="_bookRoom">
-              </uqlibrary-booking-select-room>
-            </section>
+
             <section>
               <uqlibrary-booking-book-room
                   id="bookroom"

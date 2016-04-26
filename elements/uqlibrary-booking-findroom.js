@@ -6,9 +6,15 @@
     is: 'uqlibrary-booking-findroom',
     properties: {
       /**
-       * Master list of rooms populated by uqlibrary-booking
+       * Account
        */
-      roomList: {
+      account: {
+        type: Object
+      },
+      /**
+       * List of all rooms for the selected search date
+       */
+      _roomList: {
         type: Array,
         value: [],
         observer: '_buildRoomStructure'
@@ -16,7 +22,7 @@
       /**
        * Search data shared across booking applications
        */
-      _searchResults: {
+      searchResults: {
         type: Object,
         value: {},
         notify: true
@@ -24,15 +30,15 @@
       /**
        * Holds the currently selected date
        */
-      _searchDate: {
+      searchDate: {
         type: Date,
         notify: true,
-        observer: '_searchDateChanged'
+        observer: 'searchDateChanged'
       },
       /**
        * Duration
        */
-      _searchDuration: {
+      searchDuration: {
         type: Number,
         notify: true,
         observer: '_getSearchResults'
@@ -92,28 +98,43 @@
       // Select dates and times
       this._generateDays();
       this._generateTimes();
+
+      var self = this;
+      this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function (e) {
+        self._roomList = e.detail;
+      });
+    },
+    activate: function () {
+      // ?
     },
     /**
-     * Called when this page is opened
+     * Loads facilities from the API
+     * @private
      */
-    initialize: function () {
-      this.fire('uqlibrary-booking-change-title', 'Find a room');
-    },
-    /**
-     * Called when the back button is pressed
-     */
-    back: function () {
-      this.fire('uqlibrary-booking-navigate', 0);
+    _loadFacilities: function () {
+      if (!this.searchDate) return;
+
+      var args = {
+        date: moment(this.searchDate).format("DD-MM-YYYY"),
+        nocache: true
+      };
+
+      if (this.account.type != 17 && this.account.type != 18) {
+        args.id = this.account.id;
+        args.ptype = this.account.type;
+      }
+
+      this.$.facilities.get(args);
     },
     /**
      * Takes the full room list and parses it for use in the Filter Form
      * @private
      */
-    _buildRoomStructure: function (newVal, oldval) {
+    _buildRoomStructure: function () {
       var campuses = {};
       var self = this;
 
-      _.forEach(this.roomList, function (room) {
+      _.forEach(this._roomList, function (room) {
         if (!campuses[room.campus]) {
           campuses[room.campus] = {
             id: room.campus,
@@ -172,10 +193,10 @@
       if (this._dayDropdown && this._dayDropdown.length == 0) return;
 
       var self = this;
-      var selectedDate = moment(this._searchDate);
+      var selectedDate = moment(this.searchDate);
       var roomsFound = [];
 
-      _.forEach(this.roomList, function (room) {
+      _.forEach(this._roomList, function (room) {
         // Check for selected campus, building and room
         if (self._selectedRoom != null && self._selectedRoom.id != room.id) return;
         if (self._selectedBuilding != null && room.building != self._selectedBuilding.id) return;
@@ -193,13 +214,13 @@
         room.nextAvailable = self._getNextAvailable(room, startTimestamp);
         if (room.nextAvailable === false) return;
         var _time = moment.unix(room.nextAvailable);
-        room.nextAvailableTimeText = _time.format("h:mm a") + ' - ' + _time.add(self._searchDuration, 'minutes').format("h:mm a") + ', ' + _time.format("DD/MM/YYYY");
+        room.nextAvailableTimeText = _time.format("h:mm a") + ' - ' + _time.add(self.searchDuration, 'minutes').format("h:mm a") + ', ' + _time.format("DD/MM/YYYY");
 
         // Add the room to the search results if we got this far
         roomsFound.push(room);
       });
 
-      this._searchResults = _.sortBy(roomsFound, 'nextAvailable');
+      this.searchResults = _.sortBy(roomsFound, 'nextAvailable');
     },
     /**
      * Gets the next available time for a room
@@ -233,12 +254,12 @@
         if (firstAvailable !== 0) return;
 
         // Check end timestamp
-        var end = startTimestamp + self._searchDuration * 60;
+        var end = startTimestamp + self.searchDuration * 60;
         if (slot.to < end) return;
 
         if (startTimestamp >= slot.from && end <= slot.to) {
           firstAvailable = startTimestamp;
-        } else if (end <= slot.to && slot.to >= (slot.from + self._searchDuration * 60)) {
+        } else if (end <= slot.to && slot.to >= (slot.from + self.searchDuration * 60)) {
           firstAvailable = slot.from;
         }
       });
@@ -359,20 +380,17 @@
      * Called when the selected date has changed
      * @private
      */
-    _searchDateChanged: function () {
+    searchDateChanged: function () {
       var self = this;
       
       _.forEach(self._dayDropdown, function (value, key) {
-        if (moment(value.dateObj).format("YYYY-MM-DD") == moment(self._searchDate).format("YYYY-MM-DD")) {
+        if (moment(value.dateObj).format("YYYY-MM-DD") == moment(self.searchDate).format("YYYY-MM-DD")) {
           self._selectedDay = value;
           self._selectedDateIndex = key;
         }
       });
-      this.fire('uqlibrary-booking-update-rooms', {
-        nocache: false,
-        date: self._selectedDay.dateObj
-      });
 
+      this._loadFacilities();
       this._getSearchResults();
     },
     /**
@@ -380,14 +398,14 @@
      * @param e
      * @private
      */
-    _selectDate: function (e) {
+    _selectDate: function () {
       var date = this._dayDropdown[this._selectedDateIndex].dateObj;
       if (this._selectedTime) {
         date.setHours(this._selectedTime.hours);
         date.setMinutes(this._selectedTime.minutes);
         date.setSeconds(0);
       }
-      this._searchDate = date;
+      this.searchDate = date;
     },
     /**
      * Called when a time has been selected
@@ -398,11 +416,11 @@
       this._selectedTime = this._timeDropdown[this._selectedTimeIndex];
 
       // We need to force the date to change to make sure other pages pick up on the change
-      var date = moment(this._searchDate).clone().toDate();
+      var date = moment(this.searchDate).clone().toDate();
       date.setHours(this._selectedTime.hours);
       date.setMinutes(this._selectedTime.minutes);
       date.setSeconds(0);
-      this._searchDate = date;
+      this.searchDate = date;
     },
     /**
      * Rounds a timestamp up or down
@@ -431,17 +449,11 @@
       if (this._selectedCampus === null) {
         this.$.toast.text = "No campus selected";
         this.$.toast.open();
-      } else if (this._searchResults.length == 0) {
+      } else if (this.searchResults.length == 0) {
         this.$.toast.text = "No rooms found";
         this.$.toast.open();
       } else {
-        this.fire("search", {
-          searchData: {
-            date: this._searchDate,
-            duration: this._searchDuration
-          },
-          searchResults: this._searchResults
-        });
+        this.fire("search");
       }
     }
   });

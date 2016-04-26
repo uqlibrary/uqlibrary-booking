@@ -49,6 +49,14 @@
       this.$.bookings.get({ nocache : true });
     },
     /**
+     * Called when this element receives focus
+     */
+    activate: function () {
+      // Force the change
+      this._selectedPage = -1;
+      this._selectedPage = 0;
+    },
+    /**
      * Function called from uqlibrary-booking when the back button is clicked
      */
     back: function () {

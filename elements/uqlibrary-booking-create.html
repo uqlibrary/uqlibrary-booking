@@ -1,1 +1,46 @@
-// CREATE LALALALALALA
+<link rel="import" href="elements.html">
+
+<dom-module id="uqlibrary-booking-create">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
+      :host {
+        @apply(--uql-app-host);
+      }
+
+      neon-animated-pages {
+        @apply(--uql-app-host);
+      }
+    </style>
+
+    <!-- API -->
+    <uqlibrary-api-account-bookings id="bookings"></uqlibrary-api-account-bookings>
+
+    <paper-toast id="toast"></paper-toast>
+
+    <neon-animated-pages id="createBookingPages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
+      <section>
+        <uqlibrary-booking-findroom
+            id="findRoom"
+            account="{{account}}"
+            search-results="{{_searchResults}}"
+            search-duration="{{_searchDuration}}"
+            search-date="{{_searchDate}}"
+            on-search="_navigateToSelectRoom">
+        </uqlibrary-booking-findroom>
+      </section>
+      <section>
+        <section>
+          <uqlibrary-booking-select-room
+              id="selectRoom"
+              selected-room="{{_selectedRoom}}"
+              search-results="[[_searchResults]]"
+              on-book-room="_bookRoom">
+          </uqlibrary-booking-select-room>
+        </section>
+      </section>
+    </neon-animated-pages>
+  </template>
+
+  <!-- Location of the script -->
+  <script src="uqlibrary-booking-create.js"></script>
+</dom-module>
