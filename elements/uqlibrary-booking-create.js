@@ -55,7 +55,7 @@
      * Function called from uqlibrary-booking when the back button is clicked
      */
     back: function () {
-      if (this._selectedPage == 0) {
+      if (this._selectedPage == 0 || !this._selectedPage) {
         this.fire('my-bookings');
       } else {
         this._selectedPage--;

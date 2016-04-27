@@ -81,6 +81,7 @@
     _accountLoaded: function (e) {
       if (e.detail.hasSession) {
         this._account = e.detail;
+        console.log(JSON.stringify(this._account));
       } else {
         this.$.account.login(window.location.href);
       }
@@ -103,15 +104,6 @@
       } else {
         this.$.createBooking.back();
       }
-    },
-    /**
-     * Called when we should start booking a room (new booking)
-     * @param e
-     * @private
-     */
-    _bookRoom: function (e) {
-      this.$.bookroom.initialize(e.detail.searchData.date, e.detail.room, e.detail.searchData.duration, null);
-      this._selectedPage = 3;
     },
     /**
      * Called when the "add booking process" is started. Shows the search page
