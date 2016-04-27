@@ -241,8 +241,7 @@
       var validation = this._validateSelection(selectedTimeslots);
 
       if (!validation.valid){
-        this.$.toast.text = validation.message;
-        this.$.toast.open();
+        this.fire('uqlibrary-booking-show-toast', validation.message);
       } else {
 
         var midnight = new Date(selectedTimeslots[0].startTime.getFullYear(), selectedTimeslots[0].startTime.getMonth(), selectedTimeslots[0].startTime.getDate(), 0, 0, 0);
@@ -273,12 +272,10 @@
      */
     _createBookingComplete: function (e) {
       if (e.detail.response) {
-        //display error returned by the server
-        this.$.toast.text = "Error creating a booking: " + e.detail.responseText;
-        this.$.toast.open();
+        this.fire('uqlibrary-booking-show-toast', "Error creating a booking: " + e.detail.responseText);
       } else {
         //if booking is successful, fire event to indicate booking is done and move on to other page
-        this.fire('uqlibrary-booking-booking-created');
+        this.fire('booking-created');
       }
     },
 		/**

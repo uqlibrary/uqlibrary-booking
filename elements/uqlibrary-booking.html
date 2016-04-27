@@ -40,8 +40,9 @@ Element providing the library main booking component. Booking has 2 main paths; 
   <template>
     <uqlibrary-api-account id="account"></uqlibrary-api-account>
     <uqlibrary-api-contacts id="contactsApi"></uqlibrary-api-contacts>
-    <uqlibrary-ga id="ga" app-name="FBS"></uqlibrary-ga>
     <uqlibrary-api-facilities-availability id="facilities" processed="true"></uqlibrary-api-facilities-availability>
+
+    <paper-toast id="toast"></paper-toast>
 
     <div class="fit layout vertical">
       <paper-header-panel class="flex">
@@ -80,31 +81,6 @@ Element providing the library main booking component. Booking has 2 main paths; 
                   on-my-bookings="_myBookings">
               </uqlibrary-booking-create>
             </section>
-            <!--
-            <section>
-              <uqlibrary-booking-findroom
-                  id="findroom"
-                  room-list="{{_roomList}}"
-                  on-search="_searchRoom">
-              </uqlibrary-booking-findroom>
-            </section>
-
-            <section>
-              <uqlibrary-booking-book-room
-                  id="bookroom"
-                  on-uqlibrary-booking-booking-created="_bookingCreated">
-              </uqlibrary-booking-book-room>
-            </section>
-            <section>
-              <uqlibrary-booking-display
-                  id="displaybooking"
-                  booking-details="{{_selectedBooking}}"
-                  room-list="[[_roomList]]"
-                  on-booking-deleted="_bookingDeleted"
-                  on-edit-booking-started="_bookingEditingStarted">
-              </uqlibrary-booking-display>
-            </section>
-            -->
           </neon-animated-pages>
         </div>
       </paper-header-panel>

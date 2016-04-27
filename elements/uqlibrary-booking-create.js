@@ -87,9 +87,9 @@
         headerData.backEnabled = true;
       } else if (this._selectedPage == 2) {
         // Update booking page
-        headerData.title = 'Update booking';
+        headerData.title = 'Book a room';
         headerData.backEnabled = true;
-        this.$.bookingEdit.activate();
+        this.$.bookRoom.activate();
       }
 
       this.fire('uqlibrary-booking-update-header', headerData);
@@ -100,6 +100,29 @@
      */
     _navigateToSelectRoom: function () {
       this._selectedPage = 1;
+    },
+    /**
+     * Called when the user selects a room on the Select Room page
+     * @private
+     */
+    _navigateToBookRoom: function () {
+      this._selectedPage = 2;
+    },
+    /**
+     * Called when a booking is created
+     * @private
+     */
+    _bookingCreated: function() {
+      this.$.ga.addEvent('bookingCreated');
+
+      this._selectedPage = 0;
+      this.fire('my-bookings');
+
+      //Show toast that event was created after the transition is done
+      var self = this;
+      setTimeout(function(){
+        self.fire('uqlibrary-booking-show-toast', 'Your booking was saved.');
+      }, 100, self);
     }
   })
 })();

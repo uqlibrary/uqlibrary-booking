@@ -447,11 +447,9 @@
      */
     _search: function () {
       if (this._selectedCampus === null) {
-        this.$.toast.text = "No campus selected";
-        this.$.toast.open();
+        this.fire('uqlibrary-booking-show-toast', 'No campus selected');
       } else if (this.searchResults.length == 0) {
-        this.$.toast.text = "No rooms found";
-        this.$.toast.open();
+        this.fire('uqlibrary-booking-show-toast', 'No rooms found');
       } else {
         this.fire("search");
       }

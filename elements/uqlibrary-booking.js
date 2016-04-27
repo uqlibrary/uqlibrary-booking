@@ -61,9 +61,8 @@
 			}
 		},
     listeners: {
-      'uqlibrary-booking-navigate': '_doTransition',
       'uqlibrary-booking-update-header': '_updateHeader',
-      'uqlibrary-booking-update-rooms': '_fetchRooms'
+      'uqlibrary-booking-show-toast': '_showToast'
     },
 		ready: function () {
       var self = this;
@@ -94,25 +93,6 @@
     _updateHeader: function (e) {
       this.headerTitle = e.detail.title;
       this._backEnabled = e.detail.backEnabled;
-    },
-    /**
-     * Called when a booking is created
-     * @param e
-     * @private
-     */
-    _bookingCreated: function(e) {
-      this.$.ga.addEvent('bookingCreated');
-
-      // transition to timeline
-      this.$.mybookings.initialize(true);
-      this._selectedPage = 0;
-
-      //Show toast that event was created after the transition is done
-      var self = this;
-      setTimeout(function(){
-        self.$.toast.text = "Your booking was saved.";
-        self.$.toast.open();
-      }, 500, self);
     },
     /**
      * Moves back one page
@@ -148,6 +128,15 @@
     _myBookings: function () {
       this._selectedPage = 0;
       this.$.myBookings.activate();
+    },
+    /**
+     * Shows a toast message
+     * @param e
+     * @private
+     */
+    _showToast: function (e) {
+      this.$.toast.text = e.detail;
+      this.$.toast.show();
     },
 		/**
 		 * Toggles the drawer panel of the main UQL app

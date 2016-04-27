@@ -14,8 +14,7 @@
 
     <!-- API -->
     <uqlibrary-api-account-bookings id="bookings"></uqlibrary-api-account-bookings>
-
-    <paper-toast id="toast"></paper-toast>
+    <uqlibrary-ga id="ga" app-name="FBS"></uqlibrary-ga>
 
     <neon-animated-pages id="createBookingPages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
       <section>
@@ -29,14 +28,22 @@
         </uqlibrary-booking-findroom>
       </section>
       <section>
-        <section>
-          <uqlibrary-booking-select-room
-              id="selectRoom"
-              selected-room="{{_selectedRoom}}"
-              search-results="[[_searchResults]]"
-              on-book-room="_bookRoom">
-          </uqlibrary-booking-select-room>
-        </section>
+        <uqlibrary-booking-select-room
+            id="selectRoom"
+            selected-room="{{_selectedRoom}}"
+            search-results="[[_searchResults]]"
+            on-book-room="_navigateToBookRoom">
+        </uqlibrary-booking-select-room>
+      </section>
+      <section>
+        <uqlibrary-booking-book-room
+            id="bookRoom"
+            account="{{account}}"
+            search-date="{{_searchDate}}"
+            search-duration="{{_searchDuration}}"
+            selected-room="{{_selectedRoom}}"
+            on-booking-created="_bookingCreated">
+        </uqlibrary-booking-book-room>
       </section>
     </neon-animated-pages>
   </template>

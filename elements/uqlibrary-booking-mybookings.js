@@ -55,6 +55,8 @@
       // Force the change
       this._selectedPage = -1;
       this._selectedPage = 0;
+
+      this.$.bookings.get({ nocache : true });
     },
     /**
      * Function called from uqlibrary-booking when the back button is clicked
@@ -160,8 +162,7 @@
       this.$.bookings.get({ nocache : true });
       this.back();
 
-      this.$.toast.text = "Your booking was deleted.";
-      this.$.toast.open();
+      this.fire('uqlibrary-booking-show-toast', 'Your booking was deleted');
     },
     /**
      * Fires of an event to navigate to the "Add Booking" page
@@ -169,6 +170,22 @@
      */
     _addBooking: function () {
       this.fire("add-booking");
+    },
+    /**
+     * Called when a booking is created
+     * @private
+     */
+    _bookingUpdated: function() {
+      this.$.ga.addEvent('bookingUpdated');
+
+      this._selectedPage = 0;
+      this.$.bookings.get({ nocache : true });
+
+      //Show toast that event was created after the transition is done
+      var self = this;
+      setTimeout(function(){
+        self.fire('uqlibrary-booking-show-toast', 'Your booking was saved.');
+      }, 100, self);
     }
   })
 })();

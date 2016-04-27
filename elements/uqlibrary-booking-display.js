@@ -138,8 +138,7 @@
     _deleteBookingComplete: function (event) {
       if (event.detail.response) {
         //display error returned by the server
-        this.$.toast.text = 'Error deleting this booking: ' + event.detail.responseText;
-        this.$.toast.show();
+        this.fire('uqlibrary-booking-show-toast', 'Error deleting this booking: ' + event.detail.responseText)
       } else {
         this.fire('booking-deleted');
       }

@@ -17,7 +17,8 @@
        */
       selectedRoom: {
         type: Object,
-        value: {}
+        value: {},
+        notify: true
       }
     },
     behaviors: [

@@ -20,8 +20,7 @@
 
     <!-- API -->
     <uqlibrary-api-account-bookings id="bookings"></uqlibrary-api-account-bookings>
-
-    <paper-toast id="toast"></paper-toast>
+    <uqlibrary-ga id="ga" app-name="FBS"></uqlibrary-ga>
 
     <neon-animated-pages id="mybookingsPages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
       <section id="booking-list">
@@ -41,7 +40,8 @@
         <uqlibrary-booking-book-room
             id="bookingEdit"
             booking-details="{{_selectedBooking}}"
-            account="{{account}}">
+            account="{{account}}"
+            on-booking-created="_bookingUpdated">
         </uqlibrary-booking-book-room>
       </section>
     </neon-animated-pages>
