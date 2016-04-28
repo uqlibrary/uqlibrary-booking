@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>uqlibrary-booking</title>
+  <title>uqlibrary-booking-mybookings</title>
 
   <script src="../../webcomponentsjs/webcomponents.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
@@ -22,7 +22,9 @@
 </test-fixture>
 
 <script>
-  suite('<uqlibrary-booking>', function () {
+  document.cookie="UQLMockData=enabled";
+
+  suite('<uqlibrary-booking-mybookings>', function () {
     var element;
 
     // Account taken from the MOCK data we have

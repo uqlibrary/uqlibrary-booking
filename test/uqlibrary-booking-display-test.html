@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>uqlibrary-booking-display</title>
+
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
+  <script src="../../moment/moment.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+
+  <!-- Import the element to test -->
+  <link rel="import" href="../elements/uqlibrary-booking-display.html">
+
+</head>
+<body>
+
+<test-fixture id="element">
+  <template>
+    <uqlibrary-booking-display></uqlibrary-booking-display>
+  </template>
+</test-fixture>
+
+<script>
+  document.cookie="UQLMockData=enabled";
+
+  suite('<uqlibrary-booking-display>', function () {
+    var element;
+
+    var now = new Date();
+    now.setHours(10);
+    now.setMinutes(0);
+    var bookingStart = moment(now).clone().format();
+    var bookingEnd = moment(now).clone().add(5, "h").format();
+
+    // Account taken from the MOCK data we have
+    var account = {"id":"s1234567","class":"0","type":1,"homeLib":"sshia","name":"Mr. John Doe","mail":"s1234567@student.uq.edu.au","groups":[],"hasSession":true,"canMasquerade":true,"classes":[{"ACAD_CAREER":"UGRD","DESCR":"Financial Management","SUBJECT":"FINM","CATALOG_NBR":"2401","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Commerce Systems Dev","SUBJECT":"INFS","CATALOG_NBR":"2244","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Working with Groups & Teams","SUBJECT":"MGTS","CATALOG_NBR":"2961","CAMPUS":"GATTN","INSTRUCTION_MODE":"EX","ACAD_GROUP":"SCI","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Civil Procedure","SUBJECT":"LAWS","CATALOG_NBR":"5215","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Com Infrastructure Mgmt","SUBJECT":"MGTS","CATALOG_NBR":"7801","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"}]};
+    var bookingDetails = {"id":"sc154b889de4d367","startDate": bookingStart,"endDate": bookingEnd,"title":"Meeting Room, Hawken Bldg (#50)","subtitle":"","scheduleid":"sc14d4a3820e0860","machid":"sc14d4a385d2e1c6"};
+
+    var d = new Date();
+    console.log(d.toLocaleDateString());
+
+    setup(function () {
+      element = fixture('element');
+      element.account = account;
+      element.bookingDetails = bookingDetails;
+    });
+
+    test('should fire off a "Edit Booking" event when the edit booking button is clicked', function (done) {
+      document.addEventListener('edit-booking-started', function (e) {
+        expect(e.type).to.be.equal('edit-booking-started');
+        done();
+      });
+
+      element._editBooking();
+    });
+
+    test('should show the booking details', function (done) {
+      setTimeout(function () {
+        expect(element._location).to.be.equal('Hawken Building (#50), St Lucia');
+        expect(element._bookingTime).to.be.equal('10:00 am - 3:00 pm');
+        expect(element._bookingDate).to.be.equal(moment().format("dddd MMMM DD, YYYY"));
+        done();
+      }, 50);
+    });
+
+    test('should show a confirmation dialog when deleting a booking', function (done) {
+      expect(element.$.infoDialog.getAttribute('aria-hidden')).to.be.equal('true');
+      setTimeout(function () {
+        expect(element.$.infoDialog.getAttribute('aria-hidden')).to.be.equal(null);
+        done();
+      }, 50);
+      element.$.delete.click();
+    });
+
+    test('should allow cancellation of the delete dialog', function (done) {
+      setTimeout(function () {
+        expect(element.$.infoDialog.getAttribute('aria-hidden')).to.be.equal(null);
+
+        element.$.cancel.click();
+
+        setTimeout(function () {
+          expect(element.$.infoDialog.getAttribute('aria-hidden')).to.be.equal('true');
+          done();
+        }, 50);
+      }, 50);
+      element.$.delete.click();
+    });
+
+    test('should allow deletion of bookings', function (done) {
+      document.addEventListener('booking-deleted', function (e) {
+        expect(e.type).to.be.equal('booking-deleted');
+        done();
+      });
+
+      element._deleteBooking();
+    });
+  });
+</script>
+
+</body>
+</html>

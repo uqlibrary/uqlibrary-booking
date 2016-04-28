@@ -81,7 +81,6 @@
     _accountLoaded: function (e) {
       if (e.detail.hasSession) {
         this._account = e.detail;
-        console.log(JSON.stringify(this._account));
       } else {
         this.$.account.login(window.location.href);
       }
