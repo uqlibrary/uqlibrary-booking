@@ -25,12 +25,6 @@
       Polymer.NeonSharedElementAnimatableBehavior
     ],
     /**
-     * Called when the back button is pressed
-     */
-    back: function () {
-      this.fire('uqlibrary-booking-navigate', 1);
-    },
-    /**
      * Called when the user clicks on a room
      * @param e
      * @private

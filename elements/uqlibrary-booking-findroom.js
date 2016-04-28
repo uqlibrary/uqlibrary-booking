@@ -224,6 +224,9 @@
         roomsFound.push(room);
       });
 
+      console.log(JSON.stringify(this.searchResults));
+      console.debug("A");
+
       this.searchResults = _.sortBy(roomsFound, 'nextAvailable');
     },
     /**
