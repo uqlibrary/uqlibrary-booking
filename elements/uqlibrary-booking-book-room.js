@@ -104,7 +104,7 @@
     activate: function () {
       if (this.bookingDetails && this.bookingDetails.machid) {
         // Edit booking. Setting search date will trigger load facilities
-        this._searchDate = this.bookingDetails.startDate;
+        this._searchDate = moment(this.bookingDetails.startDate).toDate();
       } else {
         this._searchDate = moment(this.searchDate).clone().toDate();
       }
@@ -168,14 +168,14 @@
           var bookingStartTime = moment(element.from, "X");
           var bookingEndTime = moment(element.to, "X");
 
-          //timeslot is selectable if it belongs to a current booking in editing form
+          // time slot is selectable if it belongs to a current booking in editing form
           if (self.bookingDetails && self.bookingDetails.startDate &&
               timeslotStartTime.getTime() >= self.bookingDetails.startDate.getTime() &&
               timeslotEndTime.getTime() <= self.bookingDetails.endDate.getTime()) {
             return true;
           }
 
-          //timeslot does not overlap with existing booking
+          // time slot does not overlap with existing booking
           if (bookingStartTime >= timeslotEndTime || bookingEndTime <= timeslotStartTime)
             return true;
 
@@ -293,7 +293,7 @@
       if (selectedTimeslots.length == 0) {
         validation.valid = false;
         validation.message = "Please, make a valid selection.";
-      } else if (selectedTimeslots.length > this.selectedRoom.maxtime / this.selectedRoom.time_span) {
+      } else if (selectedTimeslots.length > this._maxBookingLength) {
         validation.valid = false;
         validation.message = "Current selection exceeds maximum booking duration. Please, make a valid selection.";
       }

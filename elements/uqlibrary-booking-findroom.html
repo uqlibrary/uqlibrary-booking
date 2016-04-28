@@ -123,7 +123,8 @@
           <div id="room-select">
             <template is="dom-if" if="{{_selectedBuildingIndex}}">
               <paper-dropdown-menu label="Room" aria-label="Select a room">
-                <paper-menu class="dropdown-content">
+                <paper-menu class="dropdown-content" selected="{{_selectedRoomIndex}}">
+                  <paper-item label="Any room" aria-label="Any room" role="option">Any room</paper-item>
                   <template is="dom-repeat" items="[[_roomDropdown]]">
                     <paper-item label="[[item.title]]" aria-label="[[item.title]]" role="option">
                       [[item.title]]

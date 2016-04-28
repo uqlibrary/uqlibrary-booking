@@ -50,6 +50,10 @@
         type: Array,
         value: []
       },
+      selectedRoom: {
+        type: Object,
+        notify: true
+      },
       /**
        * Holds the selected campus, building, rooms, etc
        */
@@ -371,7 +375,7 @@
       if (newVal == 0) {
         this._selectedRoom = null;
       } else {
-        this._selectedRoom = this._selectedBuilding.rooms[newVal];
+        this._selectedRoom = this._selectedBuilding.rooms[newVal - 1];
       }
 
       this._getSearchResults();
@@ -450,6 +454,9 @@
         this.fire('uqlibrary-booking-show-toast', 'No campus selected');
       } else if (this.searchResults.length == 0) {
         this.fire('uqlibrary-booking-show-toast', 'No rooms found');
+      } else if (this._selectedRoom !== null) {
+        this.selectedRoom = this._selectedRoom;
+        this.fire('book-room');
       } else {
         this.fire("search");
       }
