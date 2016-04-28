@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>uqlibrary-booking-create</title>
+
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+
+  <!-- Import the element to test -->
+  <link rel="import" href="../elements/uqlibrary-booking-create.html">
+
+</head>
+<body>
+
+<test-fixture id="element">
+  <template>
+    <uqlibrary-booking-create></uqlibrary-booking-create>
+  </template>
+</test-fixture>
+
+<script>
+  document.cookie="UQLMockData=enabled";
+
+  suite('<uqlibrary-booking-mybookings>', function () {
+    var element;
+
+    // Account taken from the MOCK data we have
+    var account = {"id":"s1234567","class":"0","type":1,"homeLib":"sshia","name":"Mr. John Doe","mail":"s1234567@student.uq.edu.au","groups":[],"hasSession":true,"canMasquerade":true,"classes":[{"ACAD_CAREER":"UGRD","DESCR":"Financial Management","SUBJECT":"FINM","CATALOG_NBR":"2401","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Commerce Systems Dev","SUBJECT":"INFS","CATALOG_NBR":"2244","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Working with Groups & Teams","SUBJECT":"MGTS","CATALOG_NBR":"2961","CAMPUS":"GATTN","INSTRUCTION_MODE":"EX","ACAD_GROUP":"SCI","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Civil Procedure","SUBJECT":"LAWS","CATALOG_NBR":"5215","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Com Infrastructure Mgmt","SUBJECT":"MGTS","CATALOG_NBR":"7801","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"}]};
+
+    setup(function () {
+      element = fixture('element');
+      element.account = account;
+    });
+
+    test('should notify the top app to change the title', function (done) {
+      document.addEventListener('uqlibrary-booking-update-header', function (e) {
+        expect(e.detail.title).to.be.equal('Find a room');
+        expect(e.detail.backEnabled).to.be.equal(true);
+
+        document.removeEventListener('uqlibrary-booking-update-header', arguments.callee);
+        done();
+      });
+
+      element.activate();
+    });
+
+    test('should tell the parent app to navigate to "My Bookings" if current page is "Find a room"', function (done) {
+      document.addEventListener('my-bookings', function (e) {
+        expect(e.type).to.be.equal('my-bookings');
+
+        document.removeEventListener('my-bookings', arguments.callee);
+        done();
+      });
+      element.back();
+    });
+
+    test('should go back between pages if the current page is not "Find a room"', function (done) {
+      element._selectedPage = 1;
+
+      setTimeout(function () {
+        expect(element._selectedPage).to.be.equal(0);
+        done();
+      }, 50);
+
+      element.back();
+    });
+
+    test('should listen to the "search" event and navigate to the "Select a room" page', function (done) {
+      document.addEventListener('search', function () {
+        setTimeout(function () {
+          expect(element._selectedPage).to.be.equal(1);
+          document.removeEventListener('search', arguments.callee);
+          done();
+        }, 50);
+      });
+      element.$.findRoom.fire('search');
+    });
+
+    test('should listen to the "book-room" event and navigate to the "Book room" page', function (done) {
+      document.addEventListener('book-room', function () {
+        setTimeout(function () {
+          expect(element._selectedPage).to.be.equal(2);
+          document.removeEventListener('book-room', arguments.callee);
+          done();
+        }, 50);
+      });
+      element.$.findRoom.fire('book-room');
+    });
+
+    test('should listen to the "booking-created" event and navigate to the "My bookings" page', function (done) {
+      element._selectedPage = 2;
+
+      document.addEventListener('booking-created', function (e) {
+        setTimeout(function () {
+          expect(element._selectedPage).to.be.equal(0);
+          document.removeEventListener('booking-created', arguments.callee);
+          done();
+        }, 50);
+      });
+      element.$.bookRoom.fire('booking-created');
+    });
+
+    /*
+    test('should fire off a "Add Booking" event when the add booking button is clicked', function (done) {
+      document.addEventListener('add-booking', function (e) {
+        expect(e.type).to.be.equal('add-booking');
+        done();
+      });
+
+      element._addBooking();
+    });
+
+    test('should show the user\'s bookings', function (done) {
+      setTimeout(function () {
+        expect(element.events.length).to.be.equal(3);
+        done();
+      }, 500);
+    });
+
+    test('should navigate to the Select Booking page when an event is selected', function (done) {
+      element.addEventListener('event-selected', function () {
+        expect(element._selectedBooking.id).to.be.equal(element.events[0].id);
+        expect(element._selectedPage).to.be.equal(1);
+        done();
+      });
+
+      setTimeout(function () {
+        element.$.timeline.fire('event-selected', element.events[0]);
+      }, 100);
+    });
+
+    test('should listen to the "Delete Booking" event', function (done) {
+      element.addEventListener('booking-deleted', function () {
+        expect(element._selectedPage).to.be.equal(0);
+
+        done();
+      });
+
+      element._selectedPage = 1;
+      element.$.bookingDisplay.fire('booking-deleted');
+    });
+
+    test('should navigate to the "Edit booking" page when the "edit-booking-started" event is called', function (done) {
+      element.addEventListener('edit-booking-started', function () {
+        expect(element._selectedPage).to.be.equal(2);
+        done();
+      });
+
+      element._selectedBooking = element.events[0];
+      element.$.bookingDisplay.fire('edit-booking-started');
+    });
+    */
+  });
+</script>
+
+</body>
+</html>

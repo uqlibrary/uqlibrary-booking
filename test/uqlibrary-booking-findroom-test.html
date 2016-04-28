@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>uqlibrary-booking-findroom</title>
+
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
+  <script src="../../moment/moment.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+
+  <!-- Import the element to test -->
+  <link rel="import" href="../elements/uqlibrary-booking-display.html">
+
+</head>
+<body>
+
+<test-fixture id="element">
+  <template>
+    <uqlibrary-booking-findroom></uqlibrary-booking-findroom>
+  </template>
+</test-fixture>
+
+<script>
+  document.cookie="UQLMockData=enabled";
+
+  suite('<uqlibrary-booking-findroom>', function () {
+    var element;
+
+    // Account taken from the MOCK data we have
+    var account = {"id":"s1234567","class":"0","type":1,"homeLib":"sshia","name":"Mr. John Doe","mail":"s1234567@student.uq.edu.au","groups":[],"hasSession":true,"canMasquerade":true,"classes":[{"ACAD_CAREER":"UGRD","DESCR":"Financial Management","SUBJECT":"FINM","CATALOG_NBR":"2401","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Commerce Systems Dev","SUBJECT":"INFS","CATALOG_NBR":"2244","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Working with Groups & Teams","SUBJECT":"MGTS","CATALOG_NBR":"2961","CAMPUS":"GATTN","INSTRUCTION_MODE":"EX","ACAD_GROUP":"SCI","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Civil Procedure","SUBJECT":"LAWS","CATALOG_NBR":"5215","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Com Infrastructure Mgmt","SUBJECT":"MGTS","CATALOG_NBR":"7801","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"}]};
+
+    setup(function () {
+      element = fixture('element');
+      element.account = account;
+    });
+
+    test('should display all elements', function () {
+      expect(element.$.campusSelect).not.to.be.null;
+      expect(element.$.buildingSelect).not.to.be.null;
+      expect(element.$.roomSelect).not.to.be.null;
+      expect(element.$.dateSelect).not.to.be.null;
+      expect(element.$.timeSelect).not.to.be.null;
+      expect(element.$.durationSelect).not.to.be.null;
+      expect(element.$.capacitySelect).not.to.be.null;
+    });
+
+    test('should properly fill room data and filter campuses / buildings / rooms', function (done) {
+      setTimeout(function () {
+        expect(element._buildingDropdown).to.be.undefined;
+        expect(element.$$('#building-select paper-dropdown-menu')).to.be.null;
+        element._selectedCampusIndex = 0;
+
+        setTimeout(function () {
+          expect(element._buildingDropdown).not.to.be.undefined;
+          expect(element.$$('#building-select paper-dropdown-menu')).not.to.be.null;
+          expect(element.$$('#room-select paper-dropdown-menu')).to.be.null;
+
+          expect(element._selectedBuildingIndex).to.be.equal(0);
+          expect(element._roomDropdown).to.be.undefined;
+
+          element._selectedBuildingIndex = 1;
+          setTimeout(function () {
+            expect(element.$$('#building-select paper-dropdown-menu')).not.to.be.null;
+            expect(element._roomDropdown.length).to.be.equal(9);
+            done();
+          }, 50);
+        }, 50);
+      }, 100);
+    });
+
+    test('should show the next 7 days in the date drop down', function (done) {
+      setTimeout(function () {
+        expect(element._dayDropdown.length).to.be.equal(7);
+        done();
+      }, 100);
+    });
+
+    test('should properly populate the time drop down', function (done) {
+      setTimeout(function () {
+        expect(element._timeDropdown.length).to.be.equal(48);
+        done();
+      }, 100);
+    });
+
+    test('should not allow the user to proceed to the next page if no campus is selected', function (done) {
+      setTimeout(function () {
+        element._selectedCampus = null;
+        document.addEventListener('uqlibrary-booking-show-toast', function (e) {
+          expect(e.detail).to.be.equal('No campus selected');
+          document.removeEventListener('uqlibrary-booking-show-toast', arguments.callee);
+          done();
+        });
+
+        element.$.search.click();
+      }, 50);
+    });
+
+    test('should not allow the user to proceed to the next page if no rooms match his/her search results', function (done) {
+      setTimeout(function () {
+        element._selectedCampusIndex = 0;
+        element._selectedBuildingIndex = 1;
+        element._selectedRoomIndex = 1;
+
+        document.addEventListener('uqlibrary-booking-show-toast', function (e) {
+          expect(e.detail).to.be.equal('No rooms found');
+          document.removeEventListener('uqlibrary-booking-show-toast', arguments.callee);
+          done();
+        });
+
+        element.$.search.click();
+      }, 50);
+    });
+
+    test('should navigate to the "Select Room" page when a valid search query is given (> 1 result)', function (done) {
+      setTimeout(function () {
+        element._selectedCampusIndex = 0;
+
+        document.addEventListener('search', function (e) {
+          expect(e.type).to.be.equal('search');
+          document.removeEventListener('search', arguments.callee);
+          done();
+        });
+
+        element.$.search.click();
+      }, 50);
+    });
+
+  });
+</script>
+
+</body>
+</html>

@@ -320,6 +320,8 @@
      * @private
      */
     _selectCampus: function (newVal) {
+      if (newVal == null) return;
+
       var self = this;
       var oldCampus = this._selectedCampus;
       this._selectedCampus = this._roomData[newVal];

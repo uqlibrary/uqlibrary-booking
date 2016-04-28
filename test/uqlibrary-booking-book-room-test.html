@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>uqlibrary-booking-book-room</title>
+
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
+  <script src="../../moment/moment.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+
+  <!-- Import the element to test -->
+  <link rel="import" href="../elements/uqlibrary-booking-display.html">
+
+</head>
+<body>
+
+<test-fixture id="element">
+  <template>
+    <uqlibrary-booking-book-room></uqlibrary-booking-book-room>
+  </template>
+</test-fixture>
+
+<script>
+  document.cookie="UQLMockData=enabled";
+
+  suite('<uqlibrary-booking-book-room>', function () {
+    var element;
+
+    // Helper variables
+    var now = new Date();
+    now.setHours(15);
+    now.setMinutes(0);
+    now.setSeconds(0);
+
+    var availableFrom = moment(now).subtract(15, 'h').format('x');
+    var availableTo = moment(now).add(8, 'h').format('x');
+
+    // Data passed to the element
+    var account = {"id":"s1234567","class":"0","type":1,"homeLib":"sshia","name":"Mr. John Doe","mail":"s1234567@student.uq.edu.au","groups":[],"hasSession":true,"canMasquerade":true,"classes":[{"ACAD_CAREER":"UGRD","DESCR":"Financial Management","SUBJECT":"FINM","CATALOG_NBR":"2401","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Commerce Systems Dev","SUBJECT":"INFS","CATALOG_NBR":"2244","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Working with Groups & Teams","SUBJECT":"MGTS","CATALOG_NBR":"2961","CAMPUS":"GATTN","INSTRUCTION_MODE":"EX","ACAD_GROUP":"SCI","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Civil Procedure","SUBJECT":"LAWS","CATALOG_NBR":"5215","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Com Infrastructure Mgmt","SUBJECT":"MGTS","CATALOG_NBR":"7801","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"}]};
+    var searchDate = now;
+    var searchDuration = 120;
+    var selectedRoom = {"id":"sc149bda6ca15d30","scheduleid":"sc149bdef7bb3d8c","title":"Locker 01","campus":"St Lucia","building":"Biological Sciences Library (#94)","location":"","capacity":"1","maxtime":"1200","mintime":"30","bookings":[],"available_from":availableFrom,"available_to":availableTo,"url":"","notes":"Postgraduates only","time_span":"30","image":"st_lucia/biological_sciences_library_94_thumb.jpg","imageLarge":"st_lucia/biological_sciences_library_94.jpg"};
+
+    setup(function () {
+      element = fixture('element');
+      element.account = account;
+      element.selectedRoom = selectedRoom;
+      element.searchDate = searchDate;
+      element.searchDuration = searchDuration;
+
+      element.activate();
+    });
+
+    test('should show the correct information for the given selected room', function (done) {
+      setTimeout(function () {
+
+        done();
+      }, 100);
+    });
+
+    test('should calculate the correct max booking length', function (done) {
+      setTimeout(function () {
+        expect(element._maxBookingLength).to.be.equal(40);
+        done();
+      }, 100);
+    });
+
+    test('should calculate the max booking date', function (done) {
+      setTimeout(function () {
+        expect(moment(element._maximumBookingDate).format("YYYY-MM-DD")).to.be.equal(moment().add(7, "d").format("YYYY-MM-DD"));
+        done();
+      }, 100);
+    });
+
+    test('should correctly fill the booking time slots variable', function (done) {
+      setTimeout(function () {
+        expect(element._bookingTimeSlots.length).to.be.equal(26);
+        done();
+      }, 100);
+    });
+
+    test('should correctly fill the background url property', function (done) {
+      setTimeout(function () {
+        expect(element._backgroundUrl).to.be.equal('background-image: url(\'https://app.library.uq.edu.au/assets/images/uq-buildings/st_lucia/biological_sciences_library_94.jpg\')');
+        done();
+      }, 100);
+    });
+
+    test('should not allow selection of time slots that exceed the max booking length', function (done) {
+      var selectedTimeSlots = [ {}, {}, {} ];
+
+      setTimeout(function () {
+        element._maxBookingLength = 2;
+        expect(element._validateSelection(selectedTimeSlots).valid).to.be.equal(false);
+        done();
+      }, 100);
+    });
+
+    test('should not allow non-consecutive time slots to be selected', function (done) {
+      var midnight = new Date();
+      midnight.setHours(0);
+      midnight.setMinutes(0);
+      midnight.setSeconds(0);
+
+      var selectedTimeSlots = [
+        {
+          startTime: moment(midnight).toDate(),
+          endTime: moment(midnight).add(30, 'm').toDate()
+        },
+        {
+          startTime: moment(midnight).add(60, 'm').toDate(),
+          endTime: moment(midnight).add(90, 'm').toDate()
+        }
+      ];
+
+      setTimeout(function () {
+        expect(element._validateSelection(selectedTimeSlots).valid).to.be.equal(false);
+        done();
+      }, 100);
+    });
+
+    test('should allow valid time slot selections to pass', function (done) {
+      var midnight = new Date();
+      midnight.setHours(0);
+      midnight.setMinutes(0);
+      midnight.setSeconds(0);
+
+      var selectedTimeSlots = [
+        {
+          startTime: moment(midnight).toDate(),
+          endTime: moment(midnight).add(30, 'm').toDate()
+        },
+        {
+          startTime: moment(midnight).add(30, 'm').toDate(),
+          endTime: moment(midnight).add(60, 'm').toDate()
+        }
+      ];
+
+      setTimeout(function () {
+        expect(element._validateSelection(selectedTimeSlots).valid).to.be.equal(true);
+        done();
+      }, 100);
+    });
+
+    test('should select the correct time slots based on the booking details', function (done) {
+      setTimeout(function () {
+        var selected = [];
+        for (var i = 0; i < element._bookingTimeSlots.length; i++) {
+          var ts = element._bookingTimeSlots[i];
+          if (ts.selected) selected.push(ts);
+        }
+
+        expect(selected.length).to.be.equal(4);
+        expect(moment(selected[0].startTime).format("HH:mm")).to.be.equal(moment(now).format("HH:mm"));
+        expect(moment(selected[3].endTime).format("HH:mm")).to.be.equal(moment(now).add(searchDuration, "m").format("HH:mm"));
+
+        done();
+      }, 100);
+    });
+  });
+</script>
+
+</body>
+</html>
