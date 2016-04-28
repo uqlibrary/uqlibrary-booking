@@ -8,5 +8,6 @@ if [ ${PIPE_NUM} == "1" ]; then
     npm install bower web-component-tester -g
     echo "Starting local WCT tests"
     bower install
+
     wct
 fi
