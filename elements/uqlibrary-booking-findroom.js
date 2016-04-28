@@ -325,6 +325,8 @@
       var self = this;
       var oldCampus = this._selectedCampus;
       this._selectedCampus = this._roomData[newVal];
+      if (this._selectedCampus) return;
+      
       this._buildingDropdown = this._selectedCampus.buildings;
 
       if (oldCampus && this._selectedBuildingIndex != 0) {
