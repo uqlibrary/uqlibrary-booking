@@ -65,9 +65,9 @@
             expect(element.$$('#building-select paper-dropdown-menu')).not.to.be.null;
             expect(element._roomDropdown.length).to.be.equal(9);
             done();
-          }, 50);
-        }, 50);
-      }, 100);
+          }, 100);
+        }, 100);
+      }, 500);
     });
 
     test('should show the next 7 days in the date drop down', function (done) {
@@ -103,14 +103,16 @@
         element._selectedBuildingIndex = 1;
         element._selectedRoomIndex = 1;
 
-        document.addEventListener('uqlibrary-booking-show-toast', function (e) {
-          expect(e.detail).to.be.equal('No rooms found');
-          document.removeEventListener('uqlibrary-booking-show-toast', arguments.callee);
-          done();
-        });
+        setTimeout(function () {
+          document.addEventListener('uqlibrary-booking-show-toast', function (e) {
+            expect(e.detail).to.be.equal('No rooms found');
+            document.removeEventListener('uqlibrary-booking-show-toast', arguments.callee);
+            done();
+          });
 
-        element.$.search.click();
-      }, 50);
+          element.$.search.click();
+        }, 100);
+      }, 250);
     });
 
     test('should navigate to the "Select Room" page when a valid search query is given (> 1 result)', function (done) {
@@ -123,8 +125,10 @@
           done();
         });
 
-        element.$.search.click();
-      }, 50);
+        setTimeout(function () {
+          element.$.search.click();
+        }, 50);
+      }, 250);
     });
 
   });
