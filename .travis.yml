@@ -10,3 +10,4 @@ before_install:
 script: "wct"
 addons:
   firefox: "latest"
+  chrome: "latest"
