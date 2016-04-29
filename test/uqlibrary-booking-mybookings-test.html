@@ -8,6 +8,7 @@
   <script src="../../web-component-tester/browser.js"></script>
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
   <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src="../../uq-wait/UQWait.js"></script>
 
   <!-- Import the element to test -->
   <link rel="import" href="../elements/uqlibrary-booking-mybookings.html">
@@ -30,23 +31,26 @@
     // Account taken from the MOCK data we have
     var account = {"id":"s1234567","class":"0","type":1,"homeLib":"sshia","name":"Mr. John Doe","mail":"s1234567@student.uq.edu.au","groups":[],"hasSession":true,"canMasquerade":true,"classes":[{"ACAD_CAREER":"UGRD","DESCR":"Financial Management","SUBJECT":"FINM","CATALOG_NBR":"2401","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Commerce Systems Dev","SUBJECT":"INFS","CATALOG_NBR":"2244","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Working with Groups & Teams","SUBJECT":"MGTS","CATALOG_NBR":"2961","CAMPUS":"GATTN","INSTRUCTION_MODE":"EX","ACAD_GROUP":"SCI","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Civil Procedure","SUBJECT":"LAWS","CATALOG_NBR":"5215","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Com Infrastructure Mgmt","SUBJECT":"MGTS","CATALOG_NBR":"7801","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"}]};
 
-    setup(function () {
+    setup(function (done) {
       element = fixture('element');
       element.account = account;
+
+      UQWait.custom(function () {
+        return element.events.length > 0;
+      }, 5000, done);
     });
 
     test('should notify the top app to change the title', function (done) {
-      var alreadyDone = false;
       document.addEventListener('uqlibrary-booking-update-header', function (e) {
-        if (!alreadyDone) {
-          expect(e.detail.title).to.be.equal('My bookings');
-          expect(e.detail.backEnabled).to.be.equal(false);
+        expect(e.detail.title).to.be.equal('My bookings');
+        expect(e.detail.backEnabled).to.be.equal(false);
 
-          // Event might fire twice...
-          done();
-          alreadyDone = true;
-        }
+        document.removeEventListener('uqlibrary-booking-update-header', arguments.callee);
+
+        done();
       });
+
+      element.activate();
     });
 
     test('should fire off a "Add Booking" event when the add booking button is clicked', function (done) {
@@ -58,11 +62,8 @@
       element._addBooking();
     });
 
-    test('should show the user\'s bookings', function (done) {
-      setTimeout(function () {
-        expect(element.events.length).to.be.equal(3);
-        done();
-      }, 500);
+    test('should show the user\'s bookings', function () {
+      expect(element.events.length).to.be.equal(3);
     });
 
     test('should navigate to the Select Booking page when an event is selected', function (done) {
@@ -72,15 +73,12 @@
         done();
       });
 
-      setTimeout(function () {
-        element.$.timeline.fire('event-selected', element.events[0]);
-      }, 100);
+      element.$.timeline.fire('event-selected', element.events[0]);
     });
 
     test('should listen to the "Delete Booking" event', function (done) {
       element.addEventListener('booking-deleted', function () {
         expect(element._selectedPage).to.be.equal(0);
-
         done();
       });
 

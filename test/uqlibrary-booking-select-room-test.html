@@ -9,6 +9,7 @@
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
   <script src="../../moment/moment.js"></script>
   <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src="../../uq-wait/UQWait.js"></script>
 
   <!-- Import the element to test -->
   <link rel="import" href="../elements/uqlibrary-booking-select-room.html">
@@ -32,34 +33,30 @@
     var account = {"id":"s1234567","class":"0","type":1,"homeLib":"sshia","name":"Mr. John Doe","mail":"s1234567@student.uq.edu.au","groups":[],"hasSession":true,"canMasquerade":true,"classes":[{"ACAD_CAREER":"UGRD","DESCR":"Financial Management","SUBJECT":"FINM","CATALOG_NBR":"2401","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Commerce Systems Dev","SUBJECT":"INFS","CATALOG_NBR":"2244","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Working with Groups & Teams","SUBJECT":"MGTS","CATALOG_NBR":"2961","CAMPUS":"GATTN","INSTRUCTION_MODE":"EX","ACAD_GROUP":"SCI","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Civil Procedure","SUBJECT":"LAWS","CATALOG_NBR":"5215","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Com Infrastructure Mgmt","SUBJECT":"MGTS","CATALOG_NBR":"7801","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"}]};
     var searchResults = [{"id":"sc149bda6ca15d30","scheduleid":"sc149bdef7bb3d8c","title":"Locker 01","campus":"St Lucia","building":"Biological Sciences Library (#94)","location":"","capacity":"1","maxtime":"1200","mintime":"30","bookings":[],"available_from":1461790800,"available_to":1461837600,"url":"","notes":"Postgraduates only","next_available_time":null,"next_available_time_text":"","time_span":"30","image":"st_lucia/biological_sciences_library_94_thumb.jpg","imageLarge":"st_lucia/biological_sciences_library_94.jpg","nextAvailable":1461825000,"nextAvailableTimeText":"4:30 pm - 5:00 pm, 28/04/2016"},{"id":"sc149bda761bdf73","scheduleid":"sc149bdef7bb3d8c","title":"Locker 02","campus":"St Lucia","building":"Biological Sciences Library (#94)","location":"","capacity":"1","maxtime":"1200","mintime":"30","bookings":[{"id":"sc154b889de4d365","from":1461801600,"to":1461805200}],"available_from":1461790800,"available_to":1461837600,"url":"","notes":"Postgraduates only.","next_available_time":null,"next_available_time_text":"","time_span":"30","image":"st_lucia/biological_sciences_library_94_thumb.jpg","imageLarge":"st_lucia/biological_sciences_library_94.jpg","nextAvailable":1461825000,"nextAvailableTimeText":"4:30 pm - 5:00 pm, 28/04/2016"},{"id":"sc149bdad7be7b15","scheduleid":"sc149bdef90f28f8","title":"eZone 1     (Seats 22)","campus":"St Lucia","building":"Biological Sciences Library (#94)","location":"","capacity":"22","maxtime":"240","mintime":"30","bookings":[],"available_from":1461790800,"available_to":1461837600,"url":"","notes":"Overhead projector with dual screens, \r\nPresenters PC,\r\nWhiteboard, \r\n22 Computers.","next_available_time":null,"next_available_time_text":"","time_span":"30","image":"st_lucia/biological_sciences_library_94_thumb.jpg","imageLarge":"st_lucia/biological_sciences_library_94.jpg","nextAvailable":1461825000,"nextAvailableTimeText":"4:30 pm - 5:00 pm, 28/04/2016"},{"id":"sc149bdadc257971","scheduleid":"sc149bdef90f28f8","title":"eZone 2 (Seats 10)","campus":"St Lucia","building":"Biological Sciences Library (#94)","location":"","capacity":"10","maxtime":"240","mintime":"180","bookings":[],"available_from":1461790800,"available_to":1461837600,"url":"","notes":"Overhead projector with dual screens, \r\nPresenters PC, \r\nWhiteboard, \r\n10 Computers.","next_available_time":null,"next_available_time_text":"","time_span":"30","image":"st_lucia/biological_sciences_library_94_thumb.jpg","imageLarge":"st_lucia/biological_sciences_library_94.jpg","nextAvailable":1461825000,"nextAvailableTimeText":"4:30 pm - 5:00 pm, 28/04/2016"},{"id":"sc149bdadf3f0a66","scheduleid":"sc149bdef90f28f8","title":"eZone 3 (Seats 20)","campus":"St Lucia","building":"Biological Sciences Library (#94)","location":"","capacity":"20","maxtime":"240","mintime":"30","bookings":[],"available_from":1461790800,"available_to":1461837600,"url":"","notes":"Overhead projector with dual screens, \r\nPresenters PC, \r\nWhiteboard, \r\n20 Computers.","next_available_time":null,"next_available_time_text":"","time_span":"30","image":"st_lucia/biological_sciences_library_94_thumb.jpg","imageLarge":"st_lucia/biological_sciences_library_94.jpg","nextAvailable":1461825000,"nextAvailableTimeText":"4:30 pm - 5:00 pm, 28/04/2016"},{"id":"sc149bda60927ec9","scheduleid":"sc14d896ac61ad24","title":"Data Projector 1","campus":"St Lucia","building":"Hawken Building (#50)","location":"","capacity":"1","maxtime":"120","mintime":"30","bookings":[],"available_from":1461790800,"available_to":1461837600,"url":"","notes":"This projector won’t display red properly? It may affect your presentations so please book other projector if possible","next_available_time":null,"next_available_time_text":"","time_span":"30","image":"st_lucia/hawken_bldg_50_thumb.jpg","imageLarge":"st_lucia/hawken_bldg_50.jpg","nextAvailable":1461825000,"nextAvailableTimeText":"4:30 pm - 5:00 pm, 28/04/2016"},{"id":"sc149bda64b75e7d","scheduleid":"sc14d896ac61ad24","title":"Data Projector 2","campus":"St Lucia","building":"Hawken Building (#50)","location":"","capacity":"1","maxtime":"120","mintime":"30","bookings":[{"id":"sc1542a2015e919c","from":1461801600,"to":1461805200}],"available_from":1461790800,"available_to":1461837600,"url":"","notes":"Out of order","next_available_time":null,"next_available_time_text":"","time_span":"30","image":"st_lucia/hawken_bldg_50_thumb.jpg","imageLarge":"st_lucia/hawken_bldg_50.jpg","nextAvailable":1461825000,"nextAvailableTimeText":"4:30 pm - 5:00 pm, 28/04/2016"}];
 
-    setup(function () {
+    setup(function (done) {
       element = fixture('element');
       element.account = account;
       element.searchResults = searchResults;
+
+      UQWait.custom(function () {
+        return document.querySelectorAll('.select-room-item').length == 7;
+      }, 5000, done);
     });
 
-    test('should properly populate the searchResults property', function (done) {
-      setTimeout(function () {
-        expect(element.searchResults.length).to.be.equal(7);
-        done();
-      }, 50);
+    test('should properly populate the searchResults property', function () {
+      expect(element.searchResults.length).to.be.equal(7);
     });
 
-    test('should show the search results in HTML', function (done) {
-      setTimeout(function () {
-        expect(document.querySelectorAll('.select-room-item').length).to.be.equal(7);
-        done();
-      }, 50);
+    test('should show the search results in HTML', function () {
+      expect(document.querySelectorAll('.select-room-item').length).to.be.equal(7);
     });
 
     test('should fire the "book-room" event when an item is clicked on', function (done) {
-      setTimeout(function () {
-        document.addEventListener('book-room', function () {
-          expect(element.selectedRoom.id).to.be.equal('sc149bda6ca15d30');
-          done();
-        });
-        document.querySelectorAll('.select-room-item')[0].click();
-      }, 100);
+      document.addEventListener('book-room', function () {
+        expect(element.selectedRoom.id).to.be.equal('sc149bda6ca15d30');
+        done();
+      });
+      document.querySelectorAll('.select-room-item')[0].click();
     });
   });
 </script>

@@ -24,7 +24,8 @@
   },
   "devDependencies": {
     "web-component-tester": "^4.2.2",
-    "test-fixture": "PolymerElements/test-fixture#^1.1.0"
+    "test-fixture": "PolymerElements/test-fixture#^1.1.0",
+    "uq-wait": "uqlibrary/uq-wait#v1.0.0"
   },
   "resolutions": {
     "polymer": "1.4.0",

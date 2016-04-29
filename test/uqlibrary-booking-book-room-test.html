@@ -8,6 +8,7 @@
   <script src="../../web-component-tester/browser.js"></script>
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
   <script src="../../moment/moment.js"></script>
+  <script src="../../uq-wait/UQWait.js"></script>
   <link rel="import" href="../../test-fixture/test-fixture.html">
 
   <!-- Import the element to test -->
@@ -43,7 +44,7 @@
     var searchDuration = 120;
     var selectedRoom = {"id":"sc149bda6ca15d30","scheduleid":"sc149bdef7bb3d8c","title":"Locker 01","campus":"St Lucia","building":"Biological Sciences Library (#94)","location":"","capacity":"1","maxtime":"1200","mintime":"30","bookings":[],"available_from":availableFrom,"available_to":availableTo,"url":"","notes":"Postgraduates only","time_span":"30","image":"st_lucia/biological_sciences_library_94_thumb.jpg","imageLarge":"st_lucia/biological_sciences_library_94.jpg"};
 
-    setup(function () {
+    setup(function (done) {
       element = fixture('element');
       element.account = account;
       element.selectedRoom = selectedRoom;
@@ -51,54 +52,40 @@
       element.searchDuration = searchDuration;
 
       element.activate();
+
+      UQWait.custom(function () {
+        return element._bookingTimeSlots.length > 0;
+      }, 5000, done);
     });
 
-    test('should show the correct information for the given selected room', function (done) {
-      setTimeout(function () {
-
-        done();
-      }, 100);
+    test('should show the correct information for the given selected room', function () {
+      expect(document.querySelector('.page .title').textContent).to.be.equal('Locker 01');
     });
 
-    test('should calculate the correct max booking length', function (done) {
-      setTimeout(function () {
-        expect(element._maxBookingLength).to.be.equal(40);
-        done();
-      }, 100);
+    test('should calculate the correct max booking length', function () {
+      expect(element._maxBookingLength).to.be.equal(40);
     });
 
-    test('should calculate the max booking date', function (done) {
-      setTimeout(function () {
-        expect(moment(element._maximumBookingDate).format("YYYY-MM-DD")).to.be.equal(moment().add(7, "d").format("YYYY-MM-DD"));
-        done();
-      }, 100);
+    test('should calculate the max booking date', function () {
+      expect(moment(element._maximumBookingDate).format("YYYY-MM-DD")).to.be.equal(moment().add(7, "d").format("YYYY-MM-DD"));
     });
 
-    test('should correctly fill the booking time slots variable', function (done) {
-      setTimeout(function () {
-        expect(element._bookingTimeSlots.length).to.be.equal(26);
-        done();
-      }, 100);
+    test('should correctly fill the booking time slots variable', function () {
+      expect(element._bookingTimeSlots.length).to.be.equal(26);
     });
 
-    test('should correctly fill the background url property', function (done) {
-      setTimeout(function () {
-        expect(element._backgroundUrl).to.be.equal('background-image: url(\'https://app.library.uq.edu.au/assets/images/uq-buildings/st_lucia/biological_sciences_library_94.jpg\')');
-        done();
-      }, 100);
+    test('should correctly fill the background url property', function () {
+      expect(element._backgroundUrl).to.be.equal('background-image: url(\'https://app.library.uq.edu.au/assets/images/uq-buildings/st_lucia/biological_sciences_library_94.jpg\')');
     });
 
-    test('should not allow selection of time slots that exceed the max booking length', function (done) {
+    test('should not allow selection of time slots that exceed the max booking length', function () {
       var selectedTimeSlots = [ {}, {}, {} ];
 
-      setTimeout(function () {
-        element._maxBookingLength = 2;
-        expect(element._validateSelection(selectedTimeSlots).valid).to.be.equal(false);
-        done();
-      }, 100);
+      element._maxBookingLength = 2;
+      expect(element._validateSelection(selectedTimeSlots).valid).to.be.equal(false);
     });
 
-    test('should not allow non-consecutive time slots to be selected', function (done) {
+    test('should not allow non-consecutive time slots to be selected', function () {
       var midnight = new Date();
       midnight.setHours(0);
       midnight.setMinutes(0);
@@ -115,13 +102,10 @@
         }
       ];
 
-      setTimeout(function () {
-        expect(element._validateSelection(selectedTimeSlots).valid).to.be.equal(false);
-        done();
-      }, 100);
+      expect(element._validateSelection(selectedTimeSlots).valid).to.be.equal(false);
     });
 
-    test('should allow valid time slot selections to pass', function (done) {
+    test('should allow valid time slot selections to pass', function () {
       var midnight = new Date();
       midnight.setHours(0);
       midnight.setMinutes(0);
@@ -138,26 +122,19 @@
         }
       ];
 
-      setTimeout(function () {
-        expect(element._validateSelection(selectedTimeSlots).valid).to.be.equal(true);
-        done();
-      }, 100);
+      expect(element._validateSelection(selectedTimeSlots).valid).to.be.equal(true);
     });
 
-    test('should select the correct time slots based on the search data', function (done) {
-      setTimeout(function () {
-        var selected = [];
-        for (var i = 0; i < element._bookingTimeSlots.length; i++) {
-          var ts = element._bookingTimeSlots[i];
-          if (ts.selected) selected.push(ts);
-        }
+    test('should select the correct time slots based on the search data', function () {
+      var selected = [];
+      for (var i = 0; i < element._bookingTimeSlots.length; i++) {
+        var ts = element._bookingTimeSlots[i];
+        if (ts.selected) selected.push(ts);
+      }
 
-        expect(selected.length).to.be.equal(4);
-        expect(moment(selected[0].startTime).format("HH:mm")).to.be.equal(moment(now).format("HH:mm"));
-        expect(moment(selected[3].endTime).format("HH:mm")).to.be.equal(moment(now).add(searchDuration, "m").format("HH:mm"));
-
-        done();
-      }, 100);
+      expect(selected.length).to.be.equal(4);
+      expect(moment(selected[0].startTime).format("HH:mm")).to.be.equal(moment(now).format("HH:mm"));
+      expect(moment(selected[3].endTime).format("HH:mm")).to.be.equal(moment(now).add(searchDuration, "m").format("HH:mm"));
     });
   });
 </script>

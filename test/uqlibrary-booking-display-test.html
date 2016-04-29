@@ -7,6 +7,7 @@
   <script src="../../webcomponentsjs/webcomponents.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
+  <script src="../../uq-wait/UQWait.js"></script>
   <script src="../../moment/moment.js"></script>
   <link rel="import" href="../../test-fixture/test-fixture.html">
 
@@ -38,10 +39,14 @@
     var account = {"id":"s1234567","class":"0","type":1,"homeLib":"sshia","name":"Mr. John Doe","mail":"s1234567@student.uq.edu.au","groups":[],"hasSession":true,"canMasquerade":true,"classes":[{"ACAD_CAREER":"UGRD","DESCR":"Financial Management","SUBJECT":"FINM","CATALOG_NBR":"2401","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Commerce Systems Dev","SUBJECT":"INFS","CATALOG_NBR":"2244","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6460"},{"ACAD_CAREER":"UGRD","DESCR":"Working with Groups & Teams","SUBJECT":"MGTS","CATALOG_NBR":"2961","CAMPUS":"GATTN","INSTRUCTION_MODE":"EX","ACAD_GROUP":"SCI","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Civil Procedure","SUBJECT":"LAWS","CATALOG_NBR":"5215","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"},{"ACAD_CAREER":"UGRD","DESCR":"Elect Com Infrastructure Mgmt","SUBJECT":"MGTS","CATALOG_NBR":"7801","CAMPUS":"STLUC","INSTRUCTION_MODE":"IN","ACAD_GROUP":"BEL","STRM":"6520"}]};
     var bookingDetails = {"id":"sc154b889de4d367","startDate": bookingStart,"endDate": bookingEnd,"title":"Meeting Room, Hawken Bldg (#50)","subtitle":"","scheduleid":"sc14d4a3820e0860","machid":"sc14d4a385d2e1c6"};
 
-    setup(function () {
+    setup(function (done) {
       element = fixture('element');
       element.account = account;
       element.bookingDetails = bookingDetails;
+
+      UQWait.custom(function () {
+        return element._roomDetails.id ? true : false;
+      }, 5000, done);
     });
 
     test('should fire off a "Edit Booking" event when the edit booking button is clicked', function (done) {
@@ -53,35 +58,41 @@
       element._editBooking();
     });
 
-    test('should show the booking details', function (done) {
-      setTimeout(function () {
-        expect(element._location).to.be.equal('Hawken Building (#50), St Lucia');
-        expect(element._bookingTime).to.be.equal('10:00 am - 3:00 pm');
-        expect(element._bookingDate).to.be.equal(moment().format("dddd MMMM DD, YYYY"));
-        done();
-      }, 150);
+    test('should show the booking details', function () {
+      expect(element._location).to.be.equal('Hawken Building (#50), St Lucia');
+      expect(element._bookingTime).to.be.equal('10:00 am - 3:00 pm');
+      expect(element._bookingDate).to.be.equal(moment().format("dddd MMMM DD, YYYY"));
     });
 
     test('should show a confirmation dialog when deleting a booking', function (done) {
       expect(element.$.infoDialog.getAttribute('aria-hidden')).to.be.equal('true');
-      setTimeout(function () {
-        expect(element.$.infoDialog.getAttribute('aria-hidden')).to.be.equal(null);
+
+      UQWait.custom(function () {
+        return element.$.infoDialog.getAttribute('aria-hidden') != 'true';
+      }, 5000, function () {
+        expect(element.$.infoDialog.getAttribute('aria-hidden')).not.to.be.equal('true');
         done();
-      }, 50);
+      });
+
       element.$.delete.click();
     });
 
     test('should allow cancellation of the delete dialog', function (done) {
-      setTimeout(function () {
-        expect(element.$.infoDialog.getAttribute('aria-hidden')).to.be.equal(null);
+      UQWait.custom(function () {
+        return element.$.infoDialog.getAttribute('aria-hidden') != 'true';
+      }, 5000, function () {
+        expect(element.$.infoDialog.getAttribute('aria-hidden')).not.to.be.equal('true');
 
-        element.$.cancel.click();
-
-        setTimeout(function () {
+        UQWait.custom(function () {
+          return element.$.infoDialog.getAttribute('aria-hidden') == 'true';
+        }, 5000, function () {
           expect(element.$.infoDialog.getAttribute('aria-hidden')).to.be.equal('true');
           done();
-        }, 50);
-      }, 50);
+        });
+
+        element.$.cancel.click();
+      });
+
       element.$.delete.click();
     });
 

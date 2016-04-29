@@ -7,6 +7,7 @@
   <script src="../../webcomponentsjs/webcomponents.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
+  <script src="../../uq-wait/UQWait.js"></script>
   <link rel="import" href="../../test-fixture/test-fixture.html">
 
   <!-- Import the element to test -->
@@ -60,32 +61,27 @@
     test('should go back between pages if the current page is not "Find a room"', function (done) {
       element._selectedPage = 1;
 
-      setTimeout(function () {
-        expect(element._selectedPage).to.be.equal(0);
-        done();
-      }, 50);
+      UQWait.custom(function () {
+        return element._selectedPage == 0
+      }, 5000, done);
 
       element.back();
     });
 
     test('should listen to the "search" event and navigate to the "Select a room" page', function (done) {
       document.addEventListener('search', function () {
-        setTimeout(function () {
-          expect(element._selectedPage).to.be.equal(1);
-          document.removeEventListener('search', arguments.callee);
-          done();
-        }, 50);
+        expect(element._selectedPage).to.be.equal(1);
+        document.removeEventListener('search', arguments.callee);
+        done();
       });
       element.$.findRoom.fire('search');
     });
 
     test('should listen to the "book-room" event and navigate to the "Book room" page', function (done) {
       document.addEventListener('book-room', function () {
-        setTimeout(function () {
-          expect(element._selectedPage).to.be.equal(2);
-          document.removeEventListener('book-room', arguments.callee);
-          done();
-        }, 50);
+        expect(element._selectedPage).to.be.equal(2);
+        document.removeEventListener('book-room', arguments.callee);
+        done();
       });
       element.$.findRoom.fire('book-room');
     });
@@ -94,65 +90,12 @@
       element._selectedPage = 2;
 
       document.addEventListener('booking-created', function (e) {
-        setTimeout(function () {
-          expect(element._selectedPage).to.be.equal(0);
-          document.removeEventListener('booking-created', arguments.callee);
-          done();
-        }, 50);
+        expect(element._selectedPage).to.be.equal(0);
+        document.removeEventListener('booking-created', arguments.callee);
+        done();
       });
       element.$.bookRoom.fire('booking-created');
     });
-
-    /*
-    test('should fire off a "Add Booking" event when the add booking button is clicked', function (done) {
-      document.addEventListener('add-booking', function (e) {
-        expect(e.type).to.be.equal('add-booking');
-        done();
-      });
-
-      element._addBooking();
-    });
-
-    test('should show the user\'s bookings', function (done) {
-      setTimeout(function () {
-        expect(element.events.length).to.be.equal(3);
-        done();
-      }, 500);
-    });
-
-    test('should navigate to the Select Booking page when an event is selected', function (done) {
-      element.addEventListener('event-selected', function () {
-        expect(element._selectedBooking.id).to.be.equal(element.events[0].id);
-        expect(element._selectedPage).to.be.equal(1);
-        done();
-      });
-
-      setTimeout(function () {
-        element.$.timeline.fire('event-selected', element.events[0]);
-      }, 100);
-    });
-
-    test('should listen to the "Delete Booking" event', function (done) {
-      element.addEventListener('booking-deleted', function () {
-        expect(element._selectedPage).to.be.equal(0);
-
-        done();
-      });
-
-      element._selectedPage = 1;
-      element.$.bookingDisplay.fire('booking-deleted');
-    });
-
-    test('should navigate to the "Edit booking" page when the "edit-booking-started" event is called', function (done) {
-      element.addEventListener('edit-booking-started', function () {
-        expect(element._selectedPage).to.be.equal(2);
-        done();
-      });
-
-      element._selectedBooking = element.events[0];
-      element.$.bookingDisplay.fire('edit-booking-started');
-    });
-    */
   });
 </script>
 
