@@ -114,21 +114,6 @@
       });
     });
 
-    test('should navigate to the "Select Room" page when a valid search query is given (> 1 result)', function (done) {
-      element._selectedCampusIndex = 0;
-
-      UQWait.custom(function () {
-        return element._buildingDropdown !== null;
-      }, 5000, function () {
-        document.addEventListener('search', function (e) {
-          expect(e.type).to.be.equal('search');
-          document.removeEventListener('search', arguments.callee);
-          done();
-        });
-
-        element.$.search.click();
-      });
-    });
   });
 </script>
 
