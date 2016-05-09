@@ -50,7 +50,9 @@ Element providing the library main booking component. Booking has 2 main paths; 
         <paper-toolbar>
           <!-- Required -->
           <template is="dom-if" if="{{!standAlone}}">
-            <paper-icon-button icon="menu" on-tap="_toggleDrawerPanel" paper-drawer-toggle></paper-icon-button>
+            <template is="dom-if" if="{{!_backEnabled}}">
+              <paper-icon-button icon="menu" on-tap="_toggleDrawerPanel" paper-drawer-toggle></paper-icon-button>
+            </template>
           </template>
           <template is="dom-if" if="{{_backEnabled}}">
             <paper-icon-button

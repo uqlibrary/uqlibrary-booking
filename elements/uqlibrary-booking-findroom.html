@@ -1,5 +1,12 @@
 <link rel="import" href="elements.html">
 
+<style>
+  /* Hack to get iron-dropdown to cooperate */
+  #contentWrapper.iron-dropdown > * {
+    overflow-x: hidden !important;
+  }
+</style>
+
 <dom-module id="uqlibrary-booking-findroom">
   <!-- Template -->
   <template>
@@ -8,11 +15,13 @@
       :host {
         font-size: var(--body-font-size);
         @apply(--uql-app-host);
-        @apply(--loayout-vertical);
+        @apply(--layout-vertical);
       }
 
       .page {
         @apply(--layout-flex);
+        overflow-y: auto;
+        overflow-x: hidden;
       }
 
       .footer-content {
@@ -62,17 +71,17 @@
         font-size: 14px;
       }
 
-      paper-item.time-item {
-        width: 200px;
-        overflow-x: hidden;
-      }
-
       #time-select .dropdown-content {
         overflow-x: hidden;
       }
 
       paper-slider {
         @apply(--layout-flex);
+      }
+
+      .dropdown-content {
+        min-width: 350px;
+        overflow-x: hidden !important; /** IE FIX **/
       }
 
       @media all and (max-width: 700px) {
@@ -183,7 +192,7 @@
                 immediateValue="{{searchDuration}}"
                 value="{{searchDuration}}">
             </paper-slider>
-            <div>{{searchDuration}} minutes</div>
+            <div>{{searchDuration}} min</div>
           </div>
         </div>
       </div>

@@ -65,6 +65,8 @@
      * Called when this element receives focus
      */
     activate: function () {
+      // Force change of selected Page
+      this._selectedPage = -1;
       this._selectedPage = 0;
       this.$.findRoom.activate();
     },
@@ -83,13 +85,15 @@
         headerData.backEnabled = true;
       } else if (this._selectedPage == 1) {
         // Booking details page
-        headerData.title = 'Select room';
+        headerData.title = 'Select a room';
         headerData.backEnabled = true;
       } else if (this._selectedPage == 2) {
         // Update booking page
         headerData.title = 'Book a room';
         headerData.backEnabled = true;
         this.$.bookRoom.activate();
+      } else {
+        return;
       }
 
       this.fire('uqlibrary-booking-update-header', headerData);

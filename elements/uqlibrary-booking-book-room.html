@@ -5,11 +5,13 @@
   <style is="custom-style" include="iron-flex iron-flex-alignment common-styles">
     :host {
       @apply(--uql-app-host);
-      @apply(--loayout-vertical);
+      @apply(--layout-vertical);
     }
 
     .page {
       @apply(--layout-flex);
+      overflow-y: auto;
+      overflow-x: hidden; /* IE FIX */
     }
 
     .image-header {
