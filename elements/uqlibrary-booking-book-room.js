@@ -137,9 +137,12 @@
     _formatLocation : function (roomDetails) {
       var location = [];
 
-      if (roomDetails.location) location.push(roomDetails.location);
-      if (roomDetails.building) location.push(roomDetails.building);
-      if (roomDetails) location.push(roomDetails.campus);
+      if (typeof(roomDetails.location) !== 'undefined' && roomDetails.location)
+        location.push(roomDetails.location);
+      if (typeof(roomDetails.building) !== 'undefined' && roomDetails.building)
+        location.push(roomDetails.building);
+      if (typeof(roomDetails.campus) !== 'undefined' &&  roomDetails.campus)
+        location.push(roomDetails.campus);
 
       return location.join(", ");
     },

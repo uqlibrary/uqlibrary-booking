@@ -98,11 +98,11 @@
      */
     _formatLocation: function () {
       var location = [];
-      if (this._roomDetails.location)
+      if (typeof(this._roomDetails.location) !== 'undefined' && this._roomDetails.location)
         location.push(this._roomDetails.location);
-      if (this._roomDetails.building)
+      if (typeof(this._roomDetails.building) !== 'undefined' && this._roomDetails.building)
         location.push(this._roomDetails.building);
-      if (this._roomDetails.campus)
+      if (typeof(this._roomDetails.campus) !== 'undefined' &&  this._roomDetails.campus)
         location.push(this._roomDetails.campus);
       return location.join(', ');
     },

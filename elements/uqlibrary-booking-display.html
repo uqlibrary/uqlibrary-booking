@@ -37,6 +37,10 @@
       @apply(--layout-horizontal);
       @apply(--layout-end-justified);
     }
+
+    .text-container {
+      min-width: 44px;
+    }
   </style>
   <template>
     <uqlibrary-api-facilities-availability id="facilities" processed="true"></uqlibrary-api-facilities-availability>
@@ -73,7 +77,7 @@
         <iron-icon icon="description" class="big-icon"></iron-icon>
       </div>
       <div class="text-container">
-        <div class="title">Room Details</div>
+        <div class="title">Room details</div>
         <div class="body1">[[_roomDetails.notes]]</div>
       </div>
     </div>
