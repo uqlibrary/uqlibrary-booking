@@ -72,7 +72,15 @@
       });
 
       this.$.account.get();
+
+      this.activate(); // Not needed, but might as well
 		},
+    /**
+     * Should be called by a parent app when booking receives focus.
+     */
+    activate: function () {
+      this._selectedPage = 0;
+    },
     /**
      * Called when the account was loaded
      * @param e
