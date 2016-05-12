@@ -350,6 +350,8 @@
     _selectBuilding: function (newVal) {
       if (newVal == 0) {
         this._selectedBuilding = null;
+        this._selectedRoomIndex = 0;
+        this._getSearchResults();
         return;
       }
 
