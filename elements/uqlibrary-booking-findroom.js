@@ -390,7 +390,7 @@
      * Called when the selected date has changed
      * @private
      */
-    searchDateChanged: function () {
+    searchDateChanged: function (newVal, oldVal) {
       var self = this;
       
       _.forEach(self._dayDropdown, function (value, key) {
@@ -400,7 +400,9 @@
         }
       });
 
-      this._loadFacilities();
+      if (typeof(oldVal) === 'undefined' || moment(oldVal).format("YYYY-MM-DD") !== moment(newVal).format("YYYY-MM-DD")) {
+        this._loadFacilities();
+      }
       this._getSearchResults();
     },
     /**
