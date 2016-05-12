@@ -80,7 +80,6 @@
      */
     activate: function () {
       this._selectedPage = 0;
-      this.$.createBooking._selectedPage = 0;
       this.$.myBookings._selectedPage = 0;
     },
     /**
