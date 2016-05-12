@@ -9,7 +9,8 @@
        * Account
        */
       account: {
-        type: Object
+        type: Object,
+        observer: '_accountChanged'
       },
       /**
        * List of all rooms for the selected search date
@@ -111,12 +112,17 @@
     activate: function () {
       // ?
     },
+    _accountChanged: function () {
+      if (this.account.id) {
+        this._loadFacilities();
+      }
+    },
     /**
      * Loads facilities from the API
      * @private
      */
     _loadFacilities: function () {
-      if (!this.searchDate) return;
+      if (!this.searchDate || !this.account.id) return;
 
       var args = {
         date: moment(this.searchDate).format("DD-MM-YYYY"),
@@ -127,6 +133,8 @@
         args.id = this.account.id;
         args.ptype = this.account.type;
       }
+
+      console.log(this.account);
 
       this.$.facilities.get(args);
     },
