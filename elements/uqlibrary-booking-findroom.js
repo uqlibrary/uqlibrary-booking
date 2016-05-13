@@ -134,8 +134,6 @@
         args.ptype = this.account.type;
       }
 
-      console.log(this.account);
-
       this.$.facilities.get(args);
     },
     /**
