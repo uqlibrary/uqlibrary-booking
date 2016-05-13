@@ -80,7 +80,7 @@
      */
     activate: function () {
       this._selectedPage = 0;
-      this.$.myBookings._selectedPage = 0;
+      this.$.myBookings.activate();
     },
     /**
      * Called when the account was loaded
