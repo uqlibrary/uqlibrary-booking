@@ -14,13 +14,12 @@
     "neon-elements": "PolymerElements/neon-animation#*",
     "iron-component-page": "PolymerElements/iron-component-page#*",
     "polymer": "Polymer/polymer#^1.4.0",
-    "uqlibrary-styles": "uqlibrary/uqlibrary-styles#master",
-    "uqlibrary-api": "uqlibrary/uqlibrary-api#v1.0.2",
+    "uqlibrary-styles": "uqlibrary/uqlibrary-styles#v1.0.0",
+    "uqlibrary-api": "uqlibrary/uqlibrary-api#v1.0.8",
     "uqlibrary-ga": "uqlibrary/uqlibrary-ga#v1.0.3",
     "uqlibrary-timeline": "uqlibrary/uqlibrary-timeline#v1.0.2",
     "lodash": "^4.8.2",
-    "uqlibrary-date-selector": "uqlibrary/uqlibrary-date-selector#v1.0.5",
-    "lazy-pages": "^0.8.5"
+    "uqlibrary-date-selector": "uqlibrary/uqlibrary-date-selector#v1.0.6"
   },
   "devDependencies": {
     "web-component-tester": "^4.2.2",
