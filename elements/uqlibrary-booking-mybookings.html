@@ -11,11 +11,12 @@
         @apply(--uql-app-host);
       }
       
-      paper-fab {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
+      #booking-list .uqlibrary-app-footer {
+        position: fixed;
+        bottom: 0px;
+        width: 100%;
       }
+
     </style>
 
     <!-- API -->
@@ -25,7 +26,10 @@
     <neon-animated-pages id="mybookingsPages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
       <section id="booking-list">
         <uqlibrary-timeline id="timeline" events="{{events}}" on-event-selected="_bookingSelected"></uqlibrary-timeline>
-        <paper-fab class="create-booking" icon="add" on-click="_addBooking" aria-label="Add new booking"></paper-fab>
+        <!-- Bottom footer -->
+        <paper-toolbar class="uqlibrary-app-footer right">
+          <paper-button id="booking" class="button-colored-accent" on-tap="_addBooking" aria-label="Add new booking">Book a room</paper-button>
+        </paper-toolbar>
       </section>
       <section>
         <uqlibrary-booking-display
@@ -44,7 +48,11 @@
             on-booking-created="_bookingUpdated">
         </uqlibrary-booking-book-room>
       </section>
+
     </neon-animated-pages>
+
+
+
   </template>
 
   <!-- Location of the script -->
