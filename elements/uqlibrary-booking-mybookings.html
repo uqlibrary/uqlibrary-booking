@@ -17,14 +17,9 @@
         overflow-x: hidden;
       }
 
-      .pagewrap {
-        position:absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display:flex;
-        flex-direction:column
+      #booking-list {
+        @apply(--uql-app-host);
+        @apply(--layout-flex);
       }
 
     </style>
@@ -35,7 +30,6 @@
 
     <neon-animated-pages id="mybookingsPages" selected="{{_selectedPage}}" on-iron-select="_pageChanged">
       <section id="booking-list">
-        <div class="pagewrap">
           <div class="page">
             <uqlibrary-timeline id="timeline" events="{{events}}" on-event-selected="_bookingSelected"></uqlibrary-timeline>
           </div>
@@ -43,7 +37,6 @@
           <paper-toolbar class="uqlibrary-app-footer right">
             <paper-button id="booking" class="button-colored-accent" on-tap="_addBooking" aria-label="Add new booking">Book a room</paper-button>
           </paper-toolbar>
-        </div>
       </section>
       <section>
         <uqlibrary-booking-display
