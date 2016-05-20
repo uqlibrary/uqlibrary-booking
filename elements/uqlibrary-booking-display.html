@@ -111,9 +111,9 @@
 
       </div>
       <!-- Bottom footer -->
-      <paper-toolbar class="uqlibrary-app-footer">
-        <paper-button id="edit" on-tap="_editBooking" class="button-colored-accent edit-button">Edit</paper-button>
-        <paper-button id="delete" on-tap="_toggleDeleteDialog" class="button-colored-secondary">Delete</paper-button>
+      <paper-toolbar class="uqlibrary-app-footer right">
+        <paper-button id="edit" on-tap="_editBooking" class="button-colored-accent edit-button" aria-label="Edit booking">Edit</paper-button>
+        <paper-button id="delete" on-tap="_toggleDeleteDialog" class="button-colored-secondary" aria-label="Delete booking">Delete</paper-button>
       </paper-toolbar>
     </div>
     <paper-dialog id="infoDialog" role="dialog" aria-label="Are you sure you want to delete this booking?">
