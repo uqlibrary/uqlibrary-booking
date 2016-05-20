@@ -41,62 +41,81 @@
     .text-container {
       min-width: 44px;
     }
+
+    .page {
+      @apply(--layout-flex);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .pagewrap {
+      position:absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display:flex;
+      flex-direction:column
+    }
   </style>
   <template>
     <uqlibrary-api-facilities-availability id="facilities" processed="true"></uqlibrary-api-facilities-availability>
+    <div class="pagewrap">
+      <div class="page">
+        <div class="image-header" style$="{{_backgroundUrl}}">
+          <div class="title-container">
+            <div class="title inverse">[[_roomDetails.title]]</div>
+            <div class="subhead inverse">[[_location]]</div>
+          </div>
+        </div>
 
-    <div class="image-header" style$="{{_backgroundUrl}}">
-      <div class="title-container">
-        <div class="title inverse">[[_roomDetails.title]]</div>
-        <div class="subhead inverse">[[_location]]</div>
+        <div class="details-row">
+          <div class="text-container">
+            <iron-icon icon="today" class="big-icon"></iron-icon>
+          </div>
+          <div class="text-container">
+            <div class="title">Date</div>
+            <div class="body1">[[_bookingDate]]</div>
+          </div>
+        </div>
+
+        <div class="details-row">
+          <div class="text-container">
+            <iron-icon icon="schedule" class="big-icon"></iron-icon>
+          </div>
+          <div class="text-container">
+            <div class="title">Time</div>
+            <div class="body1">[[_bookingTime]]</div>
+          </div>
+        </div>
+
+        <div class="details-row" hidden$="[[!_roomDetails.notes]]">
+          <div class="text-container">
+            <iron-icon icon="description" class="big-icon"></iron-icon>
+          </div>
+          <div class="text-container">
+            <div class="title">Room details</div>
+            <div class="body1">[[_roomDetails.notes]]</div>
+          </div>
+        </div>
+
+        <div class="details-row" hidden$="[[!_roomDetails.url]]">
+          <div class="text-container">
+            <iron-icon icon="file-map" class="big-icon"></iron-icon>
+          </div>
+          <div class="text-container">
+            <div class="title">Map</div>
+            <div class="body1"><a href$="[[_url]]">View map</a></div>
+          </div>
+        </div>
+
       </div>
+      <!-- Bottom footer -->
+      <paper-toolbar class="uqlibrary-app-footer">
+        <paper-button id="edit" on-tap="_editBooking" class="button-colored-accent edit-button">Edit</paper-button>
+        <paper-button id="delete" on-tap="_toggleDeleteDialog" class="button-colored-secondary">Delete</paper-button>
+      </paper-toolbar>
     </div>
-
-    <div class="details-row">
-      <div class="text-container">
-        <iron-icon icon="today" class="big-icon"></iron-icon>
-      </div>
-      <div class="text-container">
-        <div class="title">Date</div>
-        <div class="body1">[[_bookingDate]]</div>
-      </div>
-    </div>
-
-    <div class="details-row">
-      <div class="text-container">
-        <iron-icon icon="schedule" class="big-icon"></iron-icon>
-      </div>
-      <div class="text-container">
-        <div class="title">Time</div>
-        <div class="body1">[[_bookingTime]]</div>
-      </div>
-    </div>
-
-    <div class="details-row" hidden$="[[!_roomDetails.notes]]">
-      <div class="text-container">
-        <iron-icon icon="description" class="big-icon"></iron-icon>
-      </div>
-      <div class="text-container">
-        <div class="title">Room details</div>
-        <div class="body1">[[_roomDetails.notes]]</div>
-      </div>
-    </div>
-
-    <div class="details-row" hidden$="[[!_roomDetails.url]]">
-      <div class="text-container">
-        <iron-icon icon="file-map" class="big-icon"></iron-icon>
-      </div>
-      <div class="text-container">
-        <div class="title">Map</div>
-        <div class="body1"><a href$="[[_url]]">View map</a></div>
-      </div>
-    </div>
-
-    <div class="details-row">
-      <paper-button id="edit" on-tap="_editBooking" class="button-colored-accent edit-button">Edit this booking</paper-button>
-      <paper-button id="delete" on-tap="_toggleDeleteDialog" class="button-colored-secondary">Delete this booking</paper-button>
-    </div>
-
     <paper-dialog id="infoDialog" role="dialog" aria-label="Are you sure you want to delete this booking?">
       <h2>Delete booking</h2>
       <p class="body2">Are you sure you want to delete this booking?</p>
