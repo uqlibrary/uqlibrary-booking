@@ -25,7 +25,7 @@
        */
       headerTitle: {
         type: String,
-        value: "My bookings"
+        value: "Room bookings"
       },
       /**
        * Whether to show the back button

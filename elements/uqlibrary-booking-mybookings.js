@@ -75,7 +75,7 @@
 
       if (this._selectedPage == 0) {
         // My Bookings page
-        headerData.title = 'My bookings';
+        headerData.title = 'Room bookings';
         headerData.backEnabled = false;
       } else if (this._selectedPage == 1) {
         // Booking details page

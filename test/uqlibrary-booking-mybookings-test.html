@@ -42,7 +42,7 @@
 
     test('should notify the top app to change the title', function (done) {
       document.addEventListener('uqlibrary-booking-update-header', function (e) {
-        expect(e.detail.title).to.be.equal('My bookings');
+        expect(e.detail.title).to.be.equal('Room bookings');
         expect(e.detail.backEnabled).to.be.equal(false);
 
         document.removeEventListener('uqlibrary-booking-update-header', arguments.callee);
