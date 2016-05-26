@@ -36,24 +36,31 @@
       padding: 16px;
     }
 
-    .hint-box {
+    .hint-box:before {
+      content:'';
       display: inline-block;
       width: 16px;
       height: 16px;
       border: 1px solid var(--border-color);
       vertical-align: middle;
       margin: 0 5px;
+
+    }
+    @media screen and (max-width: 500px) {
+      .hint-box {
+        display: block;
+      }
     }
 
-    .hint-box.selected {
+    .hint-box.selected:before {
       background-color: var(--accent-color);
     }
 
-    .hint-box.available {
+    .hint-box.available:before {
       background-color: var(--secondary-color-light);
     }
 
-    .hint-box.unavailable {
+    .hint-box.unavailable:before {
       background-color: var(--secondary-color-dark);
     }
   </style>
@@ -97,9 +104,9 @@
 
       <!-- Legend -->
       <p class="text-container body">
-        <span class="hint-box selected"></span> - your current selection
-        <span class="hint-box available"></span> - available time slot
-        <span class="hint-box unavailable"></span> - unavailable time slot
+        <span class="hint-box selected"> - your current selection</span>
+        <span class="hint-box available"> - available time slot</span>
+        <span class="hint-box unavailable"> - unavailable time slot</span>
       </p>
     </div>
 
