@@ -55,20 +55,20 @@
     <uqlibrary-api-facilities-availability id="facilities" processed="true"></uqlibrary-api-facilities-availability>
 
       <div class="page">
-        <div class="image-header" style$="{{_backgroundUrl}}">
+        <header class="image-header" style$="{{_backgroundUrl}}">
           <div class="title-container">
             <div id="roomTitle" class="title inverse" tabindex="0">[[_roomDetails.title]]</div>
-            <div class="subhead inverse">[[_location]]</div>
+            <div class="subhead inverse" tabindex="1">[[_location]]</div>
           </div>
-        </div>
+        </header>
 
         <div class="details-row">
           <div class="text-container">
             <iron-icon icon="today" class="big-icon"></iron-icon>
           </div>
           <div class="text-container">
-            <div class="title">Date</div>
-            <div class="body1">[[_bookingDate]]</div>
+            <div class="title" tabindex="2">Date</div>
+            <div class="body1" tabindex="3">[[_bookingDate]]</div>
           </div>
         </div>
 
@@ -77,8 +77,8 @@
             <iron-icon icon="schedule" class="big-icon"></iron-icon>
           </div>
           <div class="text-container">
-            <div class="title">Time</div>
-            <div class="body1">[[_bookingTime]]</div>
+            <div class="title" tabindex="4">Time</div>
+            <div class="body1" tabindex="5">[[_bookingTime]]</div>
           </div>
         </div>
 
@@ -87,8 +87,8 @@
             <iron-icon icon="description" class="big-icon"></iron-icon>
           </div>
           <div class="text-container">
-            <div class="title">Room details</div>
-            <div class="body1">[[_roomDetails.notes]]</div>
+            <div class="title" tabindex="6">Room details</div>
+            <div class="body1" tabindex="7">[[_roomDetails.notes]]</div>
           </div>
         </div>
 

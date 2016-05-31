@@ -56,6 +56,7 @@
     // force focus on the room title for accessibility
     activate: function () {
       this.$.roomTitle.focus();
+      this.$.roomTitle.blur();
     },
     attached: function () {
       var self = this;
