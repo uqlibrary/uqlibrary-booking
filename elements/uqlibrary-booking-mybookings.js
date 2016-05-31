@@ -81,6 +81,7 @@
         // Booking details page
         headerData.title = 'Booking details';
         headerData.backEnabled = true;
+        this.$.bookingDisplay.activate();
       } else if (this._selectedPage == 2) {
         // Update booking page
         headerData.title = 'Update booking';

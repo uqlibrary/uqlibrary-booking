@@ -53,6 +53,10 @@
         type: String
       }
     },
+    // force focus on the room title for accessibility
+    activate: function () {
+      this.$.roomTitle.focus();
+    },
     attached: function () {
       var self = this;
 
