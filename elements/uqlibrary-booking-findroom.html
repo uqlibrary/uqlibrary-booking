@@ -101,7 +101,7 @@
           Where do you need to book a resource?
           <!-- Campus select -->
           <div id="campus-select">
-            <paper-dropdown-menu label="Campus" required="true" aria-label="Select a campus">
+            <paper-dropdown-menu label="Campus" required="true" aria-label="Select a campus" id="campuses" on-tap="_tapped">
               <paper-menu class="dropdown-content" selected="{{_selectedCampusIndex}}">
                 <template is="dom-repeat" items="[[_roomData]]">
                   <paper-item label="[[item.title]]" aria-label="[[item.title]]" role="option">
@@ -115,7 +115,7 @@
           <!-- Building select -->
           <div id="building-select">
             <template is="dom-if" if="[[_buildingDropdown]]">
-              <paper-dropdown-menu label="Building" aria-label="Select a building">
+              <paper-dropdown-menu label="Building" aria-label="Select a building" on-tap="_tapped">
                 <paper-menu class="dropdown-content" selected="{{_selectedBuildingIndex}}">
                   <paper-item label="Any Building" aria-label="Any building" role="option">Any building</paper-item>
                   <template is="dom-repeat" items="{{_buildingDropdown}}">
@@ -131,7 +131,7 @@
           <!-- Room select -->
           <div id="room-select">
             <template is="dom-if" if="{{_selectedBuildingIndex}}">
-              <paper-dropdown-menu label="Room" aria-label="Select a room">
+              <paper-dropdown-menu label="Room" aria-label="Select a room" on-tap="_tapped">
                 <paper-menu class="dropdown-content" selected="{{_selectedRoomIndex}}">
                   <paper-item label="Any room" aria-label="Any room" role="option">Any room</paper-item>
                   <template is="dom-repeat" items="[[_roomDropdown]]">

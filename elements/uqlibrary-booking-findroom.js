@@ -195,6 +195,17 @@
 
       this._getSearchResults();
     },
+
+    _tapped: function(event) {
+      var dropdown = event.currentTarget;
+
+      if (typeof(dropdown) !== 'undefined' && typeof(dropdown.contentElement.selectedItem) !== 'undefined') {
+        dropdown.contentElement.selectedItem.addEventListener('tap', function() {
+          dropdown.close();
+        } );
+      }
+    },
+
     /**
      * Filters the room list based on the input of the user
      * @private
@@ -326,12 +337,14 @@
      * @private
      */
     _selectCampus: function (newVal) {
-      if (newVal == null) return;
+      if (newVal !== parseInt(newVal, 10)) return;
 
       var self = this;
       var oldCampus = this._selectedCampus;
       this._selectedCampus = this._roomData[newVal];
+
       if (!this._selectedCampus) return;
+      if (oldCampus === this._selectedCampus) return;
 
       this._buildingDropdown = this._selectedCampus.buildings;
 
