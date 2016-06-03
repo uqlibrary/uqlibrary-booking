@@ -154,7 +154,7 @@
 
           <!-- Date select -->
           <div id="date-select">
-            <paper-dropdown-menu label="Day" on-iron-select="_selectDate" aria-label="Select a date">
+            <paper-dropdown-menu label="Day" on-iron-select="_selectDate" aria-label="Select a date" on-tap="_tapped">
               <paper-menu class="dropdown-content" selected="{{_selectedDateIndex}}">
                 <template is="dom-repeat" items="[[_dayDropdown]]">
                   <paper-item label="[[item.label]]" aria-label="[[item.label]]" role="option">
@@ -167,7 +167,7 @@
 
           <!-- Time select -->
           <div id="time-select">
-            <paper-dropdown-menu label="Time" on-iron-select="_selectTime" aria-label="Select a start time">
+            <paper-dropdown-menu label="Time" on-iron-select="_selectTime" aria-label="Select a start time" on-tap="_tapped">
               <paper-menu class="dropdown-content" selected="{{_selectedTimeIndex}}">
                 <template is="dom-repeat" items="[[_timeDropdown]]">
                   <paper-item class="time-item" label="[[item.label]]" aria-label="[[item.label]]">
