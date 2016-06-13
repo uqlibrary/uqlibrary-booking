@@ -1,19 +1,21 @@
-uqlibrary-booking
-==================
+#uqlibrary-booking 
 
-A simple booking app.
+##Polymer v1.0
 
-## Testing Your Element
+Current working branch is https://github.com/uqlibrary/uqlibrary-booking/tree/polymer1.0
 
-### web-component-tester
-#### prerequisites for selenium to run on Mac
-1. update Java to the latest version
-2. install Selenium Safari driver:
-http://selenium-release.storage.googleapis.com/index.html?path=2.48/
+Full application is [uqlibrary-mylibrary repo](https://github.com/uqlibrary/uqlibrary-mylibrary/)
 
-The tests are compatible with [web-component-tester](https://github.com/Polymer/web-component-tester). You can run them on multiple local browsers via:
 
-```sh
-npm install -g web-component-tester
-wct
-```
+##DEPRECATED: uqlibrary-booking - master/uat/staging/production
+
+This application used to be a part of a set of MyLibrary applications implemented with Google Polymer v0.5 at app.library.uq.edu.au/v1/booking.
+
+Production branch deployment is currently just a redirect to live MyLibrary. To be removed after a reasonable time.
+
+
+
+
+
+
+ 
