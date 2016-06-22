@@ -34,7 +34,11 @@
       account: {
         type: Object,
         notify: true
+      },
+      rooms: {
+        type: Object
       }
+
     },
     behaviors: [
       Polymer.NeonSharedElementAnimatableBehavior
@@ -42,11 +46,15 @@
     ready: function () {
       var self = this;
 
+      this.$.facilities.addEventListener('uqlibrary-api-facilities-availability-loaded', function (e) {
+        self.rooms = e.detail;
+      });
+
       this.$.bookings.addEventListener("uqlibrary-api-account-bookings-loaded", function (e) {
         self._processData(e);
       });
 
-      this.$.bookings.get({ nocache : true });
+      this.$.facilities.get();
     },
     /**
      * Called when this element receives focus
@@ -101,21 +109,28 @@
 
       var bookings = Array.isArray(e.detail) ? e.detail : [];
       if (bookings.length > 0) {
+
         var events = [];
 
         for (var i = bookings.length-1; i >= 0; i--) {
 
-          var title = [];
-          var subtitle = [];
-          var b = bookings[i];
+          var title = [],
+              subtitle = [],
+              b = bookings[i],
+              rooms = self.rooms;
 
           if (b.resource.title)
             title.push(b.resource.title);
-          if (b.resource.location)
+          if (b.resource.location) {
             title.push(b.resource.location);
-          if (self.rooms && self.rooms[b.resource.machid]) {
-            subtitle.push(self.rooms[b.resource.machid].building);
-            subtitle.push(self.rooms[b.resource.machid].campus);
+          }
+          if (rooms && rooms[b.resource.machid]) {
+            var room = rooms[b.resource.machid];
+            subtitle.push(room.building);
+            subtitle.push(room.campus);
+            if (room.building === b.resource.location) { // remove duplicated info
+              title.pop();
+            }
           }
 
           events.push({
