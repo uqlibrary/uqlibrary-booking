@@ -34,6 +34,7 @@
     setup(function (done) {
       element = fixture('element');
       element.account = account;
+      element.activate();
 
       UQWait.custom(function () {
         return element.events.length > 0;
