@@ -32,6 +32,10 @@
     _selectRoom: function (e) {
       this.selectedRoom = e.model.item;
       this.fire("book-room");
+    },
+    _goToFBS: function () {
+      this.$.ga.addEvent('mainFBSLinkClicked');
+      window.location = 'https://www.library.uq.edu.au/fbs/';
     }
   })
 })();

@@ -49,6 +49,16 @@
       color: var(--secondary-color);
     }
 
+    .fbslink {
+      color: var(--accent-color);
+      cursor: pointer;
+      padding: 0 16px;
+    }
+
+    .fbslink iron-icon {
+      color: var(--accent-color) !important;
+    }
+
     @media all and (max-width: 400px) {
       .time {
         font-size: 0.8em;
@@ -61,6 +71,7 @@
 
   <!-- Template -->
   <template>
+    <uqlibrary-ga id="ga" app-name="FBS"></uqlibrary-ga>
     <template is="dom-repeat" items="[[searchResults]]">
       <paper-item class="select-room-item" on-tap="_selectRoom">
         <paper-ripple></paper-ripple>
@@ -84,6 +95,12 @@
         </div>
       </paper-item>
     </template>
+    <paper-item class="fbslink" on-click="_goToFBS">
+      <iron-icon icon="help"></iron-icon>
+      <paper-item-body>
+        Prefer the main Facilities Booking System?
+      </paper-item-body>
+    </paper-item>
   </template>
 
   <!-- Location of the script -->

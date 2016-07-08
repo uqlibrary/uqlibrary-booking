@@ -487,6 +487,10 @@
       } else {
         this.fire("search");
       }
+    },
+    _goToFBS: function () {
+      this.$.ga.addEvent('mainFBSLinkClicked');
+      window.location = 'https://www.library.uq.edu.au/fbs/';
     }
   });
 })();
