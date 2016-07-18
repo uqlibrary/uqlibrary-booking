@@ -94,6 +94,10 @@
         color: var(--accent-color) !important;
       }
 
+      #duration-select div.slider-val {
+        line-height: 56px;
+      }
+
       @media all and (max-width: 700px) {
         .input-container iron-icon {
           display: none;
@@ -109,7 +113,7 @@
       <div class="input-container">
         <iron-icon icon="communication:location-on"></iron-icon>
         <div class="content subhead">
-          Where do you need to book a resource?
+          Where do you need to book a resource? (required)
           <!-- Campus select -->
           <div id="campus-select">
             <paper-dropdown-menu label="Campus" required="true" aria-label="Select a campus" id="campuses" on-tap="_tapped">
@@ -195,6 +199,7 @@
             <paper-slider
                 aria-label="booking duration"
                 pin
+                editable
                 snaps
                 step="30"
                 aria-valuetext="[[searchDuration]] minutes"
@@ -204,7 +209,7 @@
                 immediateValue="{{searchDuration}}"
                 value="{{searchDuration}}">
             </paper-slider>
-            <div>{{searchDuration}} min</div>
+            <div class="slider-val">m</div>
           </div>
         </div>
       </div>
