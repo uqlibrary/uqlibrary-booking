@@ -49,13 +49,13 @@
       color: var(--secondary-color);
     }
 
-    .fbslink {
+    paper-icon-item {
       color: var(--accent-color);
       cursor: pointer;
       padding: 0 16px;
     }
 
-    .fbslink iron-icon {
+    paper-icon-item iron-icon {
       color: var(--accent-color) !important;
     }
 
@@ -65,6 +65,9 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+      }
+      paper-icon-item {
+        padding-left: 20px;
       }
     }
   </style>
@@ -95,12 +98,10 @@
         </div>
       </paper-item>
     </template>
-    <paper-item class="fbslink" on-click="_goToFBS">
-      <iron-icon icon="help"></iron-icon>
-      <paper-item-body>
-        Prefer the main Facilities Booking System?
-      </paper-item-body>
-    </paper-item>
+    <paper-icon-item on-click="_goToFBS">
+      <iron-icon icon="help-outline"></iron-icon>
+      Prefer the main Facilities Booking System?
+    </paper-icon-item>
   </template>
 
   <!-- Location of the script -->
