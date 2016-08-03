@@ -84,8 +84,9 @@
         overflow-x: hidden !important; /** IE FIX **/
       }
 
-      .fbslink {
+      paper-icon-item {
         color: var(--accent-color);
+        line-height: 60px;
         padding-left: 120px;
         cursor: pointer;
       }
@@ -102,7 +103,7 @@
         .input-container iron-icon {
           display: none;
         }
-        .fbslink {
+        paper-icon-item {
           padding-left: 20px;
         }
       }
@@ -241,12 +242,12 @@
         </div>
       </div>
 
-      <paper-item class="fbslink" on-click="_goToFBS">
-        <iron-icon icon="help"></iron-icon>
+      <paper-icon-item on-click="_goToFBS">
+        <iron-icon icon="help-outline"></iron-icon>
         <paper-item-body>
           Prefer the main Facilities Booking System?
         </paper-item-body>
-      </paper-item>
+      </paper-icon-item>
     </div>
 
     <!-- Bottom footer -->
