@@ -52,7 +52,7 @@
     paper-icon-item {
       color: var(--accent-color);
       cursor: pointer;
-      padding: 0 16px;
+      padding-left: 12px;
     }
 
     paper-icon-item iron-icon {
@@ -66,8 +66,13 @@
         text-overflow: ellipsis;
         overflow: hidden;
       }
+    }
+
+    @media all and (max-width: 700px) {
       paper-icon-item {
-        padding-left: 20px;
+        padding-left: 0;
+        margin-left: -38px;
+        line-height: 1.5em;
       }
     }
   </style>
