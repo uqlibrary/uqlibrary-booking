@@ -49,18 +49,18 @@
       color: var(--secondary-color);
     }
 
-    .fbslink {
+    paper-icon-item {
       color: var(--accent-color);
       cursor: pointer;
       padding: 0 16px;
     }
 
-    .fbslink iron-icon {
-      color: var(--accent-color) !important;
+    paper-icon-item iron-icon {
+      color: var(--accent-color);
       margin-left: 3px;
     }
 
-    .fbslink paper-item-body {
+    paper-icon-item paper-item-body {
       padding-left: 20px;
     }
 
@@ -74,8 +74,11 @@
     }
 
     @media all and (max-width: 700px) {
-      .fbslink paper-item-body {
+      paper-icon-item {
         padding-left: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        line-height: 1.5em;
       }
     }
   </style>
@@ -106,10 +109,12 @@
         </div>
       </paper-item>
     </template>
-    <paper-item class="fbslink" on-click="_goToFBS">
-      <iron-icon icon="help-outline"></iron-icon>
-      <paper-item-body>Prefer the main Facilities Booking System?</paper-item-body>
-    </paper-item>
+    <paper-icon-item>
+      <iron-icon item-icon icon="help-outline" on-click="_goToFBS"></iron-icon>
+      <a on-click="_goToFBS">
+        Prefer the main Facilities Booking System?
+      </a>
+    </paper-icon-item>
   </template>
 
   <!-- Location of the script -->

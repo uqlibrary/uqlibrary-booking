@@ -102,12 +102,7 @@
         .input-container iron-icon {
           display: none;
         }
-        paper-icon-item {
-          padding-left: 0;
-          margin-left: -38px;
-          line-height: 1.5em;
-        }
-      }
+        paper-icon-item      }
     </style>
 
     <uqlibrary-api-facilities-availability id="facilities" processed="true"></uqlibrary-api-facilities-availability>
@@ -243,9 +238,11 @@
         </div>
       </div>
 
-      <paper-icon-item on-click="_goToFBS">
-        <iron-icon icon="help-outline"></iron-icon>
-        Prefer the main Facilities Booking System?
+      <paper-icon-item>
+        <iron-icon item-icon icon="help-outline" on-click="_goToFBS"></iron-icon>
+        <a on-click="_goToFBS">
+          Prefer the main Facilities Booking System?
+        </a>
       </paper-icon-item>
     </div>
 
