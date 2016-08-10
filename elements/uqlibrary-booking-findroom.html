@@ -5,6 +5,15 @@
   #contentWrapper.iron-dropdown > * {
     overflow-x: hidden !important;
   }
+
+  /* stop dropdowns from hiding behind search bar */
+  @media all and (max-width: 700px) {
+    #contentWrapper.iron-dropdown > .dropdown-content {
+      padding-bottom: 2em;
+    }
+
+  }
+
 </style>
 
 <dom-module id="uqlibrary-booking-findroom">
@@ -171,7 +180,7 @@
       <div class="input-container">
         <iron-icon icon="device:access-time"></iron-icon>
         <div class="content subhead">
-          When you do need to book this?
+          When do you need to book this?
 
           <!-- Date select -->
           <div id="date-select">
