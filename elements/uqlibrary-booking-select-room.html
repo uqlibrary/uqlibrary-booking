@@ -43,6 +43,10 @@
 
     .room-name {
       color: var(--accent-color);
+
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .time {
@@ -75,6 +79,13 @@
         margin-top: 20px;
         margin-bottom: 20px;
         line-height: 1.5em;
+      }
+    }
+
+    @media all and (max-width: 736px) and (min-width: 375px) and (orientation : landscape) {
+      /* iphones in landscape are crammed in at top and bottom of the drop down list items */
+      paper-item {
+        padding: 20px 10px;
       }
     }
   </style>
