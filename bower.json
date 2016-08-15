@@ -15,7 +15,7 @@
     "iron-component-page": "PolymerElements/iron-component-page#*",
     "polymer": "Polymer/polymer#^1.4.0",
     "uqlibrary-styles": "uqlibrary/uqlibrary-styles#v1.0.0",
-    "uqlibrary-api": "uqlibrary/uqlibrary-api#v1.1.0",
+    "uqlibrary-api": "uqlibrary/uqlibrary-api#polymer1.0",
     "uqlibrary-ga": "uqlibrary/uqlibrary-ga#v1.0.3",
     "uqlibrary-timeline": "uqlibrary/uqlibrary-timeline#v1.0.2",
     "lodash": "^4.8.2",
