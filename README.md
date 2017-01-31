@@ -1,7 +1,7 @@
 #uqlibrary-booking 
 
-[![Dependency Status](https://david-dm.org/uqlibrary/uqlibrary-courses.svg)](https://david-dm.org/uqlibrary/uqlibrary-courses)
-[![Dev Dependency Status](https://david-dm.org/uqlibrary/uqlibrary-courses/dev-status.svg)](https://david-dm.org/uqlibrary/uqlibrary-courses?type=dev)
+[![Dependency Status](https://david-dm.org/uqlibrary/uqlibrary-booking.svg)](https://david-dm.org/uqlibrary/uqlibrary-booking)
+[![Dev Dependency Status](https://david-dm.org/uqlibrary/uqlibrary-booking/dev-status.svg)](https://david-dm.org/uqlibrary/uqlibrary-booking?type=dev)
 
 ##Polymer v1.0
 
