@@ -14,9 +14,9 @@
     "neon-elements": "PolymerElements/neon-animation#*",
     "iron-component-page": "PolymerElements/iron-component-page#*",
     "polymer": "Polymer/polymer#^1.4.0",
-    "uqlibrary-styles": "uqlibrary/uqlibrary-styles#v1.0.0",
-    "uqlibrary-api": "uqlibrary/uqlibrary-api#v1.3.0",
-    "uqlibrary-ga": "uqlibrary/uqlibrary-ga#v1.0.3",
+    "uqlibrary-styles": "uqlibrary/uqlibrary-styles#v1.1.0",
+    "uqlibrary-api": "uqlibrary/uqlibrary-api#v1.4.0",
+    "uqlibrary-ga": "uqlibrary/uqlibrary-ga#v1.0.7",
     "uqlibrary-timeline": "uqlibrary/uqlibrary-timeline#v1.0.2",
     "lodash": "^4.8.2",
     "uqlibrary-date-selector": "uqlibrary/uqlibrary-date-selector#v1.0.9"
@@ -29,7 +29,7 @@
   "resolutions": {
     "polymer": "1.4.0",
     "webcomponentsjs": "0.7.21",
-    "uqlibrary-styles": "master",
-    "lodash": "^4.8.2"
+    "lodash": "^4.8.2",
+    "uqlibrary-styles": "v1.1.0"
   }
 }
