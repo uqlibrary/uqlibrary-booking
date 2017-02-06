@@ -226,6 +226,9 @@
         // Capacity check
         if (self._selectedCapacity > room.capacity) return;
 
+        // Max booking duration check
+        if (self.searchDuration > room.maxtime) return;
+
         // Date and time check
         // Get the nearest "slot"
         var startTimestamp = self._roundTimestamp('down', moment().unix(), room.time_span);
