@@ -22,8 +22,7 @@
     "uqlibrary-date-selector": "uqlibrary/uqlibrary-date-selector#v1.0.9"
   },
   "devDependencies": {
-    "web-component-tester": "^5.0.0",
-    "test-fixture": "PolymerElements/test-fixture#^1.1.0",
+    "test-fixture": "PolymerElements/test-fixture#^2.0.1",
     "uq-wait": "uqlibrary/uq-wait#v1.0.0"
   },
   "resolutions": {
@@ -32,6 +31,6 @@
     "lodash": "^4.8.2",
     "uqlibrary-styles": "v1.1.0",
     "hydrolysis": "^1.18",
-    "test-fixture": "^3.0.0-rc.1"
+    "test-fixture": "^2.0.1"
   }
 }
