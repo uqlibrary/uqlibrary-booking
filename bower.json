@@ -28,7 +28,7 @@
   },
   "resolutions": {
     "polymer": "1.4.0",
-    "webcomponentsjs": "^v1.0.2",
+    "webcomponentsjs": "v1.0.0-rc.11",
     "lodash": "^4.8.2",
     "uqlibrary-styles": "v1.1.0",
     "hydrolysis": "^1.18",
