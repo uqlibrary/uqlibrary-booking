@@ -23,15 +23,15 @@
   },
   "devDependencies": {
     "uq-wait": "uqlibrary/uq-wait#v1.0.0",
-    "web-component-tester": "^4.2.2",
-    "test-fixture": "PolymerElements/test-fixture#^1.1.0"
+    "web-component-tester": "^6.0.0",
+    "test-fixture": "PolymerElements/test-fixture#^3.0.0-rc.1"
   },
   "resolutions": {
     "polymer": "1.4.0",
-    "webcomponentsjs": "^v1.0.0",
+    "webcomponentsjs": "^v1.0.2",
     "lodash": "^4.8.2",
     "uqlibrary-styles": "v1.1.0",
     "hydrolysis": "^1.18",
-    "test-fixture": "^1.1.0"
+    "test-fixture": "^3.0.0-rc.1"
   }
 }
