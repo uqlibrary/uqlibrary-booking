@@ -23,7 +23,7 @@
     "url": "https://github.com/uqlibrary/uqlibrary-booking/issues"
   },
   "devDependencies": {
-    "web-component-tester": "^5.0.0",
+    "web-component-tester": "^4.2.2",
     "gulp": "^3.9.1",
     "browser-sync": "^2.18.11"
   },
