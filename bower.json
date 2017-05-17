@@ -15,7 +15,7 @@
     "iron-component-page": "PolymerElements/iron-component-page#*",
     "polymer": "Polymer/polymer#^1.4.0",
     "uqlibrary-styles": "uqlibrary/uqlibrary-styles#v1.1.0",
-    "uqlibrary-api": "uqlibrary/uqlibrary-api#v1.4.0",
+    "uqlibrary-api": "uqlibrary/uqlibrary-api#v1.4.5",
     "uqlibrary-ga": "uqlibrary/uqlibrary-ga#v1.0.7",
     "uqlibrary-timeline": "uqlibrary/uqlibrary-timeline#v1.0.2",
     "lodash": "^4.8.2",
@@ -28,8 +28,9 @@
   },
   "resolutions": {
     "polymer": "1.4.0",
-    "webcomponentsjs": "0.7.21",
+    "webcomponentsjs": "^v1.0.0",
     "lodash": "^4.8.2",
-    "uqlibrary-styles": "v1.1.0"
+    "uqlibrary-styles": "v1.1.0",
+    "hydrolysis": "^1.18"
   }
 }
