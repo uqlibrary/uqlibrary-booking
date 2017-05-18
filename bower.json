@@ -9,10 +9,10 @@
   "private": true,
   "main": "elements/uqlibrary-booking.html",
   "dependencies": {
-    "iron-elements": "PolymerElements/iron-elements#*",
-    "paper-elements": "PolymerElements/paper-elements#*",
-    "neon-elements": "PolymerElements/neon-animation#*",
-    "iron-component-page": "PolymerElements/iron-component-page#*",
+    "iron-elements": "PolymerElements/iron-elements#1.0.10",
+    "paper-elements": "PolymerElements/paper-elements#1.0.7",
+    "neon-elements": "PolymerElements/neon-animation#1.0.0",
+    "iron-component-page": "PolymerElements/iron-component-page#1.0.0",
     "polymer": "Polymer/polymer#^1.4.0",
     "uqlibrary-styles": "uqlibrary/uqlibrary-styles#v1.1.0",
     "uqlibrary-api": "uqlibrary/uqlibrary-api#v1.4.5",
@@ -22,16 +22,15 @@
     "uqlibrary-date-selector": "uqlibrary/uqlibrary-date-selector#v1.0.9"
   },
   "devDependencies": {
-    "uq-wait": "uqlibrary/uq-wait#v1.0.0",
-    "web-component-tester": "^6.0.0",
-    "test-fixture": "PolymerElements/test-fixture#^1.1.0"
+    "web-component-tester": "^4.2.2",
+    "test-fixture": "PolymerElements/test-fixture#^1.1.0",
+    "uq-wait": "uqlibrary/uq-wait#v1.0.0"
   },
   "resolutions": {
     "polymer": "1.4.0",
+    "webcomponentsjs": "^0.7.12",
     "lodash": "^4.8.2",
     "uqlibrary-styles": "v1.1.0",
-    "hydrolysis": "^1.18",
-    "test-fixture": "^3.0.0-rc.1",
-    "webcomponentsjs": "^v1.0.0"
+    "hydrolysis": "^1.18"
   }
 }
