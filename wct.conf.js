@@ -6,13 +6,6 @@ var ret = {
         'pathMappings': []
     },
     plugins: {
-        local: {
-            browsers: [
-                'firefox',
-                'chrome',
-                'safari'
-            ]
-        },
         sauce: {
             browsers: [
                 'OSX 10.11/safari@9.0',
