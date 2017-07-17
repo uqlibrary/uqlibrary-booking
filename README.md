@@ -1,23 +1,12 @@
 #uqlibrary-booking 
 
-[![Dependency Status](https://david-dm.org/uqlibrary/uqlibrary-booking.svg)](https://david-dm.org/uqlibrary/uqlibrary-booking)
-[![Dev Dependency Status](https://david-dm.org/uqlibrary/uqlibrary-booking/dev-status.svg)](https://david-dm.org/uqlibrary/uqlibrary-booking?type=dev)
-
-##Polymer v1.0
-
-Current working branch is https://github.com/uqlibrary/uqlibrary-booking/tree/polymer1.0
-
-Full application is [uqlibrary-mylibrary repo](https://github.com/uqlibrary/uqlibrary-mylibrary/)
+This repo used to provided a responsive front end to the [old Facilities Booking System (FBS)](https://www.library.uq.edu.au/fbs/ctrlpnl.php) as part of the [MyLibrary Application](https://github.com/uqlibrary/uqlibrary-mylibrary/). 
+FBS has been replaced by [Book It](https://uqbookit.uq.edu.au/) so this repo is [no longer required](https://www.pivotaltracker.com/story/show/148116771) and all calls to it have been replaced with links to Book It.
 
 
 ##DEPRECATED BRANCHES: 
 
-master/uat/staging/production
-
-This application used to be a part of a set of MyLibrary applications implemented with Google Polymer v0.5 at app.library.uq.edu.au/v1/booking.
-
-Production branch deployment is currently just a redirect to live MyLibrary. To be removed after a reasonable time.
-
+##Polymer v1.0
 
 
 
